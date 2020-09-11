@@ -4,7 +4,7 @@
 	icon = 'icons/obj/closet.dmi'
 	icon_state = "closed"
 	density = 1
-	w_class = 5
+	w_class = ITEMSIZE_HUGE
 	layer = OBJ_LAYER - 0.01
 	build_amt = 2
 	var/icon_closed = "closed"
@@ -27,6 +27,8 @@
 
 	var/const/default_mob_size = 15
 	var/obj/item/closet_teleporter/linked_teleporter
+
+	slowdown = 5
 
 /obj/structure/closet/LateInitialize()
 	if (opened)	// if closed, any item at the crate's loc is put in the contents
@@ -84,6 +86,8 @@
 
 /obj/structure/closet/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if(air_group || (height==0 || wall_mounted)) return 1
+	if(istype(mover) && mover.checkpass(PASSTRACE))
+		return 1
 	return (!density)
 
 /obj/structure/closet/proc/can_open()

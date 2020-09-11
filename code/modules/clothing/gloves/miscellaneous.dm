@@ -125,7 +125,7 @@
 	desc_fluff = "For those who want too much time on their wrists instead."
 	icon_state = "watch"
 	item_state = "watch"
-	w_class = 1
+	w_class = ITEMSIZE_TINY
 	wired = 1
 	species_restricted = null
 	gender = NEUTER
@@ -331,7 +331,7 @@
 	punch_force = 5
 	clipped = 1
 	drop_sound = 'sound/items/drop/sword.ogg'
-	pickup_sound = "pickup_sword"
+	pickup_sound = /decl/sound_category/sword_pickup_sound
 
 /obj/item/clothing/gloves/powerfist
 	name = "power fist"
