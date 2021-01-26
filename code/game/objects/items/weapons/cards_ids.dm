@@ -48,16 +48,6 @@
 	src.add_fingerprint(usr)
 	return
 
-/obj/item/card/data/clown
-	name = "\proper the coordinates to clown planet"
-	icon_state = "data"
-	item_state = "card-id"
-	layer = 3
-	level = 2
-	desc = "This card contains coordinates to the fabled Clown Planet. Handle with care."
-	function = "teleporter"
-	data = "Clown Land"
-
 /*
  * ID CARDS
  */
@@ -126,7 +116,7 @@ var/const/NO_EMAG_ACT = -50
 	var/assignment = null	//can be alt title or the actual job
 	var/rank = null			//actual job
 	var/dorm = 0			// determines if this ID has claimed a dorm already
-	var/chat_registered = FALSE // registration for NTNET chat
+	var/datum/ntnet_user/chat_user
 
 /obj/item/card/id/Destroy()
 	mob = null
@@ -151,6 +141,8 @@ var/const/NO_EMAG_ACT = -50
 
 /obj/item/card/id/proc/update_name()
 	name = "ID Card ([src.registered_name] ([src.assignment]))"
+	if(istype(chat_user))
+		chat_user.username = chat_user.generateUsernameIdCard(src)
 
 /obj/item/card/id/proc/set_id_photo(var/mob/M)
 	front = getFlatIcon(M, SOUTH)
@@ -334,6 +326,11 @@ var/const/NO_EMAG_ACT = -50
 	wear_over_suit = !wear_over_suit
 	mob_icon_update()
 
+/obj/item/card/id/proc/InitializeChatUser()
+	if(!istype(chat_user))
+		chat_user = new()
+		chat_user.username = chat_user.generateUsernameIdCard(src)
+
 /obj/item/card/id/silver
 	icon_state = "silver"
 	item_state = "silver_id"
@@ -425,7 +422,7 @@ var/const/NO_EMAG_ACT = -50
 	assignment = "Minedrone"
 
 /obj/item/card/id/minedrone/New()
-	access = list(access_maint_tunnels, access_mailsorting, access_cargo, access_cargo_bot, access_qm, access_mining, access_mining_station)
+	access = list(access_maint_tunnels, access_mailsorting, access_cargo, access_cargo_bot, access_qm, access_mining, access_mining_station, access_external_airlocks)
 	..()
 
 /obj/item/card/id/centcom
