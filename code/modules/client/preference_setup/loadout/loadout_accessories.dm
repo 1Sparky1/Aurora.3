@@ -116,8 +116,9 @@
 
 /datum/gear/accessory/webbing
 	display_name = "webbing, simple"
-	path = /obj/item/clothing/accessory/storage/webbing
+	path = /obj/item/clothing/accessory/storage/webbing/grayscale
 	cost = 2
+	flags = GEAR_HAS_NAME_SELECTION | GEAR_HAS_DESC_SELECTION | GEAR_HAS_COLOR_SELECTION
 
 /datum/gear/accessory/brown_pouches
 	display_name = "drop pouches, engineering"
@@ -233,7 +234,7 @@
 	holobadges["holobadge cord"] = /obj/item/clothing/accessory/badge/holo/cord
 	gear_tweaks += new/datum/gear_tweak/path(holobadges)
 
-/datum/gear/accessory/wardenbadge
+/datum/gear/accessory/officerbadge
 	display_name = "badge, officer"
 	path = /obj/item/clothing/accessory/badge/officer
 	allowed_roles = list("Security Officer")
@@ -251,7 +252,7 @@
 /datum/gear/accessory/detbadge
 	display_name = "badge, detective"
 	path = /obj/item/clothing/accessory/badge/dia
-	allowed_roles = list("Detective, Forensic Technician")
+	allowed_roles = list("Detective", "Forensic Technician")
 
 /datum/gear/accessory/badge
 	display_name = "badge selection"
