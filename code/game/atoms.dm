@@ -160,6 +160,11 @@
 			to_chat(user, "<span class='notice'>How do you propose doing that without hands?</span>")
 		return USE_FAIL_IS_SILICON
 
+	if (HAS_FLAG(USE_DISALLOW_SPECIALS) && is_mob_special(user))
+		if (show_messages)
+			to_chat(user, "<span class='notice'>Your current mob type prevents you from doing this.</span>")
+		return USE_FAIL_IS_MOB_SPECIAL
+
 	if (HAS_FLAG(USE_FORCE_SRC_IN_USER) && !(src in user))
 		if (show_messages)
 			to_chat(user, "<span class='notice'>You need to be holding [src] to do that.</span>")
@@ -262,7 +267,7 @@
 		if("fluff")
 			usr.client.statpanel = "Examine"
 
-// called by mobs when e.g. having the atom as their machine, pulledby, loc (AKA mob being inside the atom) or buckled var set.
+// called by mobs when e.g. having the atom as their machine, pulledby, loc (AKA mob being inside the atom) or buckled_to var set.
 // see code/modules/mob/mob_movement.dm for more.
 /atom/proc/relaymove()
 	return
