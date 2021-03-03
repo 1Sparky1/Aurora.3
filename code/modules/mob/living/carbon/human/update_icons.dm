@@ -404,7 +404,9 @@ There are several things that need to be remembered:
 						grad_s.Blend(rgb(r_grad, g_grad, b_grad), ICON_MULTIPLY)
 					hair_s.Blend(rgb(r_hair, g_hair, b_hair), hair_style.icon_blend_mode)
 					if(!isnull(grad_s))
-						hair_s.Blend(grad_s, ICON_OVERLAY)
+						var/icon/grad_s_final = new/icon("icon" = hair_style.icon, "icon_state" = hair_style.icon_state)
+						grad_s_final.Blend(grad_s, hair_style.icon_blend_mode)
+						hair_s.Blend(grad_s_final, ICON_OVERLAY)
 
 				face_standing.Blend(hair_s, ICON_OVERLAY)
 
@@ -677,7 +679,6 @@ There are several things that need to be remembered:
 			result_layer = list(result_layer, bloodsies)
 
 		gloves.screen_loc = ui_gloves
-		result_layer.appearance_flags = RESET_ALPHA
 		overlays_raw[GLOVES_LAYER] = result_layer
 	else if(blood_DNA)
 		var/image/bloodsies = image(species.blood_mask, "bloodyhands")
@@ -865,10 +866,13 @@ There are several things that need to be remembered:
 		overlays_raw[shoe_layer] = ovr || result_layer
 	else
 		if(footprint_color)		// Handles bloody feet.
-			var/image/bloodsies = image(species.blood_mask, "shoeblood")
-			bloodsies.color = footprint_color
-			bloodsies.appearance_flags = RESET_ALPHA
-			overlays_raw[SHOES_LAYER] = bloodsies
+			for(var/limb_tag in list(BP_L_FOOT, BP_R_FOOT))
+				var/obj/item/organ/external/E = get_organ(limb_tag)
+				if(E && !E.is_stump())
+					var/image/bloodsies = image(species.blood_mask, "shoeblood_[E.limb_name]")
+					bloodsies.color = footprint_color
+					bloodsies.appearance_flags = RESET_ALPHA
+					overlays_raw[SHOES_LAYER] = bloodsies
 		else
 			overlays_raw[SHOES_LAYER] = null
 			overlays_raw[SHOES_LAYER_ALT] = null
