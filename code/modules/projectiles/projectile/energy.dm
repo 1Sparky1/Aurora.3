@@ -197,6 +197,7 @@
 	damage = 30
 	check_armor = "laser"
 	damage_type = BURN
+	damage_flags = DAM_LASER
 	pass_flags = PASSTABLE | PASSGLASS | PASSGRILLE
 	muzzle_type = /obj/effect/projectile/muzzle/bolt
 	hit_effect = /obj/effect/temp_visual/blaster_effect
@@ -216,9 +217,9 @@
 	pass_flags = PASSTABLE
 	muzzle_type = /obj/effect/projectile/muzzle/bolt
 
-
 /obj/item/projectile/energy/blaster/heavy
 	damage = 35
+	armor_penetration = 10
 
 /obj/item/projectile/energy/blaster/incendiary
 	icon_state = "laser"

@@ -10,7 +10,7 @@
 	slot_flags = SLOT_BELT
 	force = 5
 	sharp = 0
-	edge = 0
+	edge = FALSE
 	throwforce = 7
 	w_class = ITEMSIZE_NORMAL
 	drop_sound = 'sound/items/drop/metalweapon.ogg'
@@ -246,6 +246,14 @@
 	slot_flags = null
 	baton_color = "#FFDF00"
 	sheathed = 0
+
+/obj/item/melee/baton/cattleprod/Initialize(mapload, var/cable_color)
+	. = ..()
+	var/image/I = image(icon, null, "stunprod_cable")
+	if(!cable_color)
+		cable_color = COLOR_RED
+	I.color = cable_color
+	add_overlay(I)
 
 /obj/item/melee/baton/stunrod
 	name = "stunrod"

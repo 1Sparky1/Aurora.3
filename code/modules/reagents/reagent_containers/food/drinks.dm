@@ -156,8 +156,8 @@ If you add a drink with no empty icon sprite, ensure it is flagged as NO_EMPTY_I
 	reagents_to_add = list(/decl/reagent/drink/milk/soymilk = 50)
 
 /obj/item/reagent_containers/food/drinks/coffee
-	name = "robust coffee"
-	desc = "Careful, the beverage you're about to enjoy is extremely hot."
+	name = "\improper Martian Dark Roast"
+	desc = "The darkest roast this side of Olympia, guaranteed."
 	icon_state = "coffee_vended"
 	item_state = "coffee"
 	trash = /obj/item/trash/coffee
@@ -181,8 +181,8 @@ If you add a drink with no empty icon sprite, ensure it is flagged as NO_EMPTY_I
 	reagents_to_add = list(/decl/reagent/drink/coffee/sadpslatte = 30)
 
 /obj/item/reagent_containers/food/drinks/tea
-	name = "duke purple tea"
-	desc = "An insult to Duke Purple is an insult to the Space Queen! Any proper gentleman will fight you, if you sully this tea."
+	name = "\improper Sol-III tea"
+	desc = "A hot tea with an \"Earthy\" flavor that's much weaker than it claims to be on the cup."
 	icon_state = "coffee_vended"
 	item_state = "coffee"
 	trash = /obj/item/trash/coffee
@@ -232,8 +232,8 @@ If you add a drink with no empty icon sprite, ensure it is flagged as NO_EMPTY_I
 	reagents_to_add = list(/decl/reagent/drink/tea/chaitea = 30)
 
 /obj/item/reagent_containers/food/drinks/ice
-	name = "ice cup"
-	desc = "Careful, cold ice, do not chew."
+	name = "\improper Admiral's ice cup"
+	desc = "Solid water served in an official Getmore-brand disposable collector's cup, each one commemorating a late admiral."
 	icon_state = "coffee_vended"
 	item_state = "coffee"
 	trash = /obj/item/trash/coffee
@@ -244,8 +244,8 @@ If you add a drink with no empty icon sprite, ensure it is flagged as NO_EMPTY_I
 	reagents_to_add = list(/decl/reagent/drink/ice = 30)
 
 /obj/item/reagent_containers/food/drinks/h_chocolate
-	name = "dutch hot coco"
-	desc = "Made in Space South America."
+	name = "\improper Red Gaia hot coco"
+	desc = "A Mars favorite. Usually dispensed at a temperature hotter than any human can stand."
 	icon_state = "coffee_vended"
 	item_state = "coffee"
 	trash = /obj/item/trash/coffee
@@ -367,7 +367,7 @@ If you add a drink with no empty icon sprite, ensure it is flagged as NO_EMPTY_I
 /obj/item/reagent_containers/food/drinks/carton
 	name = "carton"
 	desc = "An abstract way to organize bottles that are really cartons. Finally!"
-	item_state = "carton"
+	icon_state = "carton"
 	volume = 100
 	center_of_mass = list("x"=16, "y"=6)
 	drop_sound = 'sound/items/drop/cardboardbox.ogg'
@@ -422,6 +422,22 @@ If you add a drink with no empty icon sprite, ensure it is flagged as NO_EMPTY_I
 
 	reagents_to_add = list(/decl/reagent/drink/applejuice = 100)
 
+/obj/item/reagent_containers/food/drinks/carton/fatshouters
+	name = "fatshouters milk carton"
+	desc = "Fatty fatshouters milk in a carton."
+
+	reagents_to_add = list(/decl/reagent/drink/milk/adhomai = 100)
+
+/obj/item/reagent_containers/food/drinks/carton/mutthir
+	name = "mutthir carton"
+	icon_state = "mutthir"
+	desc = "A beverage made with Fatshouters' yogurt mixed with Nm’shaan's sugar and sweet herbs."
+	desc_fluff = "A beverage made with Fatshouters' yogurt mixed with Nm’shaan's sugar and sweet herbs. Mutthir is usually consumed during meals by both nobles and commoners. \
+	The drink can also be smoked for flavor. Mutthir is believed to have originated from the worldwide appreciated Fatshouters' fermented milk. Rock Nomads living in the Nomadic Host \
+	were quick to adopt the drink to their diet."
+
+	reagents_to_add = list(/decl/reagent/drink/milk/adhomai/mutthir = 100)
+
 //////////////////////////drinkingglass and shaker//
 //Note by Darem: This code handles the mixing of drinks. New drinks go in three places: In Chemistry-Reagents.dm (for the drink
 //	itself), in Chemistry-Recipes.dm (for the reaction that changes the components into the drink), and here (for the drinking glass
@@ -453,6 +469,15 @@ If you add a drink with no empty icon sprite, ensure it is flagged as NO_EMPTY_I
 	amount_per_transfer_from_this = 10
 	volume = 120
 	center_of_mass = list("x"=17, "y"=7)
+
+/obj/item/reagent_containers/food/drinks/pitcher
+	name = "pitcher"
+	desc = "Everyone's best friend in the morning."
+	icon_state = "pitcher"
+	unacidable = TRUE
+	amount_per_transfer_from_this = 10
+	volume = 120
+	possible_transfer_amounts = list(5,10,15,30,60,120)
 
 /obj/item/reagent_containers/food/drinks/flask
 	name = "captain's flask"

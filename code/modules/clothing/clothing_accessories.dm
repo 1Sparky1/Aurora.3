@@ -66,11 +66,11 @@
 			if("right hand")
 				if(istype(src, /obj/item/clothing/ears))
 					C = check_two_ears(usr)
-				usr.put_in_r_hand(C)
+				usr.equip_to_slot_if_possible(C, slot_r_hand)
 			if("left hand")
 				if(istype(src, /obj/item/clothing/ears))
 					C = check_two_ears(usr)
-				usr.put_in_l_hand(C)
+				usr.equip_to_slot_if_possible(C, slot_l_hand)
 		src.add_fingerprint(usr)
 
 /obj/item/clothing/proc/check_two_ears(var/mob/user)
@@ -95,7 +95,7 @@
 	..(user)
 	if(LAZYLEN(accessories))
 		for(var/obj/item/clothing/accessory/A in accessories)
-			to_chat(user, "\A [A] is attached to it.")
+			to_chat(user, "\A [A] [A.gender == PLURAL ? "are" : "is"] attached to it.")
 
 /obj/item/clothing/proc/update_accessory_slowdown()
 	slowdown_accessory = 0
@@ -122,7 +122,6 @@
 	set name = "Remove Accessory"
 	set category = "Object"
 	set src in usr
-
 	if(!isliving(usr))
 		return
 
@@ -133,10 +132,14 @@
 
 	if(!LAZYLEN(accessories))
 		return
-
+	
 	var/obj/item/clothing/accessory/A
 	if(LAZYLEN(accessories) > 1)
-		A = input("Select an accessory to remove.") as null|anything in accessories
+		var/list/options = list()
+		for (var/obj/item/clothing/accessory/i in accessories)
+			var/image/radial_button = image(icon = i.icon, icon_state = i.icon_state)
+			options[i] = radial_button
+		A = show_radial_menu(M, M, options, radius = 42, tooltips = TRUE)
 	else
 		A = accessories[1]
 	remove_accessory(usr,A)

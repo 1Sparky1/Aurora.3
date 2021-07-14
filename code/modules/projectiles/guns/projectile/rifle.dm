@@ -62,6 +62,9 @@
 	max_shells = 4
 	can_sawoff = FALSE
 
+	needspin = FALSE
+	has_safety = FALSE
+
 	jam_chance = 0
 
 /obj/item/gun/projectile/shotgun/pump/rifle/pipegun/examine(mob/user)
@@ -279,7 +282,11 @@
 	load_method = MAGAZINE
 	handle_casings = DELETE_CASINGS
 
+	force = 10
 	slot_flags = SLOT_BACK
+	can_bayonet = TRUE
+	knife_x_offset = 23
+	knife_y_offset = 13
 
 	fire_delay = 25
 	accuracy = -1

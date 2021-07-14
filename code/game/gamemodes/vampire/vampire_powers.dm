@@ -11,7 +11,7 @@
 	if(vampire.stealth)
 		to_chat(src, SPAN_NOTICE("Your victims will now forget your interactions, and get paralyzed when you do them."))
 	else
-		to_chat(src, SPAN_NOTICE("Your victims will now remember your interactions, and stay completely mobile during them."))
+		to_chat(src, SPAN_NOTICE("Your victims will now remember your interactions."))
 
 // Drains the target's blood.
 /mob/living/carbon/human/proc/vampire_drain_blood()
@@ -382,6 +382,9 @@
 	if(!vampire)
 		return
 
+	if(isAdminLevel(src.z))
+		return
+
 	if(pulledby)
 		if(pulledby.pulling == src)
 			pulledby.pulling = null
@@ -427,7 +430,7 @@
 
 /obj/effect/dummy/veil_walk/proc/eject_all()
 	for(var/atom/movable/A in src)
-		A.forceMove(loc)
+		A.forceMove(last_valid_turf)
 		if(ismob(A))
 			var/mob/M = A
 			M.reset_view(null)
@@ -580,40 +583,65 @@
 		if(tox_loss)
 			to_heal = min(10, tox_loss)
 			adjustToxLoss(0 - to_heal)
-			blood_used += round(to_heal * 1.2)
+			blood_used += round(to_heal * 0.25)
 		if(oxy_loss)
 			to_heal = min(10, oxy_loss)
 			adjustOxyLoss(0 - to_heal)
-			blood_used += round(to_heal * 1.2)
+			blood_used += round(to_heal * 0.25)
 		if(ext_loss)
 			to_heal = min(20, ext_loss)
 			heal_overall_damage(min(10, getBruteLoss()), min(10, getFireLoss()))
-			blood_used += round(to_heal * 1.2)
+			blood_used += round(to_heal * 0.25)
 		if(clone_loss)
 			to_heal = min(10, clone_loss)
 			adjustCloneLoss(0 - to_heal)
-			blood_used += round(to_heal * 1.2)
+			blood_used += round(to_heal * 0.25)
 
-		var/list/organs = get_damaged_organs(1, 1)
-		if(length(organs))
+		adjustHalLoss(-20)
+
+		var/list/damaged_organs = get_damaged_organs(TRUE, TRUE, FALSE)
+		if(length(damaged_organs))
 			// Heal an absurd amount, basically regenerate one organ.
-			heal_organ_damage(50, 50)
-			blood_used += 12
+			heal_organ_damage(50, 50, FALSE)
+			blood_used += 3
+
+		var/missing_blood = species.blood_volume - REAGENT_VOLUME(vessel, /decl/reagent/blood)
+		if(missing_blood)
+			to_heal = min(20, missing_blood)
+			vessel.add_reagent(/decl/reagent/blood, to_heal)
+			blood_used += round(to_heal * 0.1) // gonna need to regen a shitton of blood, since human mobs have around 560 normally
 
 		for(var/A in organs)
 			var/healed = FALSE
 			var/obj/item/organ/external/E = A
+			if(BP_IS_ROBOTIC(E))
+				continue
 			if(E.status & ORGAN_ARTERY_CUT)
 				E.status &= ~ORGAN_ARTERY_CUT
-				blood_used += 12
-			if(E.status & ORGAN_TENDON_CUT)
-				E.status &= ~ORGAN_TENDON_CUT
-				blood_used += 12
+				blood_used += 2
+			if((E.tendon_status() & TENDON_CUT) && E.tendon.can_recover())
+				E.tendon.rejuvenate()
+				blood_used += 2
 			if(E.status & ORGAN_BROKEN)
 				E.status &= ~ORGAN_BROKEN
 				E.stage = 0
-				blood_used += 12
+				blood_used += 3
 				healed = TRUE
+			if(E.germ_level > 0)
+				if(E.is_infected())
+					E.germ_level = max(0, E.germ_level - 50)
+					blood_used += 1
+				else
+					E.germ_level = 0
+					blood_used += 0.25
+			for(var/datum/wound/W in E.wounds)
+				if(W.germ_level > 0)
+					W.germ_level = max(0, W.germ_level - 50)
+					blood_used += 0.5
+				if(!W.disinfected)
+					W.disinfect()
+					blood_used += 1
+
 
 			if(healed)
 				break
@@ -643,6 +671,8 @@
 			vampire.status &= ~VAMP_HEALING
 			to_chat(src, SPAN_NOTICE("Your body has finished healing. You are ready to continue."))
 			break
+		else
+			vampire.blood_usable -= blood_used
 
 	// We broke out of the loop naturally. Gotta catch that.
 	if(vampire.status & VAMP_HEALING)

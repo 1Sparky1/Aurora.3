@@ -26,6 +26,8 @@
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "pokes"
+	blood_type = "#51C404"
+	blood_amount = 150
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 200
 	health = 200
@@ -54,6 +56,7 @@
 	icon_state = "greimorian_worker"
 	icon_living = "greimorian_worker"
 	icon_dead = "greimorian_worker_dead"
+	blood_amount = 50
 	maxHealth = 40
 	health = 40
 	melee_damage_lower = 5
@@ -70,6 +73,7 @@
 	icon_state = "greimorian_hunter"
 	icon_living = "greimorian_hunter"
 	icon_dead = "greimorian_hunter_dead"
+	blood_amount = 90
 	maxHealth = 120
 	health = 120
 	melee_damage_lower = 10

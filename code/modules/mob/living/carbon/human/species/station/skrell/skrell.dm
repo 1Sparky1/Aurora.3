@@ -4,6 +4,7 @@
 	name_plural = "Skrell"
 	category_name = "Skrell"
 	bodytype = BODYTYPE_SKRELL
+	age_min = 30
 	age_max = 500
 	default_genders = list(PLURAL)
 	economic_modifier = 12
@@ -69,6 +70,14 @@
 
 	stamina = 90
 	sprint_speed_factor = 1.25 //Evolved for rapid escapes from predators
+	bp_base_systolic = 100 // Default 120
+	bp_base_disatolic = 60 // Default 80
+	low_pulse = 30 // Default 40
+	norm_pulse = 50 // Default 60
+	fast_pulse = 70 // Default 90
+	v_fast_pulse = 90 // Default 120
+	max_pulse = 130 // Default 160
+	body_temperature = T0C + 27
 
 	default_h_style = "Skrell Short Tentacles"
 
@@ -78,9 +87,10 @@
 
 	default_accent = ACCENT_SKRELL
 	allowed_accents = list(ACCENT_SKRELL, ACCENT_CETI, ACCENT_GIBSON, ACCENT_COC, ACCENT_ERIDANI, ACCENT_ERIDANIDREG, ACCENT_VENUS, ACCENT_JUPITER, ACCENT_MARTIAN, ACCENT_ELYRA,
-							ACCENT_SILVERSUN, ACCENT_KONYAN, ACCENT_EUROPA)
+							ACCENT_SILVERSUN_EXPATRIATE, ACCENT_KONYAN, ACCENT_EUROPA)
 
 	zombie_type = SPECIES_ZOMBIE_SKRELL
+	bodyfall_sound = /decl/sound_category/bodyfall_skrell_sound
 
 /datum/species/skrell/handle_post_spawn(mob/living/carbon/human/H)
 	..()

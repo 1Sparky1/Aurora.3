@@ -27,6 +27,9 @@
 	var/default_material = null // Set this to something else if you want material attributes on init.
 	var/material_armor_modifer = 1 // Adjust if you want seperate types of armor made from the same material to have different protectiveness (e.g. makeshift vs real armor)
 	var/refittable = TRUE // If false doesn't let the clothing be refit in suit cyclers
+	var/no_overheat = FALSE  // Checks to see if the clothing is ignored for the purpose of overheating messages.
+
+	var/move_trail = /obj/effect/decal/cleanable/blood/tracks/footprints
 
 
 /obj/item/clothing/Initialize(var/mapload, var/material_key)
@@ -39,6 +42,7 @@
 		for(var/T in starting_accessories)
 			var/obj/item/clothing/accessory/tie = new T(src)
 			src.attach_accessory(null, tie)
+	update_icon()
 
 /obj/item/clothing/Destroy()
 	STOP_PROCESSING(SSprocessing, src)
@@ -58,13 +62,13 @@
 	return 0
 
 //BS12: Species-restricted clothing check.
-/obj/item/clothing/mob_can_equip(M as mob, slot, disable_warning = FALSE)
+/obj/item/clothing/mob_can_equip(M as mob, slot, disable_warning = FALSE, bypass_blocked_check = FALSE)
 
 	//if we can't equip the item anyway, don't bother with species_restricted (cuts down on spam)
 	if (!..())
 		return 0
 
-	if(species_restricted && istype(M,/mob/living/carbon/human))
+	if(species_restricted && ishuman(M) && !(slot in list(slot_l_hand, slot_r_hand)))
 		var/exclusive = null
 		var/wearable = null
 		var/mob/living/carbon/human/H = M
@@ -81,7 +85,8 @@
 					wearable = 1
 
 			if(!wearable && !(slot in list(slot_l_store, slot_r_store, slot_s_store)))
-				to_chat(H, SPAN_DANGER("Your species cannot wear [src]."))
+				if(!disable_warning)
+					to_chat(H, SPAN_DANGER("Your species cannot wear [src]."))
 				return 0
 	return 1
 
@@ -251,11 +256,17 @@
 		for(var/number in list(melee_armor, bullet_armor, laser_armor, energy_armor, bomb_armor))
 			number = between(0, number, 100)
 
-		armor["melee"] = melee_armor
-		armor["bullet"] = bullet_armor
-		armor["laser"] = laser_armor
-		armor["energy"] = energy_armor
-		armor["bomb"] = bomb_armor
+		var/datum/component/armor/armor_component = GetComponent(/datum/component/armor)
+		if(istype(armor_component))
+			armor_component.RemoveComponent()
+		var/list/armor_list = list(
+			melee = melee_armor,
+			bullet = bullet_armor,
+			laser = laser_armor,
+			energy = energy_armor,
+			bomb = bomb_armor
+		)
+		AddComponent(/datum/component/armor, armor_list)
 
 		if(!isnull(material.conductivity))
 			siemens_coefficient = between(0, material.conductivity / 10, 10)
@@ -432,6 +443,9 @@
 	if (.)
 		INVOKE_ASYNC(src, .proc/update_wearer)
 
+/obj/item/clothing/gloves/clothing_class()
+	return "gloves"
+
 ///////////////////////////////////////////////////////////////////////
 //Head
 /obj/item/clothing/head
@@ -527,7 +541,6 @@
 	return our_image
 
 /obj/item/clothing/head/update_icon(var/mob/user)
-
 	cut_overlays()
 	var/mob/living/carbon/human/H
 	if(istype(user,/mob/living/carbon/human))
@@ -545,6 +558,8 @@
 			var/use_icon = 'icons/mob/light_overlays.dmi'
 			SSicon_cache.light_overlay_cache[cache_key] = image("icon" = use_icon, "icon_state" = "[light_overlay]")
 
+	..()
+
 	if(H)
 		H.update_inv_head()
 
@@ -552,6 +567,9 @@
 	if (ismob(src.loc))
 		var/mob/M = src.loc
 		M.update_inv_head()
+
+/obj/item/clothing/head/clothing_class()
+	return "helmet"
 
 ///////////////////////////////////////////////////////////////////////
 //Mask
@@ -772,6 +790,9 @@
 					to_chat(M, SPAN_WARNING("You trip from running in \the [src]!"))
 			return
 
+/obj/item/clothing/shoes/clothing_class()
+	return "shoes"
+
 ///////////////////////////////////////////////////////////////////////
 //Suit
 /obj/item/clothing/suit
@@ -813,6 +834,9 @@
 		var/mob/M = src.loc
 		M.update_inv_wear_suit()
 
+/obj/item/clothing/suit/clothing_class()
+	return "suit"
+
 ///////////////////////////////////////////////////////////////////////
 //Under clothing
 /obj/item/clothing/under
@@ -843,8 +867,8 @@
 	//convenience var for defining the icon state for the overlay used when the clothing is worn.
 	//Also used by rolling/unrolling.
 	var/worn_state = null
-	valid_accessory_slots = list(ACCESSORY_SLOT_UTILITY, ACCESSORY_SLOT_ARMBAND, ACCESSORY_SLOT_GENERIC, ACCESSORY_SLOT_CAPE)
-	restricted_accessory_slots = list(ACCESSORY_SLOT_UTILITY)
+	valid_accessory_slots = list(ACCESSORY_SLOT_UTILITY, ACCESSORY_SLOT_UTILITY_MINOR, ACCESSORY_SLOT_ARMBAND, ACCESSORY_SLOT_GENERIC, ACCESSORY_SLOT_CAPE)
+	restricted_accessory_slots = list(ACCESSORY_SLOT_UTILITY, ACCESSORY_SLOT_UTILITY_MINOR)
 
 
 /obj/item/clothing/under/attack_hand(var/mob/user)
@@ -876,7 +900,9 @@
 		H = src.loc
 
 	var/icon/under_icon
-	if(icon_override)
+	if(contained_sprite)
+		under_icon = icon
+	else if(icon_override)
 		under_icon = icon_override
 	else if(H && sprite_sheets && sprite_sheets[H.species.get_bodytype()])
 		under_icon = sprite_sheets[H.species.get_bodytype()]
@@ -886,7 +912,7 @@
 		under_icon = INV_W_UNIFORM_DEF_ICON
 
 	// The _s is because the icon update procs append it.
-	if(("[worn_state]_d_s") in icon_states(under_icon))
+	if(("[worn_state]_d[contained_sprite ? "_un" : "_s"]") in icon_states(under_icon))
 		if(rolled_down != 1)
 			rolled_down = 0
 	else
@@ -899,7 +925,9 @@
 		H = src.loc
 
 	var/icon/under_icon
-	if(icon_override)
+	if(contained_sprite)
+		under_icon = icon
+	else if(icon_override)
 		under_icon = icon_override
 	else if(H && sprite_sheets && sprite_sheets[H.species.get_bodytype(H)])
 		under_icon = sprite_sheets[H.species.get_bodytype(H)]
@@ -909,7 +937,7 @@
 		under_icon = INV_W_UNIFORM_DEF_ICON
 
 	// The _s is because the icon update procs append it.
-	if(("[worn_state]_r_s") in icon_states(under_icon))
+	if(("[worn_state]_r[contained_sprite ? "_un" : "_s"]") in icon_states(under_icon))
 		if(rolled_sleeves != 1)
 			rolled_sleeves = 0
 	else
@@ -1063,6 +1091,9 @@
 	sensor_mode = pick(0,1,2,3)
 	. = ..()
 
+/obj/item/clothing/under/clothing_class()
+	return "uniform"
+
 
 //Rings
 
@@ -1075,3 +1106,6 @@
 	drop_sound = 'sound/items/drop/ring.ogg'
 	pickup_sound = 'sound/items/pickup/ring.ogg'
 	var/undergloves = TRUE
+
+/obj/item/clothing/proc/clothing_class()
+	return "clothing"
