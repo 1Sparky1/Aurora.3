@@ -2,6 +2,7 @@
 	name = "visibility rune"
 	desc = "This rune is used to see the invisible."
 	rune_flags = NO_TALISMAN | CAN_MEMORIZE
+	level = 6
 
 /datum/rune/see_invisible/do_rune_action(mob/living/user, atom/movable/A)
 	if(user.seer == TRUE)

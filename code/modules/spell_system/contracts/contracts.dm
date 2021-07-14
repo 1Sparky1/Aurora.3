@@ -17,7 +17,7 @@
 		to_chat(user, "You can't contract with yourself!")
 		return
 
-	if(iscultist(user))
+	if(iscult(user))
 		to_chat(user, "Your soul already belongs to other powers!")
 		return
 

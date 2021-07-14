@@ -187,7 +187,7 @@
 		if("Juggernaut")
 			var/mob/living/simple_animal/construct/armored/Z = new /mob/living/simple_animal/construct/armored (get_turf(T.loc))
 			Z.key = A.key
-			if(iscultist(U))
+			if(iscult(U))
 				cult.add_antagonist(Z.mind)
 			qdel(T)
 			to_chat(Z, "<B>You are playing a Juggernaut. Though slow, you can withstand extreme punishment, and rip apart enemies and walls alike.</B>")
@@ -197,7 +197,7 @@
 		if("Wraith")
 			var/mob/living/simple_animal/construct/wraith/Z = new /mob/living/simple_animal/construct/wraith (get_turf(T.loc))
 			Z.key = A.key
-			if(iscultist(U))
+			if(iscult(U))
 				cult.add_antagonist(Z.mind)
 			qdel(T)
 			to_chat(Z, "<B>You are playing a Wraith. Though relatively fragile, you are fast, deadly, and even able to phase through walls.</B>")
@@ -207,7 +207,7 @@
 		if("Artificer")
 			var/mob/living/simple_animal/construct/builder/Z = new /mob/living/simple_animal/construct/builder (get_turf(T.loc))
 			Z.key = A.key
-			if(iscultist(U))
+			if(iscult(U))
 				cult.add_antagonist(Z.mind)
 			qdel(T)
 			to_chat(Z, "<B>You are playing an Artificer. You are incredibly weak and fragile, but you are able to construct fortifications, repair allied constructs (by clicking on them), and even create new constructs</B>")

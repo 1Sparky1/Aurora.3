@@ -19,10 +19,10 @@
 	if(!istype(M))
 		return
 
-	if(!iscultist(user))
+	if(!iscult(user))
 		return ..()
 
-	if(iscultist(M))
+	if(iscult(M))
 		return
 
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -45,66 +45,148 @@
 	if(use_check_and_message(scribe))
 		return
 
-	if(iscultist(scribe))
-		if(!isturf(scribe.loc))
-			to_chat(scribe, SPAN_WARNING("You do not have enough space to write a proper rune."))
-			return
-
-		var/turf/T = get_turf(scribe)
-
-		if(T.is_hole || T.is_space())
-			to_chat(scribe, SPAN_WARNING("You are unable to write a rune here."))
-			return
-
-		switch(alert("What shall you do with the tome?", "Tome of Nar'sie", "Read it", "Scribe a rune", "Cancel"))
-			if("Cancel")
-				return
-			if("Read it")
-				if(use_check_and_message(user))
+	if(isheadcultist(scribe))
+		if(!(cult.dom && cult.deity))
+			switch(alert("What shall you do with the tome?", "Cultist Tome", "Choose Domain", "Choose Deity", "Cancel"))
+				if("Cancel")
 					return
-				var/datum/browser/tome_win = new(user, "Arcane Tome", "Nar'Sie's Runes")
-				tome_win.set_content(SScult.tome_data)
-				tome_win.add_stylesheet("cult", 'html/browser/cult.css')
-				tome_win.open()
-				return
-			if("Scribe a rune")
-				// This counts how many runes exist in the game, for some sort of arbitrary rune limit. I trust the old devs had their reasons. - Geeves
-				if(SScult.check_rune_limit())
-					to_chat(scribe, SPAN_WARNING("The cloth of reality can't take that much of a strain. Remove some runes first!"))
+				if("Choose Domain")
+					if(use_check_and_message(user))
+						return
+					if(cult.dom)
+						to_chat(scribe, SPAN_WARNING("Your cult already has a domain."))
+						return
+					var/domain = input("Choose a domain for your deity.") as null|anything in SScult.domains_by_name
+					for(var/D in subtypesof(/datum/domain))
+						var/datum/domain/domain_temp = new D
+						if(domain_temp.name == domain)
+							cult.dom = domain_temp
+							break
+					if(!cult.dom)
+						return
+					for(var/datum/mind/H in cult.current_antagonists)
+						if(H.current)
+							to_chat(H.current, SPAN_CULT("[scribe] has set your cult's domain to [cult.dom.name]."))
+							var/obj/item/focus/F = new cult.dom.foci
+							var/location = H.current.put_in_hands(F) ? "in your hand" : "at your feet"
+							to_chat(H.current, SPAN_NOTICE("Your deity's power manifests as \an [F] [location]"))
 					return
-
-		//only check if they want to scribe a rune, so they can still read if standing on a rune
-		if(locate(/obj/effect/rune) in scribe.loc)
-			to_chat(scribe, SPAN_WARNING("There is already a rune in this location."))
+				if("Choose Deity")
+					if(cult.deity)
+						to_chat(scribe, SPAN_WARNING("Your cult already has a diety."))
+						return
+					cult.deity = input("Choose a deity for your cult.")
+					if(!cult.deity)
+						return
+					for(var/datum/mind/H in cult.current_antagonists)
+						if(H.current)
+							to_chat(H.current, SPAN_CULT("[scribe] has set your cult's deity to [cult.deity]."))
+					return
+		else
+			var/dat = ""
+			dat += "Domain: [cult.dom]<br>"
+			dat += "Deity: [cult.deity]<br>"
+			dat += "<br>"
+			dat += "Currently Known Runes ([KNOWN_RUNES]/[CAN_KNOW_RUNES]):<br>"
+			var/list/completed = list() //List of runes we've added to dat
+			var/list/delayed = list() //List of runes we've skipped (While ordering them)
+			var/i = 1 //Current order level
+			for(var/datum/rune/R in cult.cult_runes)
+				var/colour = "green"
+				if(R.level in RUNE_LEVEL_MED)
+					colour = "blue"
+				else if(R.level in RUNE_LEVEL_HIGH)
+					colour = "purple"
+				dat += "<p style='color:[colour]'>[R.name]</p>"
+				completed += R.name
+			dat += "<hr>"
+			dat += "<p style='color:green'>Weak Runes: [SScult.count_level(RUNE_LEVEL_LOW)]</p>"
+			dat += "<p style='color:cyan'>Strong Runes: [SScult.count_level(RUNE_LEVEL_MED)]/3</p>"
+			dat += "<p style='color:violet'>Powerful Runes: [SScult.count_level(RUNE_LEVEL_HIGH)]/1</p>"
+			dat += "<br>"
+			dat += "Learn Runes:<br>"
+			while(completed.len < SScult.runes_by_name.len)
+				var/restart = FALSE
+				for(var/rune in subtypesof(/datum/rune))
+					if(restart)
+						break
+					var/datum/rune/R = new rune
+					if(R.name in completed)
+						continue
+					if(R.level > i) // Order by level
+						if(R.name in delayed)
+							i++
+							delayed = list()
+							restart = TRUE
+							continue
+						delayed += R.name
+						continue
+					if(!R.domain_flags & cult.dom.flag)
+						completed += R.name
+						continue
+					var/list/level_general = RUNE_LEVEL_LOW
+					var/colour = "green"
+					if(R.level in RUNE_LEVEL_MED)
+						level_general = RUNE_LEVEL_MED
+						colour = "cyan"
+					else if(R.level in RUNE_LEVEL_HIGH)
+						level_general = RUNE_LEVEL_HIGH
+						colour = "violet"
+					dat += "<p style='color:[colour]'>"
+					var/prerequesites_met = TRUE
+					for(var/datum/rune/P in R.prerequesites)
+						var/checked = LAZYLEN(cult.cult_runes)
+						for(var/datum/rune/O in cult.cult_runes)
+							if(P.type != O.type)
+								checked--
+						if(!checked) 
+							prerequesites_met = FALSE
+					if(KNOWN_RUNES >= CAN_KNOW_RUNES || R.level > cult.get_cult_size() || !SScult.check_level_limit(level_general) || !prerequesites_met)
+						// Non-href text. You can still see the runes you don't have, or which you aren't big enough for.
+						dat += "[R.name] required cultists: [R.level]<br>"
+						if(LAZYLEN(R.prerequesites))
+							dat += "ritual requires:"
+							for(var/datum/rune/P in R.prerequesites)
+								dat += " [P.name]"
+							dat += "</p>"
+						completed += R.name
+						continue
+					dat += "<a href='?src=\ref[src];[R.name]=[1]'>[R.name]</a> Required Cultists: [R.level]<br>"
+					if(LAZYLEN(R.prerequesites))
+						dat += "- ritual requires:"
+						for(var/datum/rune/P in R.prerequesites)
+							dat += " [P.name]"
+						dat += "</p>"
+					completed += R.name
+					continue
+			var/datum/browser/tome_win = new(user, "tome", "Rune Overview")
+			tome_win.set_content(dat)
+			tome_win.open()
 			return
-
-		if(use_check_and_message(scribe))
-			return
-
-		var/chosen_rune
-		//var/network
-		chosen_rune = input("Choose a rune to scribe.") as null|anything in SScult.runes_by_name
-		if(!chosen_rune)
-			return
-
-		if(use_check_and_message(scribe))
-			return
-
-		scribe.visible_message(SPAN_CULT("[scribe] slices open their palm with a ceremonial knife, drawing arcane symbols with their blood..."))
-		playsound(scribe, 'sound/weapons/bladeslice.ogg', 50, FALSE)
-		scribe.drip(4)
-
-		if(do_after(scribe, 50))
-			create_rune(scribe, chosen_rune)
 	else
 		to_chat(user, SPAN_CULT("The book seems full of illegible scribbles."))
 
+/obj/item/book/tome/Topic(href, href_list)
+	if(..())
+		return
+	usr.set_machine(src)
+	add_fingerprint(usr)
+	for(var/rune in subtypesof(/datum/rune))
+		var/datum/rune/R = new rune
+		if(href_list["[R.name]"])
+			cult.cult_runes += R
+			for(var/datum/mind/H in cult.current_antagonists)
+				if(H.current)
+					to_chat(H.current, SPAN_CULT("[usr] has discovered the secrets of the [R.name] rune."))
+	attack_self(usr)
+	return
+
 /obj/item/book/tome/examine(mob/user)
 	..(user)
-	if(!iscultist(user) || !isobserver(user))
+	if(!iscult(user) || !isobserver(user))
 		to_chat(user, "An old, dusty tome with frayed edges and a sinister looking cover.")
 	else
-		to_chat(user, "The scriptures of Nar-Sie, The One Who Sees, The Geometer of Blood. Contains the details of every ritual his followers could think of. Most of these are useless, though.")
+		to_chat(user, "The foundations of a cult. These ancient texts hold the power to change the shape of the universe, but only the most devout followers can understand them.")
 
 /obj/item/book/tome/cultify()
 	return

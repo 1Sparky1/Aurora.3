@@ -81,7 +81,7 @@ var/global/list/narsie_list = list()
 		if(M.stat == CONSCIOUS)
 			if(M.status_flags & GODMODE)
 				continue
-			if(!iscultist(M))
+			if(!iscult(M))
 				to_chat(M, "<span class='danger'>You feel your sanity crumble away in an instant as you gaze upon [src.name]...</span>")
 				M.apply_effect(3, STUN)
 

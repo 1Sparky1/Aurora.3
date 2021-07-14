@@ -6,7 +6,11 @@
 	var/name          // The rune's name.
 	var/desc          // The rune's description. This and the name are used in the guide.
 	var/rune_flags    // Things like if it can be a talisman or not.
+	var/level = 2	  // The rune's level. DO NOT EXCEED 10, or things will go funky.
+	var/list/prerequesites = list() // Mostly to avoid a cult ending up picking a ritual that they can't perform.
+	var/domain_flags
 	var/atom/movable/parent
+	var/empowered	  // Used by some runes when empowered by a sacrifice
 
 /datum/rune/New(atom/owner)
 	..()
@@ -26,7 +30,7 @@
 /datum/rune/proc/do_talisman_action(var/mob/living/user, var/atom/movable/A)
 	return
 
-/datum/rune/proc/do_tome_action(var/mob/living/user, var/atom/movable/A)
+/datum/rune/proc/do_focus_action(var/mob/living/user, var/atom/movable/A)
 	to_chat(user, SPAN_NOTICE("You retrace your steps, carefully undoing the lines of the rune."))
 	playsound(parent, 'sound/effects/projectile_impact/energy_meat1.ogg')
 	qdel(parent)

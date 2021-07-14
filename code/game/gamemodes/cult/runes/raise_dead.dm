@@ -2,6 +2,7 @@
 	name = "revival rune"
 	desc = "This rune is used to revive a body in exchange for a dead sacrifice."
 	rune_flags = NO_TALISMAN | CAN_MEMORIZE
+	level = 8
 
 /datum/rune/raise_dead/do_rune_action(mob/living/user, atom/movable/A)
 	var/mob/living/carbon/human/corpse_to_raise

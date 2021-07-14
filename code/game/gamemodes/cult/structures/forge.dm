@@ -5,7 +5,7 @@
 	icon_state = "forge"
 
 /obj/structure/cult/forge/attackby(obj/item/W, mob/user)
-	if(iscultist(user))
+	if(iscult(user))
 		var/stored_message = "You cast \the [W] into the forge, where it rapidly changes form. In a flash, you see it reappear on your person."
 		var/cult_item = W.cultify(TRUE)
 		if(isnull(cult_item))

@@ -6,6 +6,7 @@
 	unacidable = TRUE
 	layer = AO_LAYER
 	var/datum/rune/rune
+	
 
 /obj/effect/rune/Initialize(mapload, var/R)
 	. = ..()
@@ -23,7 +24,7 @@
 
 /obj/effect/rune/examine(mob/user)
 	..(user)
-	if(iscultist(user) || isobserver(user))
+	if(iscult(user) || isobserver(user))
 		to_chat(user, rune.get_cultist_fluff_text())
 		to_chat(user, "This rune [rune.can_be_talisman() ? "<span class='cult'><b><i>can</i></b></span>" : "<span class='warning'><b><i>cannot</i></b></span>"] be turned into a talisman.")
 		to_chat(user, "This rune [rune.can_memorize() ? "<span class='cult'><b><i>can</i></b></span>" : "<span class='warning'><b><i>cannot</i></b></span>"] be memorized to be scribed without a tome.")
@@ -31,8 +32,8 @@
 		to_chat(user, rune.get_normal_fluff_text())
 
 /obj/effect/rune/attackby(obj/I, mob/user)
-	if(istype(I, /obj/item/book/tome) && iscultist(user))
-		rune.do_tome_action(user, I)
+	if(istype(I, /obj/item/focus) && iscult(user))
+		rune.do_focus_action(user, I)
 		return
 	else if(istype(I, /obj/item/nullrod))
 		to_chat(user, SPAN_NOTICE("You disrupt the vile magic with the deadening field of \the [I]!"))
@@ -41,7 +42,7 @@
 	return
 
 /obj/effect/rune/attack_hand(mob/living/user)
-	if(!iscultist(user))
+	if(!iscult(user))
 		to_chat(user, SPAN_NOTICE("You can't mouth the arcane scratchings without fumbling over them."))
 		return
 	if(istype(user.wear_mask, /obj/item/clothing/mask/muzzle))

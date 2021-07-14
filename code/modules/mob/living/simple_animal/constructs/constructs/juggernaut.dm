@@ -5,12 +5,12 @@
 	icon = 'icons/mob/mob.dmi'
 	icon_state = "behemoth"
 	icon_living = "behemoth"
-	maxHealth = 400
+	maxHealth = 350
 	health_prefix = "juggernaut"
 	response_harm = "harmlessly punches"
 	harm_intent_damage = 0
-	melee_damage_lower = 30
-	melee_damage_upper = 30
+	melee_damage_lower = 25
+	melee_damage_upper = 25
 	attacktext = "smashed their armored gauntlet into"
 	organ_names = list("core", "right arm", "left arm")
 	mob_size = MOB_LARGE
@@ -20,10 +20,11 @@
 	status_flags = 0
 	resistance = 10
 	construct_spells = list(/spell/aoe_turf/conjure/forcewall/lesser)
+	var/reflect_prob = 80
 
 /mob/living/simple_animal/construct/armored/bullet_act(var/obj/item/projectile/P)
 	if(istype(P, /obj/item/projectile/energy) || istype(P, /obj/item/projectile/beam))
-		var/reflectchance = 80 - round(P.damage / 3)
+		var/reflectchance = reflect_prob - round(P.damage / 3)
 		if(prob(reflectchance))
 			adjustBruteLoss(P.damage * 0.3)
 			visible_message(SPAN_DANGER("\The [P.name] gets reflected by \the [src]'s shell!"), \
@@ -41,3 +42,16 @@
 			return -1 // complete projectile permutation
 
 	return (..(P))
+
+/mob/living/simple_animal/construct/armored/empowered
+	name = "Destroyer"
+	real_name = "Destroyer"
+	desc = "A powerful suit of armor possesed by a restless spirit."
+	icon_state = "destroyer"
+	icon_living = "destroyer"
+	maxHealth = 500
+	health_prefix = "destroyer" 
+	melee_damage_lower = 35
+	melee_damage_upper = 35
+	speed = 2
+	reflect_prob = 100

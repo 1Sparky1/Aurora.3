@@ -7,26 +7,24 @@ var/datum/antagonist/cultist/cult
 		return 1
 
 /proc/iscult(var/mob/test)
-	if (test.faction == "cult")
-		return 1
+	return isheadcultist(test) || iscultist(test)
 
-	else return iscultist(test)
+
+/proc/isheadcultist(var/mob/test)
+	if (test.mind.special_role == "Head Cultist")
+		return 1
 
 /datum/antagonist/cultist
 	id = MODE_CULTIST
-	role_text = "Cultist"
+	role_text = "Head Cultist"
 	role_text_plural = "Cultists"
 	bantype = "cultist"
 	restricted_jobs = list("Chaplain","AI", "Cyborg", "Head of Security", "Captain", "Chief Engineer", "Research Director", "Chief Medical Officer", "Head of Personnel")
 	protected_jobs = list("Security Officer", "Security Cadet", "Warden", "Detective", "Forensic Technician")
 	feedback_tag = "cult_objective"
-	antag_indicator = "cult"
+	antag_indicator = "cult_head"
 	welcome_text = "You have a talisman in your possession; one that will help you start the cult on this station. Use it well and remember - there are others."
 	antag_sound = 'sound/effects/antag_notice/cult_alert.ogg'
-	victory_text = "The cult wins! It has succeeded in serving its dark masters!"
-	loss_text = "The staff managed to stop the cult!"
-	victory_feedback_tag = "win - cult win"
-	loss_feedback_tag = "loss - staff stopped the cult"
 	flags = ANTAG_SUSPICIOUS | ANTAG_VOTABLE
 	hard_cap = 5
 	hard_cap_round = 6
@@ -37,30 +35,23 @@ var/datum/antagonist/cultist/cult
 
 	faction = "cult"
 
-	var/allow_narsie = 1
+	// Non-Leader Stuff
+	faction_role_text = "Cultist"
+	faction_descriptor = "Cult"
+	faction_welcome = "You have been indoctrinated into the cult. You now follow their leaders and their deity, and should follow their commands."
+	faction_indicator = "cult"
+	faction_invisible = TRUE
+
 	var/datum/mind/sacrifice_target
 	var/list/sacrificed = list()
 	var/list/harvested = list()
+	var/datum/domain/dom
+	var/deity
+	var/list/cult_runes = list()
 
 /datum/antagonist/cultist/New()
 	..()
 	cult = src
-
-/datum/antagonist/cultist/create_global_objectives()
-
-	if(!..())
-		return
-
-	global_objectives = list()
-	if(prob(50))
-		global_objectives |= new /datum/objective/cult/survive
-	else
-		global_objectives |= new /datum/objective/cult/eldergod
-
-	var/datum/objective/cult/sacrifice/sacrifice = new()
-	sacrifice.find_target()
-	sacrifice_target = sacrifice.target
-	global_objectives |= sacrifice
 
 /datum/antagonist/cultist/equip(var/mob/living/carbon/human/player)
 	if(!..())
@@ -73,7 +64,7 @@ var/datum/antagonist/cultist/cult
 /datum/antagonist/cultist/remove_antagonist(var/datum/mind/player, var/show_message, var/implanted)
 	if(!..())
 		return 0
-	to_chat(player.current, "<span class='danger'>An unfamiliar white light flashes through your mind, cleansing the taint of the dark-one and the memories of your time as his servant with it.</span>")
+	to_chat(player.current, SPAN_DANGER("An unfamiliar feeling flashes through your mind, cleansing the taint of your old deity and the memories of your time as their servant with it."))
 	player.memory = ""
 	if(show_message)
 		player.current.visible_message("<FONT size = 3>[player.current] looks like they just reverted to their old faith!</FONT>")
@@ -83,7 +74,7 @@ var/datum/antagonist/cultist/cult
 /datum/antagonist/cultist/add_antagonist(var/datum/mind/player)
 	. = ..()
 	if(.)
-		to_chat(player, "You catch a glimpse of the Realm of Nar-Sie, the Geometer of Blood. You now see how flimsy the world is, you see that it should be open to the knowledge of That Which Waits. Assist your new compatriots in their dark dealings. Their goals are yours, and yours are theirs. You serve the Dark One above all else. Bring It back.")
+		to_chat(player, "You are now a cult leader. You must lead your followers to the best of your abilities, and meet the goals of your deity.")
 		if(player.current && !istype(player.current, /mob/living/simple_animal/construct))
 			player.current.add_language(LANGUAGE_CULT)
 			player.current.verbs |= /datum/antagonist/cultist/proc/appraise_offering
@@ -108,6 +99,15 @@ var/datum/antagonist/cultist/cult
 		if(L?.imp_in == player.current)
 			return FALSE
 	return TRUE
+
+/datum/antagonist/cultist/proc/get_cult_size(var/only_heads = FALSE) //Useful when trying to not count dead antags.
+	var/count
+	for(var/datum/mind/M in current_antagonists)
+		if(only_heads && !isheadcultist(M.current))
+			continue
+		if(M.current.stat != DEAD)
+			count++
+	return count
 
 /datum/antagonist/cultist/proc/appraise_offering()
 	set name = "Appraise Offering"

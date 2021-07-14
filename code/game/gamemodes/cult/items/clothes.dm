@@ -1,6 +1,9 @@
 /obj/item/clothing/head/culthood
 	name = "ragged hood"
+	icon = 'icons/obj/cult.dmi'
 	icon_state = "culthood"
+	item_state = "culthood"
+	contained_sprite = TRUE
 	desc = "A torn, dust-caked hood."
 	description_cult = "This can be reforged to become an eldritch voidsuit helmet."
 	flags_inv = HIDEFACE|HIDEEARS|HIDEEYES
@@ -28,8 +31,10 @@
 	name = "ragged robes"
 	desc = "A ragged, dusty set of robes."
 	description_cult = "This can be reforged to become an eldritch voidsuit."
+	icon = 'icons/obj/cult.dmi'
 	icon_state = "cultrobes"
 	item_state = "cultrobes"
+	contained_sprite = TRUE
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	allowed = list(/obj/item/book/tome, /obj/item/melee/cultblade)
 	armor = list(
@@ -54,8 +59,10 @@
 /obj/item/clothing/shoes/cult
 	name = "ragged boots"
 	desc = "A ragged, dusty pair of boots."
-	icon_state = "cult"
-	item_state = "cult"
+	icon = 'icons/obj/cult.dmi'
+	icon_state = "cultshoes"
+	item_state = "cultshoes"
+	contained_sprite = TRUE
 	force = 5
 	silent = 1
 	siemens_coefficient = 0.35 //antags don't get exceptions, it's just heavy armor by magical standards
@@ -74,3 +81,42 @@
 
 /obj/item/clothing/shoes/cult/cultify()
 	return
+
+/obj/item/clothing/head/culthood/empowered
+	name = "eldritch hood"
+	icon_state = "culthood_empowered"
+	item_state = "culthood_empowered"
+	desc = "A hood emminating dark power."
+	armor = list(
+		melee = ARMOR_MELEE_MAJOR,
+		bullet = ARMOR_BALLISTIC_PISTOL,
+		laser = ARMOR_LASER_MAJOR,
+		bomb = ARMOR_BOMB_PADDED,
+		bio = ARMOR_BIO_SMALL
+		)
+
+/obj/item/clothing/suit/cultrobes/empowered
+	name = "eldritch robes"
+	desc = "A set of robes emminating dark power."
+	icon_state = "cultrobes_empowered"
+	item_state = "cultrobes_empowered"
+	armor = list(
+		melee = ARMOR_MELEE_MAJOR,
+		bullet = ARMOR_BALLISTIC_PISTOL,
+		laser = ARMOR_LASER_MAJOR,
+		bomb = ARMOR_BOMB_PADDED,
+		bio = ARMOR_BIO_SMALL
+		)
+
+/obj/item/clothing/shoes/cult/empowered
+	name = "eldritch boots"
+	desc = "A pair of boots emminating dark power."
+	icon_state = "cultshoes_empowered"
+	item_state = "cultshoes_empowered"
+	armor = list(
+		melee = ARMOR_MELEE_MAJOR,
+		bullet = ARMOR_BALLISTIC_PISTOL,
+		laser = ARMOR_LASER_MAJOR,
+		bomb = ARMOR_BOMB_PADDED,
+		bio = ARMOR_BIO_SMALL
+		)

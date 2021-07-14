@@ -1,15 +1,16 @@
-/datum/rune/convert
+/datum/rune/convert //This is the BLOOD DOMAIN conversion. All other domains should use subtypes of this
 	name = "conversion rune"
 	desc = "A rune used to convert the Unenlightened."
 	rune_flags = NO_TALISMAN | CAN_MEMORIZE
-
-	var/list/converting
+	domain_flags = BLOOD_DOMAIN
+	level = 1 //Literally the most essential rune, kinda need to be able to get this one
+	var/list/converting //Want to make this different per domain, need to come back to
 
 /datum/rune/convert/do_rune_action(mob/living/user, atom/movable/A)
 	LAZYINITLIST(converting)
 	var/mob/living/carbon/target
 	for(var/mob/living/carbon/M in get_turf(A))
-		if(!iscultist(M) && M.stat < DEAD && !(M in converting))
+		if(!iscult(M) && M.stat < DEAD && !(M in converting))
 			target = M
 			break
 
@@ -18,7 +19,7 @@
 			fizzle(user, A)
 			LAZYCLEARLIST(converting)
 		else
-			to_chat(user, SPAN_CULT("They are already being enlightened by the Dark One."))
+			to_chat(user, SPAN_CULT("They are already being enlightened by [cult.deity]."))
 		return
 
 	user.say("Mah'weyh pleggh at e'ntrath!")
@@ -79,7 +80,7 @@
 				var/choice = alert(target,"Do you want to join the cult?", "Submit to Nar'Sie", "Resist", "Submit")
 				waiting_for_input[target] = FALSE
 				if(choice == "Submit") //choosing 'Resist' does nothing of course.
-					cult.add_antagonist(target.mind)
+					cult.add_antagonist_mind(target.mind, 0, cult.faction_role_text, cult.faction_welcome)
 					converting -= target
 					target.hallucination = 0 //sudden clarity
 					target.setBrainLoss(0) // nar'sie heals you

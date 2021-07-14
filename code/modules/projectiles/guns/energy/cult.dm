@@ -48,7 +48,7 @@
 	return ..()
 
 /obj/item/gun/energy/rifle/cult/afterattack(atom/A, mob/living/user, adjacent, params)
-	if(adjacent && iscultist(user))
+	if(adjacent && iscult(user))
 		if(istype(A, /obj/effect/decal/remains) || istype(A, /obj/effect/decal/cleanable/blood))
 			do_absorb(user, A)
 			return

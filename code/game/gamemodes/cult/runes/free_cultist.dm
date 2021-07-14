@@ -2,6 +2,8 @@
 	name = "freedom rune"
 	desc = "This rune is used to free a cultist of our choice from captivity."
 	rune_flags = NO_TALISMAN
+	domain_flags = BLOOD_DOMAIN
+	level = 5 //Need a reasonably large cult before you can do this. Prevents a zurg rush gone wrong being unpunishing
 
 /datum/rune/freedom/do_rune_action(mob/living/user, atom/movable/A)
 	var/list/mob/living/carbon/human/cultists = list()
@@ -11,11 +13,11 @@
 
 	var/list/mob/living/carbon/users = list()
 	for(var/mob/living/carbon/C in orange(1, A))
-		if(iscultist(C) && !C.stat)
+		if(iscult(C) && !C.stat)
 			users += C
 
 	if(length(users) >= 3)
-		var/mob/living/carbon/human/cultist = input("Choose a cultist you wish to free.", "Followers of Geometer") as null|anything in (cultists - users)
+		var/mob/living/carbon/human/cultist = input("Choose a cultist you wish to free.", "Followers of [cult.deity]") as null|anything in (cultists - users)
 		if(!cultist)
 			return fizzle(user, A)
 		if(cultist == user) //just to be sure.

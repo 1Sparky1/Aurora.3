@@ -67,7 +67,7 @@
 	qdel(src)
 
 /mob/living/simple_animal/construct/can_name(var/mob/living/M)
-	if(iscultist(M))
+	if(iscult(M))
 		return ..()
 	return FALSE
 

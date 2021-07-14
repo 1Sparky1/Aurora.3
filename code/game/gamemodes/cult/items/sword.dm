@@ -1,12 +1,12 @@
 /obj/item/melee/cultblade
-	name = "eldritch blade"
+	name = "ancient blade"
 	desc = "A sword humming with unholy energy. It glows with a dim red light."
-	desc_antag = "This sword is a powerful weapon, capable of severing limbs easily, if they are targeted.  Non-believers are unable to use this weapon."
-	icon = 'icons/obj/sword.dmi'
+	description_cult = "This sword is a powerful weapon, capable of severing limbs easily, if they are targeted.  Non-believers are unable to use this weapon."
+	icon = 'icons/obj/cult.dmi'
 	icon_state = "cultblade"
 	item_state = "cultblade"
 	contained_sprite = TRUE
-	force = 25
+	force = 20
 	w_class = ITEMSIZE_LARGE
 	throwforce = 10
 	slot_flags = SLOT_BELT
@@ -25,7 +25,7 @@
 	return
 
 /obj/item/melee/cultblade/attack(mob/living/M, mob/living/user, var/target_zone)
-	if(iscultist(user) || !does_cult_check)
+	if(iscult(user) || !does_cult_check)
 		return ..()
 
 	var/zone = (user.hand ? BP_L_ARM:BP_R_ARM)
@@ -50,7 +50,7 @@
 
 /obj/item/melee/cultblade/pickup(mob/living/user)
 	..()
-	if(!iscultist(user))
+	if(!iscult(user))
 		to_chat(user, SPAN_CULT("An overwhelming feeling of dread comes over you as you pick up \the [src]. It would be wise to be rid of this blade quickly."))
 		user.make_dizzy(120)
 
@@ -66,3 +66,11 @@
 	name = "daemon doomblade"
 	force = 40
 	does_cult_check = FALSE
+
+/obj/item/melee/cultblade/empowered
+	name = "eldritch blade"
+	desc = "A sword imbued with unholy energy. It glows with a bright red light."
+	icon = 'icons/obj/cult.dmi'
+	icon_state = "cultblade_empowered"
+	item_state = "cultblade_empowered"
+	force = 30

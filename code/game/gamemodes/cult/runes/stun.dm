@@ -2,6 +2,8 @@
 	name = "incapacitation rune"
 	desc = "This rune is used to deafen, silence, flash and confuse the unbelievers in a radius around us."
 	rune_flags = HAS_SPECIAL_TALISMAN_ACTION
+	domain_flags = ALL_DOMAINS
+	level = 4
 
 /datum/rune/stun/do_rune_action(mob/living/user, atom/movable/A)
 	do_stun(user, A, 5, TRUE)
@@ -12,7 +14,7 @@
 /datum/rune/stun/proc/do_stun(mob/living/user, atom/movable/A, var/radius, var/is_rune)
 	user.say("Fuu ma'jin!")
 	for(var/mob/living/L in range(radius, get_turf(A)))
-		if(iscultist(L))
+		if(iscult(L))
 			continue
 		if(iscarbon(L))
 			var/mob/living/carbon/C = L
@@ -20,10 +22,12 @@
 			if(C.stuttering < 1 && !(HULK in C.mutations))
 				C.stuttering = 1
 			if(is_rune)
-				C.Weaken(3)
+				C.Weaken(5)
+			else
+				C.Weaken(1)
 			C.confused = 10
-			C.Stun(3)
-			C.silent += 15
+			C.Stun(5)
+			C.silent += 20
 			to_chat(C, SPAN_DANGER("The rune explodes in a bright flash!"))
 			admin_attack_log(user, C, "Used a stun rune.", "Was victim of a stun rune.", "used a stun rune on")
 		else if(issilicon(L))

@@ -5,7 +5,7 @@
 	icon_state = "tomealtar"
 
 /obj/structure/cult/tome/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/book) && iscultist(user))
+	if(istype(W, /obj/item/book) && iscult(user))
 		var/obj/item/book/B = W
 		if(!B.unique)
 			var/cult_item = B.cultify()

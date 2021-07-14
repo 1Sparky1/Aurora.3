@@ -67,6 +67,7 @@
 #define SPECIES_GOLEM_MEAT			"Homunculus"
 #define SPECIES_GOLEM_ADAMANTINE	"Adamantine Golem"
 
+#define SPECIES_BALOR               "Balor"
 
 #define BODYTYPE_HUMAN				"Human"
 #define BODYTYPE_SKRELL				"Skrell"

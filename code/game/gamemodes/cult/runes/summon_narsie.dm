@@ -1,4 +1,4 @@
-/datum/rune/summon_narsie
+/* /datum/rune/summon_narsie //Still in the code incase people want to fuck with it in the future. Commented out to avoid variable issues
 	name = "geometer rune"
 	desc = "This rune is used to summon the Geometer of Blood. It requires nine cultists around it to bring Him into our dimension."
 	rune_flags = NO_TALISMAN
@@ -17,7 +17,7 @@
 		if(istype(M, /mob/living/carbon/human/apparition))
 			to_chat(M, SPAN_WARNING("Apparitions cannot partake in the summoning of the Great Dark One! Clear the area and defend the cultists!"))
 			continue
-		if(iscultist(M) && !M.stat)
+		if(iscult(M) && !M.stat)
 			M.say("Tok-lyr rqa'nap! Qur'man-ze! Gi'lt-lu-nulotf!")
 			cultists += M
 	if(cultists.len >= 9)
@@ -29,7 +29,7 @@
 		return
 	else
 		for(var/mob/M in cultists)
-			if(!iscultist(M))
+			if(!iscult(M))
 				continue
 			to_chat(M, SPAN_WARNING("Not enough cultists are around to summon the Great Dark One!"))
-		return fizzle(user, A)
+		return fizzle(user, A) */

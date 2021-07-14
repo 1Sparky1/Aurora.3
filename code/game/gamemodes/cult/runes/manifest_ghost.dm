@@ -3,6 +3,7 @@
 	desc = "This rune is used to turn a spirit around us into an apparition."
 	rune_flags = NO_TALISMAN
 	var/mob/living/carbon/human/apparition/apparition
+	level = 6
 
 /datum/rune/apparition/Destroy()
 	apparition_check()

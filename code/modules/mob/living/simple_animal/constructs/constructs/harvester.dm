@@ -33,3 +33,29 @@
 	//Harvesters are endgame stuff, no harm giving them construct spells
 
 	flying = TRUE
+
+/mob/living/simple_animal/construct/harvester/empowered //Given that these only show up after Nar'sie rocks up, probably never used. But as before, in case of Admemes
+	name = "Collector"
+	real_name = "Collector"
+	desc = "The promised reward of those who follow Nar'Sie, obtained by offering their bodies to the Geometer of Blood."
+	icon_state = "collector"
+	icon_living = "collector"
+	maxHealth = 200
+	health_prefix = "collector"
+	melee_damage_lower = 30
+	melee_damage_upper = 30
+	speed = -2
+	construct_spells = list(
+			/spell/aoe_turf/cultify_area,
+			/spell/targeted/harvest,
+			/spell/aoe_turf/knock/harvester,
+			/spell/rune_write,
+			/spell/aoe_turf/conjure/construct/lesser,
+			/spell/aoe_turf/conjure/wall,
+			/spell/aoe_turf/conjure/floor,
+			/spell/aoe_turf/conjure/soulstone,
+			/spell/aoe_turf/conjure/altar,
+			/spell/aoe_turf/conjure/forge,
+			/spell/aoe_turf/conjure/pylon,
+			/spell/aoe_turf/conjure/forcewall/lesser
+		)

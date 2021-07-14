@@ -7,7 +7,7 @@
 
 /obj/structure/cult/talisman/attack_hand(mob/user)
 	. = ..()
-	if(iscultist(user) && ishuman(user))
+	if(iscult(user) && ishuman(user))
 		if(last_use <= world.time)
 			last_use = world.time + 1200 // Cooldown of two minutes
 			var/mob/living/carbon/human/H = user

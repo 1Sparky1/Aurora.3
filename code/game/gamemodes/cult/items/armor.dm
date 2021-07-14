@@ -1,6 +1,7 @@
 /obj/item/clothing/head/culthood/magus
 	name = "magus helm"
 	icon_state = "magus"
+	item_state = "magus"
 	desc = "A helm worn by the followers of Nar-Sie."
 	flags_inv = HIDEFACE | BLOCKHAIR
 	body_parts_covered = HEAD|FACE|EYES
@@ -17,6 +18,7 @@
 	name = "eldritch voidsuit helmet"
 	desc = "A bulky armored voidsuit helmet, bristling with menacing spikes. It looks space proof."
 	icon_state = "cult_helmet"
+	item_state = "cult_helmet"
 	armor = list(
 		melee = ARMOR_MELEE_VERY_HIGH,
 		bullet = ARMOR_BALLISTIC_SMALL,

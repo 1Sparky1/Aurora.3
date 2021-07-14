@@ -2,6 +2,7 @@
 	name = "deafening rune"
 	desc = "This rune is used to deafen all unbelievers in a wide range around us."
 	rune_flags = HAS_SPECIAL_TALISMAN_ACTION | CAN_MEMORIZE
+	domain_flags = BLOOD_DOMAIN
 
 /datum/rune/deafen/do_rune_action(mob/living/user, atom/movable/A)
 	do_deafen(user, A, 1, TRUE)
@@ -12,7 +13,7 @@
 /datum/rune/deafen/proc/do_deafen(mob/living/user, atom/movable/A, var/radius = 7, var/effect_mod = 1, var/special_effects = TRUE)
 	var/list/affected = list()
 	for(var/mob/living/carbon/C in range(radius, get_turf(A)))
-		if(iscultist(C))
+		if(iscult(C))
 			continue
 		var/obj/item/nullrod/N = locate() in C
 		if(N)

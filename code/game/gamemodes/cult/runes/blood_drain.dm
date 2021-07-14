@@ -1,12 +1,13 @@
 /datum/rune/blood_drain
 	name = "blood draining rune"
-	desc = "This rune is used to drain the blood of non-believers into a fellow acolyte. All must be standing on the rune."
-	rune_flags = NO_TALISMAN
+	desc = "This rune is used to drain the blood of non-believers into a focus."
+	rune_flags = HAS_SPECIAL_TALISMAN_ACTION
+	domain_flags = BLOOD_DOMAIN
+	level = 4
 	var/list/mob/living/carbon/human/lambs
 	var/mob/living/carbon/human/target
 
 /datum/rune/blood_drain/Destroy()
-	STOP_PROCESSING(SSprocessing, src)
 	LAZYCLEARLIST(lambs)
 	target = null
 	return ..()
@@ -14,7 +15,7 @@
 /datum/rune/blood_drain/do_rune_action(mob/living/user, atom/movable/A)
 	LAZYINITLIST(lambs)
 	for(var/mob/living/carbon/human/H in get_turf(A))
-		if(iscultist(H))
+		if(iscult(H))
 			if(!target)
 				target = H
 			continue
@@ -23,28 +24,42 @@
 		if(H.species.flags & NO_BLOOD)
 			continue
 		LAZYADD(lambs, H)
-	if(length(lambs))
-		START_PROCESSING(SSprocessing, src)
-	else
-		fizzle(user, A)
+	if(!target)
+		target = user //If nobody is on the rune, make the user the target
+	if(drain(target, A))
+		qdel(A)
+		return TRUE
+	fizzle(user, A)
+
+/datum/rune/blood_drain/do_talisman_action(mob/living/user, var/atom/movable/A)
+	LAZYINITLIST(lambs)
+	var/list/choices = list()
+	for(var/mob/living/carbon/human/H in orange(5, user))
+		if(!iscult(H) && !(H.stat == DEAD) && !(H.species.flags & NO_BLOOD) && can_see(user, H, 5))
+			LAZYADD(choices, H)
+	var/target = input("Choose a target to drain.") as null|anything in choices
+	if(target)
+		LAZYADD(lambs, target)
+	if(drain(user, A))
+		qdel(A)
+		return TRUE
+	fizzle(user, A)
+	
+		
+
+/datum/rune/blood_drain/proc/drain(var/mob/living/carbon/human/target, var/atom/movable/A)
+	var/obj/item/focus/F = locate() in target.contents
+	if(!F)
+		return FALSE
+	for(var/mob/living/carbon/human/H in lambs)
+		if(LAZYLEN(F.blood) >= 6)
+			to_chat(target, SPAN_WARNING("\The [F] cannot hold anymore blood."))
+			return TRUE
+		target.whisper("Sa'ii, ble-nii...")
+		var/volume = min(H.get_blood_volume(), 10) //Ten if we can, but only as much as the victim can give
+		H.vessel.remove_reagent(/decl/reagent/blood, volume)
+		H.take_overall_damage(5, 0)
+		playsound(target, 'sound/magic/enter_blood.ogg', 50, 1)
+		LAZYADD(F.blood, H)
 	return TRUE
-
-/datum/rune/blood_drain/process()
-	if(target && length(lambs) && (get_turf(target) == get_turf(parent)))
-		for(var/mob/living/carbon/human/H in lambs)
-			if(get_turf(H) == get_turf(parent))
-				if(REAGENT_VOLUME(target.vessel, /decl/reagent/blood) + 10 > H.species.blood_volume)
-					to_chat(target, SPAN_CULT("You feel refreshed!"))
-					interrupt()
-				target.whisper("Sa'ii, ble-nii...")
-				H.vessel.trans_to_mob(target, 10, CHEM_BLOOD)
-				H.take_overall_damage(10, 10)
-				playsound(target, 'sound/magic/enter_blood.ogg', 50, 1)
-			else
-				interrupt()
-	else
-		interrupt()
-
-/datum/rune/blood_drain/proc/interrupt()
-	parent.visible_message(SPAN_CULT("\The [parent] suddenly disappears, the incantation broken!"))
-	qdel(parent)
+		
