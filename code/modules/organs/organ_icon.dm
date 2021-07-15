@@ -20,9 +20,7 @@
 		var/datum/robolimb/R = all_robolimbs[robotize_type]
 		if(R.paintable)
 			limb_exception = TRUE
-		if(R.company == PROSTHETIC_SYNTHSKIN)
-			limb_exception = TRUE
-	if(status & ORGAN_ROBOT && !(isipc(human)) && !limb_exception)
+	if((status & ORGAN_ROBOT) && !limb_exception)
 		return
 	if(species && human.species && species.name != human.species.name)
 		return
@@ -140,11 +138,11 @@
 /obj/item/organ/external/proc/get_internal_organs_overlay()
 	for(var/obj/item/organ/internal/O in internal_organs)
 		if(O.on_mob_icon)
-			var/cache_key = "[O.on_mob_icon]-[O.icon_state]"
+			var/cache_key = "[O.on_mob_icon]-[O.item_state || O.icon_state]"
 
 			var/icon/organ_icon = SSicon_cache.internal_organ_cache[cache_key]
 			if (!organ_icon)
-				organ_icon = new /icon(O.on_mob_icon, O.icon_state)
+				organ_icon = new /icon(O.on_mob_icon, O.item_state || O.icon_state)
 				SSicon_cache.internal_organ_cache[cache_key] = organ_icon
 
 			add_overlay(organ_icon)
@@ -266,7 +264,7 @@
 
 	for(var/obj/item/organ/internal/O in internal_organs)
 		if(O.on_mob_icon)
-			keyparts += "[O.on_mob_icon]-[O.icon_state]"
+			keyparts += "[O.on_mob_icon]-[O.item_state || O.icon_state]"
 
 	. = keyparts.Join("_")
 

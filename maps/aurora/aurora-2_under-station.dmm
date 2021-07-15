@@ -38,7 +38,7 @@
 /area/engineering/cooling)
 "eu" = (
 /obj/structure/table/standard,
-/obj/item/storage/briefcase/inflatable,
+/obj/item/storage/bag/inflatable,
 /turf/simulated/floor/carpet/rubber,
 /area/engineering/cooling)
 "gY" = (
@@ -165,6 +165,9 @@
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 6
+	},
+/obj/structure/sign/flag/scc{
+	pixel_y = 32
 	},
 /turf/simulated/floor/carpet/rubber,
 /area/engineering/cooling)

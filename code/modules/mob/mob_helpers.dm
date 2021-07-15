@@ -210,12 +210,6 @@ proc/getsensorlevel(A)
 /proc/hsl2rgb(h, s, l)
 	return //TODO: Implement
 
-/mob/living/proc/is_wizard(exclude_apprentice = FALSE)
-	if(exclude_apprentice)
-		return mind && (mind.assigned_role == "Space Wizard" || mind.assigned_role == "Raider Mage")
-	else
-		return mind && (mind.assigned_role == "Space Wizard" || mind.assigned_role == "Raider Mage" || mind.assigned_role == "Apprentice")
-
 /mob/proc/is_berserk()
 	return FALSE
 
@@ -260,7 +254,8 @@ var/list/global/organ_rel_size = list(
 )
 
 /proc/check_zone(zone)
-	if(!zone)	return BP_CHEST
+	if(!zone)
+		return BP_CHEST
 	switch(zone)
 		if(BP_EYES)
 			zone = BP_HEAD
@@ -1190,6 +1185,7 @@ proc/is_blind(A)
 
 /mob/assign_player(var/mob/user)
 	ckey = user.ckey
+	resting = FALSE // ghosting sets resting to true
 	return src
 
 /mob/proc/get_standard_pixel_x()
@@ -1205,7 +1201,11 @@ proc/is_blind(A)
 	sdisabilities &= ~DEAF
 
 /mob/proc/get_antag_datum(var/antag_role)
-	return
+	if(!mind)
+		return
+	var/datum/D = mind.antag_datums[antag_role]
+	if(D)
+		return D
 
 /mob/dump_contents()
 	for(var/thing in get_contained_external_atoms())
@@ -1223,3 +1223,11 @@ proc/is_blind(A)
 		if(G.state >= GRAB_NECK)
 			return TRUE
 	return FALSE
+
+/mob/get_cell()
+	return FALSE
+
+/mob/proc/can_hear_radio(var/list/speaker_coverage = list())
+	var/turf/ear = get_turf(src)
+	if(ear && speaker_coverage[ear])
+		return TRUE

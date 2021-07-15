@@ -11,7 +11,7 @@
 	var/slices_num
 	var/dried_type = null
 	var/dry = 0
-	var/decl/reagent/nutriment/coating/coating = null
+	var/coating = null // coating typepath, NOT decl
 	var/icon/flat_icon = null //Used to cache a flat icon generated from dipping in batter. This is used again to make the cooked-batter-overlay
 	var/do_coating_prefix = TRUE
 	//If 0, we wont do "battered thing" or similar prefixes. Mainly for recipes that include batter but have a special name
@@ -48,6 +48,11 @@
 
 	if(!istype(target))
 		return
+
+	if(isliving(target))
+		var/mob/living/L = target
+		if(L.isSynthetic() && !isipc(L)) //Catches bots, drones, borgs, etc. IPCs are handled below at the human level
+			return FALSE
 
 	if (isanimal(target))
 		var/mob/living/simple_animal/SA = target
@@ -142,7 +147,8 @@
 		else
 			to_chat(user, SPAN_NOTICE("You know the item as [initial(name)], but a little piece of propped-up paper indicates it's \a [name]."))
 	if (coating)
-		to_chat(user, SPAN_NOTICE("It's coated in [coating.name]!"))
+		var/decl/reagent/coating_reagent = decls_repository.get_decl(coating)
+		to_chat(user, SPAN_NOTICE("It's coated in [coating_reagent.name]!"))
 	if (bitecount==0)
 		return
 	else if (bitecount==1)
@@ -256,28 +262,35 @@
 	return ..()
 
 //Code for dipping food in batter
-/obj/item/reagent_containers/food/snacks/afterattack(obj/O as obj, mob/user as mob, proximity)
-	if(O.is_open_container() && !(istype(O, /obj/item/reagent_containers/food)) && proximity)
-		for (var/r in O.reagents.reagent_volumes)
-
-			var/decl/reagent/R = r
-			if (istype(R, /decl/reagent/nutriment/coating))
-				if (apply_coating(O.reagents, R, user))
-					return TRUE
-
-	return ..()
+/**
+ * Perform checks, then apply any applicable coatings.
+ *
+ * @param dip /obj The object to attempt to dip src into.
+ * @param user /mob The mob attempting to dip src into dip.
+ *
+ * @return TRUE if coating applied, FALSE otherwise
+ */
+/obj/item/reagent_containers/food/snacks/proc/attempt_apply_coating(obj/dip, mob/user)
+	if(!dip.is_open_container() || istype(dip, /obj/item/reagent_containers/food) || !Adjacent(user))
+		return
+	for (var/reagent_type in dip.reagents?.reagent_volumes)
+		if(!ispath(reagent_type, /decl/reagent/nutriment/coating))
+			continue
+		return apply_coating(dip.reagents, reagent_type, user)
 
 //This proc handles drawing coatings out of a container when this food is dipped into it
-/obj/item/reagent_containers/food/snacks/proc/apply_coating(var/datum/reagents/holder, var/decl/reagent/nutriment/coating/C, var/mob/user)
+/obj/item/reagent_containers/food/snacks/proc/apply_coating(var/datum/reagents/holder, var/applied_coating, var/mob/user)
 	if (coating)
-		to_chat(user, "The [src] is already coated in [coating.name]!")
+		var/decl/reagent/coating_reagent = decls_repository.get_decl(coating)
+		to_chat(user, "[src] is already coated in [coating_reagent.name]!")
 		return FALSE
+
+	var/decl/reagent/nutriment/coating/applied_coating_reagent = decls_repository.get_decl(applied_coating)
 
 	//Calculate the reagents of the coating needed
 	var/req = 0
 	for (var/r in reagents.reagent_volumes)
-		var/decl/reagent/R = r
-		if (istype(R, /decl/reagent/nutriment))
+		if (ispath(r, /decl/reagent/nutriment))
 			req += reagents.reagent_volumes[r] * 0.2
 		else
 			req += reagents.reagent_volumes[r] * 0.1
@@ -288,8 +301,8 @@
 		//the food has no reagents left, it's probably getting deleted soon
 		return FALSE
 
-	if (holder.reagent_volumes[C.type] < req)
-		to_chat(user, SPAN_WARNING("There's not enough [C.name] to coat the [src]!"))
+	if (holder.reagent_volumes[applied_coating] < req)
+		to_chat(user, SPAN_WARNING("There's not enough [applied_coating_reagent.name] to coat [src]!"))
 		return FALSE
 
 	//First make sure there's space for our batter
@@ -300,10 +313,10 @@
 	//Suck the coating out of the holder
 	holder.trans_to_holder(reagents, req)
 
-	if (!REAGENT_VOLUME(reagents, C.type))
+	if (!REAGENT_VOLUME(reagents, applied_coating))
 		return
 
-	coating = C
+	coating = applied_coating
 	//Now we have to do the witchcraft with masking images
 	//var/icon/I = new /icon(icon, icon_state)
 
@@ -312,7 +325,7 @@
 	var/icon/I = flat_icon
 	color = "#FFFFFF" //Some fruits use the color var. Reset this so it doesnt tint the batter
 	I.Blend(new /icon('icons/obj/food_custom.dmi', rgb(255,255,255)),ICON_ADD)
-	I.Blend(new /icon('icons/obj/food_custom.dmi', coating.icon_raw),ICON_MULTIPLY)
+	I.Blend(new /icon('icons/obj/food_custom.dmi', applied_coating_reagent.icon_raw),ICON_MULTIPLY)
 	var/image/J = image(I)
 	J.alpha = 200
 	J.blend_mode = BLEND_OVERLAY
@@ -320,13 +333,14 @@
 	add_overlay(J)
 
 	if (user)
-		user.visible_message(SPAN_NOTICE("[user] dips [src] into \the [coating.name]"), SPAN_NOTICE("You dip [src] into \the [coating.name]"))
+		user.visible_message(SPAN_NOTICE("[user] dips [src] into \the [applied_coating_reagent.name]"), SPAN_NOTICE("You dip [src] into \the [applied_coating_reagent.name]"))
 
 	return TRUE
 
 //Called by cooking machines. This is mainly intended to set properties on the food that differ between raw/cooked
 /obj/item/reagent_containers/food/snacks/proc/cook()
 	if (coating)
+		var/decl/reagent/nutriment/coating/our_coating = decls_repository.get_decl(coating)
 		var/list/temp = overlays.Copy()
 		for (var/i in temp)
 			if (istype(i, /image))
@@ -343,22 +357,20 @@
 		var/icon/I = flat_icon
 		color = "#FFFFFF" //Some fruits use the color var
 		I.Blend(new /icon('icons/obj/food_custom.dmi', rgb(255,255,255)),ICON_ADD)
-		I.Blend(new /icon('icons/obj/food_custom.dmi', coating.icon_cooked),ICON_MULTIPLY)
+		I.Blend(new /icon('icons/obj/food_custom.dmi', our_coating.icon_cooked),ICON_MULTIPLY)
 		var/image/J = image(I)
 		J.alpha = 200
 		J.tag = "coating"
 		add_overlay(J)
 
 		if (do_coating_prefix == 1)
-			name = "[coating.coated_adj] [name]"
+			name = "[our_coating.coated_adj] [name]"
 
 	for (var/r in reagents.reagent_volumes)
-		var/decl/reagent/R = r
-		if (istype(R, /decl/reagent/nutriment/coating))
-			var/decl/reagent/nutriment/coating/C = R
+		if (ispath(r, /decl/reagent/nutriment/coating))
+			var/decl/reagent/nutriment/coating/C = decls_repository.get_decl(r)
 			LAZYINITLIST(reagents.reagent_data)
-			LAZYINITLIST(reagents.reagent_data[r])
-			reagents.reagent_data[r]["cooked"] = TRUE
+			LAZYSET(reagents.reagent_data[r], "cooked", TRUE)
 			C.name = C.cooked_name
 
 // A proc for setting various flavors of the same type of food instead of creating new foods with the only difference being a flavor
@@ -886,6 +898,32 @@
 
 	reagents_to_add = list(/decl/reagent/nutriment/protein = 6, /decl/reagent/acid/polyacid = 6)
 
+/obj/item/reagent_containers/food/snacks/xenomeat/grilled
+	name = "grilled xeno steak"
+	desc = "A piece of grilled xeno meat. The process converts the dangerous acids within into tasty fats, even though the final look might be... upsetting."
+	icon_state = "xenosteak"
+
+	trash = /obj/item/trash/plate/steak
+	center_of_mass = list("x"=16, "y"=13)
+	bitesize = 2
+	reagents_to_add = list(/decl/reagent/nutriment/protein = 6, /decl/reagent/nutriment/triglyceride = 2, /decl/reagent/capsaicin = 2)
+
+/obj/item/reagent_containers/food/snacks/xenomeat/grilled/update_icon()
+	var/percent = round((reagents.total_volume / 10) * 100)
+	switch(percent)
+		if(0 to 10)
+			icon_state = "xenosteak_10"
+		if(11 to 25)
+			icon_state = "xenosteak_25"
+		if(26 to 40)
+			icon_state = "xenosteak_40"
+		if(41 to 60)
+			icon_state = "xenosteak_60"
+		if(61 to 75)
+			icon_state = "xenosteak_75"
+		if(76 to INFINITY)
+			icon_state = "xenosteak"
+
 /obj/item/reagent_containers/food/snacks/meatball
 	name = "meatball"
 	desc = "A great meal all round."
@@ -912,25 +950,19 @@
 	do_coating_prefix = 0
 	bitesize = 2
 	reagents_to_add = list(/decl/reagent/nutriment/protein = 6, /decl/reagent/nutriment/coating/batter = 1.7, /decl/reagent/nutriment/triglyceride/oil = 1.5)
-
-/obj/item/reagent_containers/food/snacks/sausage/battered/Initialize()
-	. = ..()
-	coating = decls_repository.get_decl(/decl/reagent/nutriment/coating/batter)
+	coating = /decl/reagent/nutriment/coating/batter
 
 /obj/item/reagent_containers/food/snacks/jalapeno_poppers
 	name = "jalapeno popper"
-	desc = "A battered, deep-fried chilli pepper"
+	desc = "A battered, deep-fried chili pepper"
 	icon_state = "popper"
 	filling_color = "#00AA00"
 	do_coating_prefix = 0
 
 	reagents_to_add = list(/decl/reagent/nutriment = 2, /decl/reagent/nutriment/coating/batter = 2, /decl/reagent/nutriment/triglyceride/oil = 2)
-	reagent_data = list(/decl/reagent/nutriment = list("chilli pepper" = 2))
+	reagent_data = list(/decl/reagent/nutriment = list("chili pepper" = 2))
 	bitesize = 1
-
-/obj/item/reagent_containers/food/snacks/jalapeno_poppers/Initialize()
-	. = ..()
-	coating = decls_repository.get_decl(/decl/reagent/nutriment/coating/batter)
+	coating = /decl/reagent/nutriment/coating/batter
 
 /obj/item/reagent_containers/food/snacks/donkpocket
 	name = "Donk-pocket"
@@ -1512,7 +1544,11 @@
 /obj/item/reagent_containers/food/snacks/meatsteak/grilled
 	name = "grilled steak"
 	desc = "A piece of meat grilled to absolute perfection. Sssssssip. This is the life."
-	reagents_to_add = list(/decl/reagent/nutriment/protein = 6, /decl/reagent/nutriment/triglyceride = 2, /decl/reagent/sodiumchloride = 1, /decl/reagent/blackpepper = 1, /decl/reagent/spacespice = 1)
+	reagents_to_add = list(/decl/reagent/nutriment/protein = 6, /decl/reagent/nutriment/triglyceride = 2, /decl/reagent/sodiumchloride = 1, /decl/reagent/blackpepper = 1)
+
+/obj/item/reagent_containers/food/snacks/meatsteak/grilled/spicy
+	desc = "A piece of meat grilled to absolute perfection, spiced to tastebud specification. Sssssssip. This is the life."
+	reagents_to_add = list(/decl/reagent/nutriment/protein = 6, /decl/reagent/nutriment/triglyceride = 2, /decl/reagent/sodiumchloride = 1, /decl/reagent/blackpepper = 1, /decl/reagent/spacespice = 2)
 
 /obj/item/reagent_containers/food/snacks/spacylibertyduff
 	name = "spacy liberty duff"
@@ -2183,17 +2219,13 @@
 	reagents_to_add = list(/decl/reagent/nutriment/protein = 5)
 
 /obj/item/reagent_containers/food/snacks/soup/beet
-	name = "beet soup"
-	desc = "Wait, how do you spell it again..?"
+	name = "borscht"
+	desc = "A hearty beet soup that's hard to spell."
 	icon_state = "beetsoup"
 	filling_color = "#FAC9FF"
 	reagents_to_add = list(/decl/reagent/nutriment = 8)
 	reagent_data = list(/decl/reagent/nutriment = list("tomato" = 4, "beet" = 4))
 	bitesize = 2
-
-/obj/item/reagent_containers/food/snacks/soup/beet/Initialize()
-	. = ..()
-	name = pick(list("borsch","bortsch","borstch","borsh","borshch","borscht"))
 
 /obj/item/reagent_containers/food/snacks/salad/tossedsalad
 	name = "tossed salad"
@@ -2283,7 +2315,7 @@
 	filling_color = "#702708"
 	center_of_mass = list("x"=15, "y"=9)
 	reagents_to_add = list(/decl/reagent/nutriment = 3, /decl/reagent/nutriment/protein = 3, /decl/reagent/capsaicin = 3, /decl/reagent/drink/tomatojuice = 2, /decl/reagent/hyperzine = 5)
-	reagent_data = list(/decl/reagent/nutriment = list("chilli peppers" = 3))
+	reagent_data = list(/decl/reagent/nutriment = list("chili peppers" = 3))
 	bitesize = 5
 
 /obj/item/reagent_containers/food/snacks/stew/bear
@@ -2350,7 +2382,7 @@
 	filling_color = "#EDDD00"
 	center_of_mass = list("x"=18, "y"=14)
 	reagents_to_add = list(/decl/reagent/nutriment = 8, /decl/reagent/nutriment/protein = 2, /decl/reagent/capsaicin = 2)
-	reagent_data = list(/decl/reagent/nutriment = list("fresh fries" = 4, "cheese" = 2, "chilli peppers" = 2))
+	reagent_data = list(/decl/reagent/nutriment = list("fresh fries" = 4, "cheese" = 2, "chili peppers" = 2))
 	bitesize = 4
 
 /obj/item/reagent_containers/food/snacks/friedmushroom
@@ -3170,7 +3202,7 @@
 
 /obj/item/reagent_containers/food/snacks/sliceable/pizza/crunch/Initialize()
 	. = ..()
-	coating = decls_repository.get_decl(/decl/reagent/nutriment/coating/batter)
+	coating = /decl/reagent/nutriment/coating/batter
 
 /obj/item/reagent_containers/food/snacks/pizzacrunchslice
 	name = "pizza crunch"
@@ -3181,10 +3213,7 @@
 	center_of_mass = list("x"=18, "y"=13)
 	reagents_to_add = list(/decl/reagent/nutriment = 5, /decl/reagent/nutriment/coating/batter = 2, /decl/reagent/nutriment/triglyceride/oil = 1)
 	reagent_data = list(/decl/reagent/nutriment = list("pizza crust" = 5))
-
-/obj/item/reagent_containers/food/snacks/sliceable/pizza/crunch/Initialize()
-	. = ..()
-	coating = decls_repository.get_decl(/decl/reagent/nutriment/coating/batter)
+	coating = /decl/reagent/nutriment/coating/batter
 
 /obj/item/pizzabox
 	name = "pizza box"
@@ -3433,7 +3462,7 @@
 	reagents_to_add = list(/decl/reagent/nutriment = 3)
 	reagent_data = list(/decl/reagent/nutriment = list("uncooked dough" = 3))
 	filling_color = "#EDE0AF"
-	
+
 /obj/item/reagent_containers/food/snacks/doughslice
 	name = "dough slice"
 	desc = "A building block of an impressive dish."
@@ -3486,7 +3515,7 @@
 			if ("rodent")
 				result = new /obj/item/reagent_containers/food/snacks/burger/mouse(src)
 				to_chat(user, "You make a ratburger!")
-	
+
 	else if(istype(W,/obj/item/reagent_containers/food/snacks))
 		var/obj/item/reagent_containers/food/snacks/csandwich/roll/R = new(get_turf(src))
 		R.attackby(W,user)
@@ -3533,6 +3562,15 @@
 		return
 	else
 		..()
+
+/obj/item/reagent_containers/food/snacks/bunbun
+	name = "\improper Bun Bun"
+	desc = "A small bread monkey fashioned from two burger buns."
+	icon_state = "bunbun"
+	bitesize = 2
+	center_of_mass = list("x"=16, "y"=8)
+	reagents_to_add = list(/decl/reagent/nutriment = 8)
+	reagent_data = list(/decl/reagent/nutriment = list("bun" = 4))
 
 /obj/item/reagent_containers/food/snacks/taco
 	name = "taco"
@@ -3617,7 +3655,7 @@
 	reagents_to_add = list(/decl/reagent/nutriment = 3)
 	reagent_data = list(/decl/reagent/nutriment = list("uncooked potatos" = 3))
 	filling_color = "#EDF291"
-	
+
 /obj/item/reagent_containers/food/snacks/liquidfood
 	name = "LiquidFood ration"
 	desc = "A prepackaged grey slurry of all the essential nutrients for a spacefarer on the go. Should this be crunchy? Now with artificial flavoring!"
@@ -3653,7 +3691,7 @@
 	name = "packed rice bowl"
 	desc = "Boiled rice packed in a sealed plastic tub with the Nojosuru Foods logo on it. There appears to be a pair of chopsticks clipped to the side."
 	icon_state = "ricetub"
-	trash = /obj/item/trash/ricetub_s
+	trash = /obj/item/trash/ricetub/sticks
 	filling_color = "#A66829"
 	center_of_mass = list("x"=17, "y"=16)
 	reagents_to_add = list(/decl/reagent/nutriment = 5)
@@ -4026,7 +4064,7 @@
 	reagents_to_add = list(/decl/reagent/nutriment = 2)
 	reagent_data = list(/decl/reagent/nutriment = list("nacho chips" = 1))
 	filling_color = "#EDF291"
-	
+
 
 /obj/item/reagent_containers/food/snacks/chip/on_consume(mob/M as mob)
 	if(reagents && reagents.total_volume)
@@ -4194,7 +4232,7 @@
 	reagents_to_add = list(/decl/reagent/nutriment = 20)
 	reagent_data = list(/decl/reagent/nutriment = list("salsa" = 20))
 	filling_color = "#FF4D36"
-	
+
 /obj/item/reagent_containers/food/snacks/dip/guac
 	name = "guac dip"
 	desc = "A recreation of the ancient Sol 'Guacamole' dip using tofu, limes, and spices. This recreation obviously leaves out mole meat."
@@ -4267,11 +4305,11 @@
 
 /obj/item/reagent_containers/food/snacks/breakfast_wrap
 	name = "breakfast wrap"
-	desc = "Bacon, eggs, cheese, and tortilla grilled to perfection."
+	desc = "Bacon, eggs, cheese, and tortilla spiced and grilled to perfection."
 	icon_state = "breakfast_wrap"
 	bitesize = 4
 	center_of_mass = list("x"=16, "y"=16)
-	reagents_to_add = list(/decl/reagent/nutriment = 6, /decl/reagent/nutriment/protein = 9, /decl/reagent/capsaicin/condensed = 20) //what could possibly go wrong
+	reagents_to_add = list(/decl/reagent/nutriment = 6, /decl/reagent/nutriment/protein = 9, /decl/reagent/capsaicin = 10) //It's kind of spicy
 	reagent_data = list(/decl/reagent/nutriment = list("tortilla" = 6))
 	filling_color = "#FFF454"
 
@@ -4444,7 +4482,7 @@
 	reagents_to_add = list(/decl/reagent/nutriment = 8)
 	reagent_data = list(/decl/reagent/nutriment = list("cheese toast" = 8))
 	filling_color = "#FFF97D"
-	
+
 /obj/item/reagent_containers/food/snacks/bacon_and_eggs
 	name = "bacon and eggs"
 	desc = "A piece of bacon and two fried eggs."
@@ -4637,7 +4675,7 @@
 
 /obj/item/reagent_containers/food/snacks/nomadskewer
 	name = "nomad skewer"
-	icon_state = "kabob"
+	icon_state = "nomad_skewer"
 	desc = "Fatshouter meat on a stick, served with flora native to Adhomai."
 	trash = /obj/item/stack/rods
 	filling_color = "#FFFEE0"
@@ -4669,6 +4707,134 @@
 	filling_color = "#DB0000"
 	bitesize = 4
 	reagents_to_add = list(/decl/reagent/nutriment/protein/seafood = 20, /decl/reagent/ammonia = 10)
+
+/obj/item/reagent_containers/food/snacks/cone_cake
+	name = "cone cake"
+	desc = "A spongy cone-shaped cake covered in sugar."
+	icon_state = "conecake"
+	bitesize = 2
+	reagents_to_add = list(/decl/reagent/nutriment = 15)
+	reagent_data = list(/decl/reagent/nutriment = list("Incredible sweetness" = 8, "Cake" = 7))
+	desc_fluff = "A spongy, sugar-coated cake that's baked on a spit shaped like a cone, giving it a signature look. Often sold alongside Azvah due to similar preparation methods, the difference between them being the unique shape, the crisp, flaky outside, and the tooth-aching sweetness of the dish that turns some foreigners away."
+	filling_color = "#BD8939"
+
+/obj/item/reagent_containers/food/snacks/fruit_rikazu
+	name = "fruit rikazu"
+	desc = "A small, crispy Adhomian pie meant for one person filled with fruits."
+	icon_state = "rikazu_fruit"
+	bitesize = 2
+	reagents_to_add = list(/decl/reagent/nutriment = 8) 
+	reagent_data = list(/decl/reagent/nutriment = list("crispy dough" = 4, "sweet fruit" = 4))
+	desc_fluff = "Small pies, often hand-sized, usually made by folding dough overstuffing of fruit and cream cheese; commonly served hot. The simple preparation makes it a fast favorite, and the versatility of the ingredients has gained its favor with Tajara of all creeds. Different variations of Rikazu pop up all over Adhomai, some filled with meats, or vegetables, or even imported ingredients, like chocolate filling."
+	filling_color = "#BD8939"
+
+/obj/item/reagent_containers/food/snacks/meat_rikazu
+	name = "meat rikazu"
+	desc = "A small, crispy Adhomian pie meant for one person filled with meat."
+	icon_state = "rikazu_meat"
+	bitesize = 2
+	reagents_to_add = list(/decl/reagent/nutriment = 4, /decl/reagent/nutriment/protein = 4) 
+	reagent_data = list(/decl/reagent/nutriment = list("crispy dough" = 4), /decl/reagent/nutriment/protein = list("savory meat" = 4))
+	desc_fluff = "Small pies, often hand-sized, usually made by folding dough overstuffing of fruit and cream cheese; commonly served hot. The simple preparation makes it a fast favorite, and the versatility of the ingredients has gained its favor with Tajara of all creeds. Different variations of Rikazu pop up all over Adhomai, some filled with meats, or vegetables, or even imported ingredients, like chocolate filling."
+	filling_color = "#BD8939"
+
+/obj/item/reagent_containers/food/snacks/vegetable_rikazu
+	name = "vegetable rikazu"
+	desc = "A small, crispy Adhomian pie meant for one person filled with vegetables."
+	icon_state = "rikazu_veg"
+	bitesize = 2
+	reagents_to_add = list(/decl/reagent/nutriment = 8) 
+	reagent_data = list(/decl/reagent/nutriment = list("crispy dough" = 4, "crunchy vegetables" = 4))
+	desc_fluff = "Small pies, often hand-sized, usually made by folding dough overstuffing of fruit and cream cheese; commonly served hot. The simple preparation makes it a fast favorite, and the versatility of the ingredients has gained its favor with Tajara of all creeds. Different variations of Rikazu pop up all over Adhomai, some filled with meats, or vegetables, or even imported ingredients, like chocolate filling."
+	filling_color = "#BD8939"
+
+/obj/item/reagent_containers/food/snacks/chocolate_rikazu
+	name = "chocolate rikazu"
+	desc = "A small, crispy Adhomian pie meant for one person filled with chocolate."
+	icon_state = "rikazu_choc"
+	bitesize = 2
+	reagents_to_add = list(/decl/reagent/nutriment = 8) 
+	reagent_data = list(/decl/reagent/nutriment = list("crispy dough" = 4, "smooth chocolate" = 4))
+	desc_fluff = "Small pies, often hand-sized, usually made by folding dough overstuffing of fruit and cream cheese; commonly served hot. The simple preparation makes it a fast favorite, and the versatility of the ingredients has gained its favor with Tajara of all creeds. Different variations of Rikazu pop up all over Adhomai, some filled with meats, or vegetables, or even imported ingredients, like chocolate filling."
+	filling_color = "#BD8939"
+
+/obj/item/reagent_containers/food/snacks/avah
+	name = "avah"
+	desc = "A large fried dough ball covered in a sweet cream icing."
+	icon_state = "avah"
+	bitesize = 2
+	reagents_to_add = list(/decl/reagent/nutriment = 7, /decl/reagent/nutriment/protein/cheese = 5)
+	reagent_data = list(/decl/reagent/nutriment = list("Oily dough" = 7), /decl/reagent/nutriment/protein/cheese = list("sweet cream cheese" = 5))
+	desc_fluff = "Used to only mean 'sweets' or 'sweet thing', now singularly refers to a particular dessert. The batter is grilled and made into soft, spherical shapes, and then covered with fruit jams, sugar, or sweet cream cheese. These treats are often sold at festivals and celebrations, and foreigners compare them to pancakes."
+	filling_color = "#BD8939"
+
+/obj/item/reagent_containers/food/snacks/dirt_roast
+	name = "roasted dirtberries"
+	desc = "A bag of warm roasted dirtberries covered in spice."
+	icon_state = "roast_dirtberries"
+	bitesize = 2
+	reagents_to_add = list(/decl/reagent/nutriment = 4, /decl/reagent/drink/syrup_caramel = 4)
+	reagent_data = list(/decl/reagent/nutriment = list("warm crunchy nuts" = 2, "cinnamon" = 2), /decl/reagent/drink/syrup_caramel = list("caramel" = 5))
+	desc_fluff = "A traditional snack consisting of oven-roasted dirtberries covered in a mixture of spice and caramel. These crunchy fruits are usually sold at outdoor festivals and events and are enjoyed for their warming effect and pleasant taste."
+	filling_color = "#BD8939"
+
+/obj/item/reagent_containers/food/snacks/sliceable/fatshouter_fillet
+	name = "fatshouter fillet"
+	desc = "A medium rare fillet of Fatshouter meat covered in an earthenroot pate and wrapped in a flaky crust."
+	icon_state = "fatshouterfillet_full"
+	bitesize = 2
+	slice_path = /obj/item/reagent_containers/food/snacks/fatshouterslice
+	slices_num = 5
+	reagents_to_add = list(/decl/reagent/nutriment/protein = 10, /decl/reagent/nutriment = 10, /decl/reagent/alcohol/messa_mead = 5)
+	reagent_data = list(/decl/reagent/nutriment/protein = list("juicy meat" = 10), /decl/reagent/nutriment = list("flaky dough" = 5, "savoury vegetables" = 5))
+	desc_fluff = "for a time was considered the benchmark by which to rate the abilities of a chef. The production of this exquisite dish is no easy task, the preparation process begins with the aging of a high-grade tenderloin steak acquired from a Fatshouter fed exclusively on dirtberries. The high starch content of the dirtberries ensures that the creature has a high fat percentage and imparts a unique flavour to the meat and traditionally Noble families would keep a raise small herds of Fatshouters specifically for the production of this dish. After 28 days of dry aging, the tenderloin is ready for use. One day prior to serving the dish, a pâté is made by sauteéing thinly sliced pieces of earthenroot soaked in a generous amount of Messa’s Mead and then thickened with lard before being ground into a fine paste and left to - chill. On the day that the dish is to be served a flaky pastry dough is made. Next the aged 7 tenderloin is trimmed of accumulated mold and rind and coated in a dryrub after which the chilled pâté is spread across the surface of the meat and it is wrapped in the thinly rolled pastry dough. Next the pastry is washed with a small amount of clarified lard to give the crust a nice shine, after which it is placed into a large oven and cooked at a high heat for around 40 minutes. Though the dish was regarded as a symbol of the blatant excess and overindulgence of the ruling elite, it has since been reintroduced to the public by enterprising chefs seeking to recapture the high-class culinary culture of the past."
+	filling_color = "#BD8939"
+
+/obj/item/reagent_containers/food/snacks/fatshouterslice
+	name = "fatshouter fillet slice"
+	desc = "A medium rare fillet of Fatshouter meat covered in an earthenroot pate and wrapped in a flaky crust."
+	icon_state = "fatshouterfillet_slice"
+	filling_color = "#FF7575"
+	desc_fluff = "for a time was considered the benchmark by which to rate the abilities of a chef. The production of this exquisite dish is no easy task, the preparation process begins with the aging of a high-grade tenderloin steak acquired from a Fatshouter fed exclusively on dirtberries. The high starch content of the dirtberries ensures that the creature has a high fat percentage and imparts a unique flavour to the meat and traditionally Noble families would keep a raise small herds of Fatshouters specifically for the production of this dish. After 28 days of dry aging, the tenderloin is ready for use. One day prior to serving the dish, a pâté is made by sauteéing thinly sliced pieces of earthenroot soaked in a generous amount of Messa’s Mead and then thickened with lard before being ground into a fine paste and left to - chill. On the day that the dish is to be served a flaky pastry dough is made. Next the aged 7 tenderloin is trimmed of accumulated mold and rind and coated in a dryrub after which the chilled pâté is spread across the surface of the meat and it is wrapped in the thinly rolled pastry dough. Next the pastry is washed with a small amount of clarified lard to give the crust a nice shine, after which it is placed into a large oven and cooked at a high heat for around 40 minutes. Though the dish was regarded as a symbol of the blatant excess and overindulgence of the ruling elite, it has since been reintroduced to the public by enterprising chefs seeking to recapture the high-class culinary culture of the past."
+	bitesize = 2
+
+/obj/item/reagent_containers/food/snacks/fatshouterslice/filled
+	reagents_to_add = list(/decl/reagent/nutriment/protein = 2, /decl/reagent/nutriment = 2, /decl/reagent/alcohol/messa_mead = 1)
+	reagent_data = list(/decl/reagent/nutriment/protein = list("juicy meat" = 2), /decl/reagent/nutriment = list("flaky dough" = 1, "savoury vegetables" = 1))
+	
+/obj/item/reagent_containers/food/snacks/sliceable/zkahnkowafull
+	name = "Zkah'nkowa"
+	desc = "A large smoked sausage."
+	icon_state = "zkah'nkowa_full"
+	bitesize = 2
+	slice_path = /obj/item/reagent_containers/food/snacks/zkahnkowaslice
+	slices_num = 5
+	reagents_to_add = list(/decl/reagent/nutriment/protein = 25)
+	reagent_data = list(/decl/reagent/nutriment/protein = list("salty" = 10, "smoky meat" = 15))
+	desc_fluff = "A canned variety of the Fatshouter Bloodpudding, known for its low-fat content and lighter color. It was created shortly after the First Revolution to ease the food shortage after the conflict. Its low cost and nutritious value allowed it to become a staple of the Hadiist diet."
+	filling_color = "#BD8939"
+
+/obj/item/reagent_containers/food/snacks/zkahnkowaslice
+	name = "Zkah'nkowa slice"
+	desc = "A slice of smoked sausage."
+	icon_state = "zkah'nkowa_slice"
+	filling_color = "#FF7575"
+	desc_fluff = "A canned variety of the Fatshouter Bloodpudding, known for its low-fat content and lighter color. It was created shortly after the First Revolution to ease the food shortage after the conflict. Its low cost and nutritious value allowed it to become a staple of the Hadiist diet."
+	bitesize = 2
+
+/obj/item/reagent_containers/food/snacks/fatshouterslice/filled
+	reagents_to_add = list(/decl/reagent/nutriment/protein = 5)
+	reagent_data = list(/decl/reagent/nutriment/protein = list("salty" = 3, "smoky meat" = 5))
+
+/obj/item/reagent_containers/food/snacks/creamice
+	name = "creamice"
+	desc = "A bowl of delicious Tajaran ice cream"
+	icon_state = "creamice"
+	bitesize = 2
+	reagents_to_add = list(/decl/reagent/nutriment = 8)
+	reagent_data = list(/decl/reagent/nutriment = list("creamy" = 3, "sweet" = 3, "cold" = 2))
+	desc_fluff = "The traditional dessert of Northern Harr'masir is considered by many as being the mixture of ice, Fatshouters’s milk, sugar, and Nif-Berries’ oil, named Creamice. The popular tales claim it was invented after a famine desolated the land, resulting in the population resorting to eating snow, however, such tale has been classified by most historians as nothing but fiction. Creamice is commonly consumed by the nobility since they are the ones that can afford the luxury of refrigeration."
+	filling_color = "#BD8939"
 
 /obj/item/reagent_containers/food/snacks/onionrings
 	name = "onion rings"
@@ -4984,14 +5150,4 @@
 	icon_state = "dionaestew"
 	reagent_data = list(/decl/reagent/nutriment = list("diona delicacy" = 5))
 	reagents_to_add = list(/decl/reagent/nutriment = 8, /decl/reagent/drink/carrotjuice = 2, /decl/reagent/drink/potatojuice = 2, /decl/reagent/radium = 2)
-	filling_color = "#BD8939"
-
-/obj/item/reagent_containers/food/snacks/diona_bites
-	name = "dionae bites"
-	desc = "Freeze dried Dionae bites artfully crafted by Getmore chefs for that home cooked taste on the go!"
-	icon_state = "dionaebites"
-	reagent_data = list(/decl/reagent/nutriment = list("diona delicacy" = 5))
-	reagents_to_add = list(/decl/reagent/nutriment = 6)
-	trash = /obj/item/trash/diona_bites
-	bitesize = 3
 	filling_color = "#BD8939"

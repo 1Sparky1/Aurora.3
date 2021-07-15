@@ -122,9 +122,10 @@
 
 /obj/item/projectile/bullet/pistol
 	damage = 25
+	armor_penetration = 10
 
 /obj/item/projectile/bullet/pistol/medium
-	damage = 35
+	damage = 30
 
 /obj/item/projectile/bullet/pistol/strong
 	damage = 45
@@ -184,7 +185,7 @@
 //Overall less damage than slugs in exchange for more damage at very close range and more embedding
 /obj/item/projectile/bullet/pellet/shotgun
 	name = "shrapnel"
-	damage = 30
+	damage = 14
 	pellets = 6
 	range_step = 1
 	spread_step = 10
@@ -199,19 +200,22 @@
 /obj/item/projectile/bullet/rifle
 	damage = 40
 	armor_penetration = 15
-	penetrating = TRUE
+	penetrating = FALSE
 
 /obj/item/projectile/bullet/rifle/a762
-	damage = 45
+	damage = 40
 	armor_penetration = 20
+	penetrating = TRUE
 
 /obj/item/projectile/bullet/rifle/a556
-	damage = 45
+	damage = 40
 	armor_penetration = 15
+	penetrating = FALSE
 
-/obj/item/projectile/bullet/rifle/a556/ap
+/obj/item/projectile/bullet/rifle/a556/ap 
 	damage = 35
 	armor_penetration = 40
+	penetrating = TRUE
 
 /obj/item/projectile/bullet/rifle/a145
 	damage = 80
@@ -228,6 +232,7 @@
 	name = "vintage bullet"
 	damage = 50
 	weaken = 1
+	penetrating = TRUE
 
 /obj/item/projectile/bullet/rifle/slugger
 	name = "slugger round"
@@ -279,7 +284,7 @@
 
 	if(isanimal(target))
 		target.visible_message("<b>[target]</b> twitches, foaming at the mouth.")
-		L.apply_damage(35, TOX) //temporary until simple_mob paralysis actually works.
+		L.apply_damage(35, TOX) //temporary until simple_animal paralysis actually works.
 	..()
 
 /* Miscellaneous */
@@ -345,6 +350,7 @@
 /obj/item/projectile/bullet/gauss/highex
 	name = "high-ex shell"
 	damage = 10
+	armor_penetration = 30
 
 /obj/item/projectile/bullet/gauss/highex/on_impact(var/atom/A)
 	explosion(A, -1, 0, 2)
@@ -385,7 +391,7 @@
 		var/turf/T = get_turf(mob)
 		if(T && (loc.z == T.z))
 			if(ishuman(mob))
-				mob.apply_effect(450, IRRADIATE)
+				mob.apply_damage(250, IRRADIATE, damage_flags = DAM_DISPERSED)
 	new /obj/effect/temp_visual/nuke(A.loc)
 	explosion(A,2,5,9)
 	..()

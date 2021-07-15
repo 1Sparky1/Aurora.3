@@ -51,7 +51,7 @@ emp_act
 
 	return blocked
 
-/mob/living/carbon/human/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone)
+/mob/living/carbon/human/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone, var/used_weapon, var/damage_flags)
 	var/obj/item/organ/external/affected = get_organ(check_zone(def_zone))
 	var/siemens_coeff = get_siemens_coefficient_organ(affected)
 	stun_amount *= siemens_coeff
@@ -78,7 +78,7 @@ emp_act
 					var/emote_scream = pick("screams in pain and ", "lets out a sharp cry and ", "cries out and ")
 					visible_message("<b>[src]</b> [(!can_feel_pain()) ? "" : emote_scream ]drops what they were holding in their [affected.name]!")
 
-	..(stun_amount, agony_amount, def_zone)
+	..(stun_amount, agony_amount, def_zone, used_weapon, damage_flags)
 
 /mob/living/carbon/human/get_blocked_ratio(def_zone, damage_type, damage_flags, armor_pen, damage)
 	if(!def_zone && (damage_flags & DAM_DISPERSED))
@@ -117,7 +117,7 @@ emp_act
 	if (!def_zone)
 		return 1.0
 
-	var/siemens_coefficient = species.siemens_coefficient
+	var/siemens_coefficient = max(species.siemens_coefficient, 0)
 
 	var/list/clothing_items = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes) // What all are we checking?
 	for(var/obj/item/clothing/C in clothing_items)
@@ -149,7 +149,7 @@ emp_act
 /mob/living/carbon/human/proc/check_head_airtight_coverage()
 	var/list/clothing = list(head, wear_mask, wear_suit)
 	for(var/obj/item/clothing/C in clothing)
-		if((C.body_parts_covered & HEAD) && (C.item_flags & (AIRTIGHT|STOPPRESSUREDAMAGE)))
+		if((C.body_parts_covered & HEAD) && (C.item_flags & (AIRTIGHT)))
 			return TRUE
 	return FALSE
 
@@ -165,15 +165,15 @@ emp_act
 	for(var/obj/item/shield in list(l_hand, r_hand, wear_suit, back))
 		if(!shield)
 			continue
-		if(!shield.can_shield_back())
-			continue
 		var/is_on_back = FALSE
 		if(back && back == shield)
+			if(!shield.can_shield_back())
+				continue
 			is_on_back = TRUE
 		. = shield.handle_shield(src, is_on_back, damage, damage_source, attacker, def_zone, attack_text)
 		if(.)
 			return
-	return 0
+	return FALSE
 
 /mob/living/carbon/human/emp_act(severity)
 	if(isipc(src))
@@ -213,7 +213,7 @@ emp_act
 	if(a_intent != I_HELP)
 		var/list/holding = list(get_active_hand() = 60, get_inactive_hand() = 40)
 		for(var/obj/item/grab/G in holding)
-			if(G.affecting && prob(holding[G]))
+			if(G.affecting && prob(holding[G]) && G.affecting != user)
 				visible_message(SPAN_WARNING("[src] repositions \the [G.affecting] to block \the [I]'s attack!"), SPAN_NOTICE("You reposition \the [G.affecting] to block \the [I]'s attack!"))
 				return G.affecting
 	return src
@@ -269,7 +269,7 @@ emp_act
 		if(!..(I, user, effective_force, hit_zone))
 			return FALSE
 
-		attack_joint(affecting, I, blocked) //but can dislocate joints
+		attack_joint(affecting, I) //but can dislocate joints
 
 	else if(!..())
 		return FALSE
@@ -293,10 +293,22 @@ emp_act
 		if(!(I.flags & NOBLOODY))
 			I.add_blood(src)
 
-		if(prob(effective_force * 2))
+		var/is_sharp_weapon = is_sharp(I)
+		var/blood_probability = is_sharp_weapon ? effective_force * 4 : effective_force * 2
+		if(prob(blood_probability))
 			var/turf/location = loc
 			if(istype(location, /turf/simulated))
 				location.add_blood(src)
+				if(is_sharp_weapon)
+					var/turf/splatter_turf
+					var/list/splatter_turfs = RANGE_TURFS(2, location) - location - get_turf(user)
+					for(var/turf/st as anything in splatter_turfs)
+						if(!st.Adjacent(location))
+							splatter_turfs -= st
+					splatter_turf = pick(splatter_turfs)
+					if(splatter_turf)
+						var/obj/effect/decal/cleanable/blood/B = blood_splatter(splatter_turf, src, TRUE, get_dir(src, splatter_turf))
+						B.icon_state = pick("dir_splatter_1", "dir_splatter_2")
 			if(ishuman(user))
 				var/mob/living/carbon/human/H = user
 				if(get_dist(H, src) <= 1) //people with TK won't get smeared with blood
@@ -320,9 +332,11 @@ emp_act
 	return TRUE
 
 /mob/living/carbon/human/proc/attack_joint(var/obj/item/organ/external/organ, var/obj/item/W, var/blocked)
-	if(!organ || (organ.dislocated == 2) || (organ.dislocated == -1) || blocked >= 100)
+	if(!organ || (organ.dislocated == 2) || (organ.dislocated == -1))
 		return 0
-	if(prob(W.force * BLOCKED_MULT(blocked)))
+
+	var/blocked_ratio = get_blocked_ratio(organ.limb_name, W.damtype, W.damage_flags(), W.armor_penetration, W.force)
+	if(prob(W.force * (1 - blocked_ratio)))
 		visible_message("<span class='danger'>[src]'s [organ.joint] [pick("gives way","caves in","crumbles","collapses")]!</span>")
 		organ.dislocate(1)
 		return 1

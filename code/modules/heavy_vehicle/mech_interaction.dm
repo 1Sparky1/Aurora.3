@@ -76,7 +76,8 @@
 		return
 
 	if(!(get_cell()?.checked_use(arms.power_use * CELLRATE)))
-		to_chat(user, "<span class='warning'>Error: Power levels insufficient.</span>")
+		to_chat(user, power == MECH_POWER_ON ? SPAN_WARNING("Error: Power levels insufficient.") : SPAN_WARNING("\The [src] is powered off."))
+		return
 
 	if(user != src)
 		set_intent(user.a_intent)
@@ -165,12 +166,14 @@
 	return
 
 /mob/living/heavy_vehicle/setClickCooldown(var/timeout)
+	var/old_next_move = next_move
 	next_move = max(world.time + timeout, next_move)
 	for(var/hardpoint in hardpoint_hud_elements)
 		var/obj/screen/mecha/hardpoint/H = hardpoint_hud_elements[hardpoint]
 		if(H)
 			H.color = "#FF0000"
-	addtimer(CALLBACK(src, .proc/reset_hardpoint_color), timeout)
+	if(next_move > old_next_move) // TIMER_OVERRIDE would not work here, because the smaller delays tend to be called after the longer ones
+		addtimer(CALLBACK(src, .proc/reset_hardpoint_color), timeout)
 
 /mob/living/heavy_vehicle/proc/reset_hardpoint_color()
 	for(var/hardpoint in hardpoint_hud_elements)
@@ -234,7 +237,6 @@
 	LAZYDISTINCTADD(pilots, user)
 	sync_access()
 	playsound(src, 'sound/machines/windowdoor.ogg', 50, 1)
-	user << sound('sound/mecha/nominal.ogg',volume=50)
 	if(user.client) user.client.screen |= hud_elements
 	LAZYDISTINCTADD(user.additional_vision_handlers, src)
 	update_icon()
@@ -256,9 +258,7 @@
 		if(hatch_locked)
 			if(!silent) to_chat(user, "<span class='warning'>The [body.hatch_descriptor] is locked.</span>")
 			return
-		hatch_closed = 0
-		hud_open.update_icon()
-		update_icon()
+		hud_open.toggled(FALSE)
 		if(!silent)
 			to_chat(user, "<span class='notice'>You open the hatch and climb out of \the [src].</span>")
 	else
@@ -426,6 +426,8 @@
 				to_chat(user, "<span class='notice'>You remove \the [body.cell] from \the [src].</span>")
 				playsound(user.loc, thing.usesound, 50, 1)
 				visible_message("<span class='notice'>\The [user] pries out \the [body.cell] using the \the [thing].</span>")
+				power = MECH_POWER_OFF
+				hud_power_control.update_icon()
 				body.cell = null
 				return
 			else if(istype(thing, /obj/item/cell))
@@ -544,7 +546,7 @@
 		src.visible_message("<span class='warning'>\The [src] hums with life as it is released from its lockdown mode!</span>")
 
 /mob/living/heavy_vehicle/get_floating_chat_x_offset()
-	return 8
+	return -offset_x // reverse the offset
 
 /mob/living/heavy_vehicle/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "", var/italics = 0, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol)
 	if(can_listen())
@@ -554,7 +556,7 @@
 // heavily commented so it doesn't look like one fat chunk of code, which it still does - Geeves
 /mob/living/heavy_vehicle/proc/handle_hear_say(var/mob/speaker, var/text)
 	var/found_text = findtext(text, name)
-	if(!found_text)
+	if(!found_text && nickname)
 		found_text = findtext(text, nickname)
 	if(found_text)
 		text = copytext(text, found_text) // I'm trimming the text each time so only information stated after eachother is valid
@@ -609,7 +611,7 @@
 				say("Error, leader not found. Unassigning...")
 				unassign_leader()
 				return
-			if(speaker != resolved_leader || (speaker in pilots))
+			if(speaker != resolved_leader && !(speaker in pilots))
 				return
 
 			found_text = findtext(text, "set nickname to")

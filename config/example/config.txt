@@ -10,6 +10,9 @@ ALERT_RED_UPTO There is an immediate serious threat to the station. Security may
 ALERT_RED_DOWNTO The self-destruct mechanism has been deactivated, there is still however an immediate serious threat to the station. Security may have weapons unholstered at all times, random searches are allowed and advised.
 ALERT_DELTA The station's self-destruct mechanism has been engaged. All crew are instructed to obey all instructions given by heads of staff. Any violations of these orders can be punished by death. This is not a drill.
 
+## Add a # in front of this to disable automatic admin rights for users connecting from the host the server is running on.
+AUTO_LOCAL_ADMIN
+
 ## Add a # infront of this if you want to use the SQL based admin system, the legacy system uses admins.txt. You need to set up your database to use the SQL based system.
 ADMIN_LEGACY_SYSTEM
 
@@ -535,6 +538,9 @@ FORCE_MAP runtime
 
 # Reminds ticket handlers/all admin staff of not-closed tickets after this many SECONDS.
 #TICKET_REMINDER_PERIOD 600
+
+# What sector the station/station is currently on. Check _defines/space_sectors.dm for possible options
+CURRENT_SPACE_SECTOR Romanovich Cloud
 
 # If using TGS, counts how many regularly TGS hard restarts the server process.
 # -1 - never do this.

@@ -7,6 +7,7 @@
 
 	var/list/shuttle_area //can be both single area type or a list of areas
 	var/obj/effect/shuttle_landmark/current_location //This variable is type-abused initially: specify the landmark_tag, not the actual landmark.
+	var/list/shuttle_computers = list()
 
 	var/arrive_time = 0	//the time at which the shuttle arrives when long jumping
 	var/flags = 0
@@ -56,6 +57,10 @@
 	if(src.name in SSshuttle.shuttles)
 		CRASH("A shuttle with the name '[name]' is already defined.")
 	SSshuttle.shuttles[src.name] = src
+	for(var/obj/machinery/computer/shuttle_control/SC as anything in SSshuttle.lonely_shuttle_computers)
+		if(SC.shuttle_tag == name)
+			SSshuttle.lonely_shuttle_computers -= SC
+			shuttle_computers += SC
 	if(flags & SHUTTLE_FLAGS_PROCESS)
 		SSshuttle.process_shuttles += src
 	if(flags & SHUTTLE_FLAGS_SUPPLY)
@@ -192,18 +197,22 @@
 				if(istype(TA, ceiling_type))
 					TA.ChangeTurf(get_base_turf_by_area(TA), 1, 1)
 		if(knockdown)
-			for(var/mob/M in A)
+			for(var/mob/living/carbon/M in A)
 				spawn(0)
-					if(istype(M, /mob/living/carbon))
-						if(M.buckled_to)
-							to_chat(M, "<span class='warning'>Sudden acceleration presses you into your chair!</span>")
-							shake_camera(M, 3, 1)
-						else
-							to_chat(M, "<span class='warning'>The floor lurches beneath you!</span>")
-							shake_camera(M, 10, 1)
-							M.visible_message("<span class='warning'>[M.name] is tossed around by the sudden acceleration!</span>")
-							M.throw_at_random(FALSE, 4, 1)
-							M.Weaken(3)
+					if(M.buckled_to)
+						to_chat(M, "<span class='warning'>Sudden acceleration presses you into your chair!</span>")
+						shake_camera(M, 3, 1)
+					else if(M.Check_Shoegrip(FALSE))
+						to_chat(M, SPAN_WARNING("You feel immense pressure in your feet as you cling to the floor!"))
+						M.apply_damage(10, PAIN, BP_L_FOOT)
+						M.apply_damage(10, PAIN, BP_R_FOOT)
+						shake_camera(M, 5, 1)
+					else
+						to_chat(M, "<span class='warning'>The floor lurches beneath you!</span>")
+						shake_camera(M, 10, 1)
+						M.visible_message("<span class='warning'>[M.name] is tossed around by the sudden acceleration!</span>")
+						M.throw_at_random(FALSE, 4, 1)
+						M.Weaken(3)
 
 		for(var/obj/structure/cable/C in A)
 			powernets |= C.powernet
@@ -280,3 +289,8 @@
 	if(!next_location)
 		return "None"
 	return next_location.name
+
+/datum/shuttle/proc/set_process_state(var/new_state)
+	process_state = new_state
+	for(var/obj/machinery/computer/shuttle_control/SC as anything in shuttle_computers)
+		SC.update_helmets(src)
