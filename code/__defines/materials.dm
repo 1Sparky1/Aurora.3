@@ -36,6 +36,7 @@
 // Leathers and related.
 #define MATERIAL_RESIN                   "resin"
 #define MATERIAL_LEATHER                 "leather"
+#define MATERIAL_LEATHER_FINE            "fine leather"
 #define MATERIAL_BONE                    "bone"
 #define MATERIAL_BONE_CURSED             "cursed bone"
 #define MATERIAL_HIDE                    "hide"
@@ -64,3 +65,8 @@
 #define MATERIAL_CLOTH_BEIGE             "beige"
 #define MATERIAL_CLOTH_LIME              "lime"
 
+#define MATERIAL_ALTERATION_NONE 0
+#define MATERIAL_ALTERATION_NAME 1
+#define MATERIAL_ALTERATION_DESC 2
+#define MATERIAL_ALTERATION_COLOR 4
+#define MATERIAL_ALTERATION_ALL (~MATERIAL_ALTERATION_NONE)

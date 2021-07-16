@@ -8,7 +8,6 @@ var/list/holder_mob_icon_cache = list()
 	randpixel = 0
 	center_of_mass = null
 	slot_flags = 0
-	sprite_sheets = list(BODYTYPE_VOX = 'icons/mob/species/vox/head.dmi')
 	origin_tech = null
 	drop_sound = null
 	var/mob/living/contained = null
@@ -22,6 +21,7 @@ var/list/holder_mob_icon_cache = list()
 
 	var/last_loc_general	//This stores a general location of the object. Ie, a container or a mob
 	var/last_loc_specific	//This stores specific extra information about the location, pocket, hand, worn on head, etc. Only relevant to mobs
+	var/no_name = FALSE		//If true, removes the change animal name verb for holders that don't allow name changes
 
 /obj/item/holder/proc/setup_unsafe_list()
 	unsafe_containers = typecacheof(list(
@@ -40,6 +40,8 @@ var/list/holder_mob_icon_cache = list()
 		item_state = icon_state
 
 	flags_inv |= ALWAYSDRAW
+	if(no_name)
+		verbs -= /obj/item/holder/verb/change_animal_name
 
 	START_PROCESSING(SSprocessing, src)
 
@@ -72,6 +74,9 @@ var/list/holder_mob_icon_cache = list()
 	if (isalive && contained.stat == DEAD)
 		held_death(1)//If we get here, it means the mob died sometime after we picked it up. We pass in 1 so that we can play its deathmessage
 
+/obj/item/holder/proc/set_contained(var/mob/M)
+	M.forceMove(src)
+	contained = M
 
 //This function checks if the current location is safe to release inside
 //it returns 1 if the creature will bug out when released
@@ -188,7 +193,7 @@ var/list/holder_mob_icon_cache = list()
 
 
 /mob/living/proc/get_scooped(var/mob/living/carbon/grabber, var/mob/user = null)
-	if(!holder_type || buckled || pinned.len || !Adjacent(grabber))
+	if(!holder_type || buckled_to || pinned.len || !Adjacent(grabber))
 		return
 
 	if (user == src)
@@ -203,8 +208,7 @@ var/list/holder_mob_icon_cache = list()
 
 	spawn(2)
 		var/obj/item/holder/H = new holder_type(loc)
-		src.forceMove(H)
-		H.contained = src
+		H.set_contained(src)
 
 		if (src.stat == DEAD)
 			H.held_death()//We've scooped up an animal that's already dead. use the proper dead icons
@@ -335,6 +339,21 @@ var/list/holder_mob_icon_cache = list()
 
 		..()
 
+/obj/item/holder/verb/change_animal_name()
+	set name = "Name Animal"
+	set category = "IC"
+	set src in usr
+
+	if(isanimal(contained))
+		var/mob/living/simple_animal/SA = contained
+		SA.change_name(usr)
+		sync(contained)
+	if(ishuman(contained))
+		var/mob/living/carbon/human/H = contained
+		if(H.isMonkey())
+			H.change_animal_name(usr)
+			sync(contained)
+
 //#TODO-MERGE
 //Port the reduced-duplication holder method from baystation upstream:
 //https://github.com/Baystation12/Baystation12/blob/master/code/modules/mob/holder.dm
@@ -351,6 +370,7 @@ var/list/holder_mob_icon_cache = list()
 	origin_tech = list(TECH_MAGNET = 3, TECH_BIO = 5)
 	slot_flags = SLOT_HEAD | SLOT_EARS | SLOT_HOLSTER
 	w_class = ITEMSIZE_SMALL
+	no_name = TRUE
 
 /obj/item/holder/drone
 	name = "maintenance drone"
@@ -360,6 +380,7 @@ var/list/holder_mob_icon_cache = list()
 	origin_tech = list(TECH_MAGNET = 3, TECH_ENGINEERING = 5)
 	slot_flags = SLOT_HEAD
 	w_class = ITEMSIZE_LARGE
+	no_name = TRUE
 
 /obj/item/holder/drone/heavy
 	name = "construction drone"
@@ -402,8 +423,6 @@ var/list/holder_mob_icon_cache = list()
 	name = "kitten"
 	icon_state = "kitten"
 	icon_state_dead = "cat_kitten_dead"
-	slot_flags = SLOT_HEAD
-	w_class = ITEMSIZE_TINY
 	item_state = "kitten"
 
 /obj/item/holder/cat/penny
@@ -411,8 +430,6 @@ var/list/holder_mob_icon_cache = list()
 	desc = "An important cat, straight from Central Command."
 	icon_state = "penny"
 	icon_state_dead = "penny_dead"
-	slot_flags = SLOT_HEAD
-	w_class = ITEMSIZE_TINY
 	item_state = "penny"
 
 /obj/item/holder/carp/baby
@@ -438,6 +455,7 @@ var/list/holder_mob_icon_cache = list()
 	icon_state = "brainslug"
 	origin_tech = list(TECH_BIO = 6)
 	w_class = ITEMSIZE_TINY
+	no_name = TRUE
 
 /obj/item/holder/monkey
 	name = "monkey"
@@ -446,6 +464,14 @@ var/list/holder_mob_icon_cache = list()
 	item_state = "monkey"
 	slot_flags = SLOT_HEAD
 	w_class = ITEMSIZE_NORMAL
+
+/obj/item/holder/monkey/set_contained(var/mob/living/carbon/human/M)
+	..()
+	M.dir = SOUTH //monkeys look better head-on | source: it was revealed to me in a mirror
+	if(istype(M.w_uniform, /obj/item/clothing/under))
+		var/obj/item/clothing/under/monkey_uniform = M.w_uniform
+		if(("[item_state]_[monkey_uniform.worn_state]_lh" in icon_states(icon))) // using _lh, because if there's a _lh, there's probably a _rh, right?
+			item_state = "[item_state]_[monkey_uniform.worn_state]"
 
 /obj/item/holder/monkey/farwa
 	name = "farwa"
@@ -575,6 +601,7 @@ var/list/holder_mob_icon_cache = list()
 	icon = 'icons/mob/npc/pai.dmi'
 	dir = EAST
 	slot_flags = SLOT_HEAD
+	no_name = TRUE
 
 /obj/item/holder/pai/drone
 	icon_state = "repairbot_rest"
@@ -595,6 +622,14 @@ var/list/holder_mob_icon_cache = list()
 /obj/item/holder/pai/rabbit
 	icon_state = "rabbit_rest"
 	item_state = "rabbit"
+
+/obj/item/holder/pai/parrot
+	icon_state = "parrot_rest"
+	item_state = "parrot"
+
+/obj/item/holder/pai/fox
+	icon_state = "fox_rest"
+	item_state = "fox"
 
 /obj/item/holder/pai/custom
 	var/customsprite = 1

@@ -37,6 +37,10 @@
 			latejoin_cryo += loc
 			delete_me = 1
 			return
+		if("JoinLateCryoCommand")
+			latejoin_cryo_command += loc
+			delete_me = 1
+			return
 		if("JoinLateCyborg")
 			latejoin_cyborg += loc
 			delete_me = 1
@@ -169,7 +173,7 @@
 
 /obj/effect/landmark/costume/highlander/New()
 	new /obj/item/clothing/under/kilt(src.loc)
-	new /obj/item/clothing/head/beret(src.loc)
+	new /obj/item/clothing/head/beret/red(src.loc)
 	delete_me = 1
 
 /obj/effect/landmark/costume/prig/New()
@@ -201,7 +205,7 @@
 
 /obj/effect/landmark/costume/pirate/New()
 	new /obj/item/clothing/suit/pirate(src.loc)
-	var/CHOICE = pick( /obj/item/clothing/head/pirate , /obj/item/clothing/head/bandana )
+	var/CHOICE = pick( /obj/item/clothing/head/pirate , /obj/item/clothing/head/bandana/pirate)
 	new CHOICE(src.loc)
 	new /obj/item/clothing/glasses/eyepatch(src.loc)
 	delete_me = 1
@@ -235,11 +239,6 @@
 	new /obj/item/clothing/suit/wizrobe/fake(src.loc)
 	new /obj/item/clothing/head/wizard/fake(src.loc)
 	new /obj/item/staff/(src.loc)
-	delete_me = 1
-
-/obj/effect/landmark/costume/sexyclown/New()
-	new /obj/item/clothing/mask/gas/sexyclown(src.loc)
-	new /obj/item/clothing/under/sexyclown(src.loc)
 	delete_me = 1
 
 /obj/effect/landmark/costume/sexymime/New()

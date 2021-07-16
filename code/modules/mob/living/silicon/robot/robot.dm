@@ -57,7 +57,6 @@
 	var/overclock_available = FALSE // if the overclock is available for use
 
 	// HUD Stuff
-	var/obj/screen/cells
 	var/obj/screen/inv1
 	var/obj/screen/inv2
 	var/obj/screen/inv3
@@ -82,7 +81,6 @@
 	var/obj/item/device/radio/borg/radio
 	var/obj/machinery/camera/camera
 	var/obj/item/device/mmi/mmi
-	var/obj/item/device/pda/ai/pda
 	var/obj/item/stock_parts/matter_bin/storage
 	var/obj/item/tank/jetpack/carbondioxide/synthetic/jetpack
 
@@ -153,7 +151,7 @@
 	setup_icon_cache()
 
 	if(mmi?.brainobj)
-		mmi.brainobj.lobotomized = TRUE
+		mmi.brainobj.prepared = TRUE
 		mmi.brainmob.name = src.name
 		mmi.brainmob.real_name = src.name
 		mmi.name = "[initial(mmi.name)]: [src.name]"
@@ -258,14 +256,6 @@
 		return amount
 	return FALSE
 
-// setup the PDA and its name
-/mob/living/silicon/robot/proc/setup_PDA()
-	if(!has_pda)
-		return
-	if(!pda)
-		pda = new /obj/item/device/pda/ai(src)
-	pda.set_name_and_job(custom_name, "[mod_type] [braintype]")
-
 //If there's an MMI in the robot, have it ejected when the mob goes away. --NEO
 //Improved /N
 /mob/living/silicon/robot/Destroy()
@@ -369,9 +359,6 @@
 		mmi.brainmob.real_name = src.name
 		mmi.name = "[initial(mmi.name)]: [src.name]"
 
-	// if we've changed our name, we also need to update the display name for our PDA
-	setup_PDA()
-
 	// We also need to update our internal ID
 	if(id_card)
 		id_card.assignment = prefix
@@ -404,7 +391,7 @@
 			custom_name = newname
 
 		updatename()
-		if(module)
+		if(custom_sprite)
 			set_module_sprites(module.sprites) // custom synth icons
 		SSrecords.reset_manifest()
 
@@ -412,7 +399,7 @@
 /mob/living/silicon/robot/verb/cmd_station_manifest()
 	set category = "Robot Commands"
 	set name = "Show Crew Manifest"
-	show_station_manifest()
+	SSrecords.open_manifest_vueui(usr)
 
 /mob/living/silicon/robot/proc/self_diagnosis()
 	if(!is_component_functioning("diagnosis unit"))
@@ -751,8 +738,8 @@
 			else
 				to_chat(user, SPAN_WARNING("\The [src] does not have a radio installed!"))
 				return
-		else if(istype(W, /obj/item/card/id) ||istype(W, /obj/item/device/pda) || istype(W, /obj/item/card/robot))			// trying to unlock the interface with an ID card
-			if(emagged) //still allow them to open the cover
+		else if(W.GetID() || istype(W, /obj/item/card/robot))			// trying to unlock the interface with an ID card
+			if(emagged && !is_traitor()) //still allow them to open the cover. is_traitor() dodges this text as being made traitor sets emagged to TRUE. 
 				to_chat(user, SPAN_NOTICE("You notice that \the [src]'s interface appears to be damaged."))
 			if(opened)
 				to_chat(user, SPAN_WARNING("You must close the cover to swipe an ID card."))
@@ -823,7 +810,7 @@
 	// Borgs should be handled a bit differently, since their IDs are not really IDs
 	if(istype(M, /mob/living/silicon/robot))
 		var/mob/living/silicon/robot/R = M
-		if(check_access(R.get_active_hand()) || istype(R.get_active_hand(), /obj/item/card/robot))
+		if(istype(R.get_active_hand(), /obj/item/card/robot) || check_access(R.get_active_hand()))
 			return TRUE
 	else if(istype(M, /mob/living))
 		var/id = M.GetIdCard()
@@ -839,7 +826,7 @@
 	var/list/L = req_access
 	if(!length(L)) //no requirements
 		return TRUE
-	if(!I?.access || !istype(I, /obj/item/card/id)) //not ID or no access
+	if(!istype(I, /obj/item/card/id) || !I?.access) //not ID or no access
 		return FALSE
 	for(var/req in req_access)
 		if(req in I.access) //have one of the required accesses
@@ -1030,7 +1017,7 @@
 
 /mob/living/silicon/robot/proc/self_destruct()
 	density = FALSE
-	fragem(src, 50, 100, 2, 1, 5, 1, 0)
+	fragem(src, 50, 100, 2, 1, 5, 1, FALSE)
 	gib()
 
 /mob/living/silicon/robot/update_canmove() // to fix lockdown issues w/ chairs
@@ -1122,6 +1109,12 @@
 	set category = "Robot Commands"
 	set desc = "Augment visual feed with internal sensor overlays."
 	toggle_sensor_mode()
+
+/mob/living/silicon/robot/proc/sensor_mode_sec()
+	return sensor_mode == SEC_HUD
+
+/mob/living/silicon/robot/proc/sensor_mode_med()
+	return sensor_mode == MED_HUD
 
 /mob/living/silicon/robot/proc/add_robot_verbs()
 	src.verbs |= robot_verbs_default

@@ -18,6 +18,8 @@
 	active_power_usage = 4
 
 /obj/machinery/button/remote/attack_ai(mob/user as mob)
+	if(!ai_can_interact(user))
+		return
 	if(wires & 2)
 		return src.attack_hand(user)
 	else
@@ -122,6 +124,14 @@
 					D.electrify(0)
 				if(specialfunctions & SAFE)
 					D.set_safeties(1)
+
+/obj/machinery/button/remote/airlock/screamer
+	var/message = "REPLACE THIS!"
+	var/channel = "Common"
+
+/obj/machinery/button/remote/airlock/screamer/trigger()
+	. = ..()
+	global_announcer.autosay(message, capitalize_first_letters(name), channel)
 
 #undef OPEN
 #undef IDSCAN

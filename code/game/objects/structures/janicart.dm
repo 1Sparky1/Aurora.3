@@ -32,7 +32,7 @@
 	myreplacer = new /obj/item/device/lightreplacer(src)
 
 	mybucket = new /obj/structure/mopbucket(src)
-	mybucket.reagents.add_reagent(/datum/reagent/water, mybucket.bucketsize)
+	mybucket.reagents.add_reagent(/decl/reagent/water, mybucket.bucketsize)
 
 	for(signs, signs < 4, signs++)
 		new /obj/item/clothing/suit/caution(src)
@@ -59,9 +59,9 @@
 	if(..(user, 1))
 		if (mybucket)
 			var/contains = mybucket.reagents.total_volume
-			to_chat(user, "\icon[src] The bucket contains [contains] unit\s of liquid!")
+			to_chat(user, "[icon2html(src, user)] The bucket contains [contains] unit\s of liquid!")
 		else
-			to_chat(user, "\icon[src] There is no bucket mounted on it!")
+			to_chat(user, "[icon2html(src, user)] There is no bucket mounted on it!")
 	//everything else is visible, so doesn't need to be mentioned
 
 

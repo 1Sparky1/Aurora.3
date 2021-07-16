@@ -61,7 +61,8 @@
 	return ..()
 
 /obj/machinery/clonepod/attack_ai(mob/user as mob)
-
+	if(!ai_can_interact(user))
+		return
 	add_hiddenprint(user)
 	return attack_hand(user)
 
@@ -193,8 +194,8 @@
 		occupant.adjustCloneLoss(-2 * heal_rate)
 
 		//So clones don't die of oxyloss in a running pod.
-		if(occupant.reagents.get_reagent_amount(/datum/reagent/inaprovaline) < 30)
-			occupant.reagents.add_reagent(/datum/reagent/inaprovaline, 60)
+		if(REAGENT_VOLUME(occupant.reagents, /decl/reagent/inaprovaline) < 30)
+			occupant.reagents.add_reagent(/decl/reagent/inaprovaline, 60)
 		occupant.Sleeping(30)
 		//Also heal some oxyloss ourselves because inaprovaline is so bad at preventing it!!
 		occupant.adjustOxyLoss(-4)
@@ -219,8 +220,8 @@
 			return
 		if(default_part_replacement(user, W))
 			return
-	if(istype(W, /obj/item/card/id)||istype(W, /obj/item/device/pda))
-		if(!check_access(W))
+	if(W.GetID())
+		if(!check_access(W.GetID()))
 			to_chat(user, "<span class='warning'>Access Denied.</span>")
 			return
 		if((!locked) || (isnull(occupant)))

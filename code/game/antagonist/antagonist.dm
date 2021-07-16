@@ -8,6 +8,7 @@
 
 	// Strings.
 	var/welcome_text = "Cry havoc and let slip the dogs of war!"
+	var/antag_sound = 'sound/effects/antag_notice/general_baddie_alert.ogg' // The sound file to play when someone gets this role. Only they can hear it.
 	var/leader_welcome_text                 // Text shown to the leader, if any.
 	var/victory_text                        // World output at roundend for victory.
 	var/loss_text                           // As above for loss.
@@ -71,6 +72,7 @@
 	// ID card stuff.
 	var/default_access = list()
 	var/id_type = /obj/item/card/id
+	var/id_card // a reference to the id_card we spawned with
 
 
 /datum/antagonist/New()
@@ -171,9 +173,9 @@
 	if(!candidates.len)
 		return 0
 
-	//Grab candidates randomly until we have enough.
+	//Grab candidates until we have enough.
 	while(candidates.len && pending_antagonists.len < spawn_target)
-		var/datum/mind/player = pick(candidates)
+		var/datum/mind/player = candidates[1]
 		candidates -= player
 		draft_antagonist(player)
 

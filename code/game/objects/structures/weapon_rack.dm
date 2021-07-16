@@ -9,6 +9,7 @@
 	var/obj/item/held_weapon
 
 /obj/structure/weapon_rack/Initialize()
+	. = ..()
 	if(held_weapon)
 		held_weapon = new held_weapon(src)
 		icon_state = initial(icon_state) + "_[held_weapon.icon_state]"
@@ -61,6 +62,6 @@
 	held_weapon = /obj/item/gun/projectile/shotgun/improvised
 
 /obj/structure/weapon_rack/dragunov
-	name = "antique sniper rifle rack"
-	desc = "A wooden rack holding an old sniper rifle. Still packs a punch."
+	name = "marksman rifle rack"
+	desc = "A wooden rack holding a marksman rifle."
 	held_weapon = /obj/item/gun/projectile/dragunov

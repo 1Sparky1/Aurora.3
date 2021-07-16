@@ -198,15 +198,15 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		playsound(src, 'sound/items/cigs_lighters/cig_light.ogg', 75, 1, -1)
 		src.reagents.set_temperature(T0C + 45)
 		damtype = "fire"
-		if(reagents.get_reagent_amount(/datum/reagent/toxin/phoron)) // the phoron explodes when exposed to fire
+		if(REAGENT_VOLUME(reagents, /decl/reagent/toxin/phoron)) // the phoron explodes when exposed to fire
 			var/datum/effect/effect/system/reagents_explosion/e = new()
-			e.set_up(round(reagents.get_reagent_amount(/datum/reagent/toxin/phoron) / 2.5, 1), get_turf(src), 0, 0)
+			e.set_up(round(REAGENT_VOLUME(reagents, /decl/reagent/toxin/phoron) / 2.5, 1), get_turf(src), 0, 0)
 			e.start()
 			qdel(src)
 			return
-		if(reagents.get_reagent_amount(/datum/reagent/fuel)) // the fuel explodes, too, but much less violently
+		if(REAGENT_VOLUME(reagents, /decl/reagent/fuel)) // the fuel explodes, too, but much less violently
 			var/datum/effect/effect/system/reagents_explosion/e = new()
-			e.set_up(round(reagents.get_reagent_amount(/datum/reagent/fuel) / 5, 1), get_turf(src), 0, 0)
+			e.set_up(round(REAGENT_VOLUME(reagents, /decl/reagent/fuel) / 5, 1), get_turf(src), 0, 0)
 			e.start()
 			qdel(src)
 			return
@@ -298,17 +298,16 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_off = "cigoff"
 	type_butt = /obj/item/trash/cigbutt
 	chem_volume = 30
-	burn_rate = 0.012 //Lasts ~83 seconds)
+	burn_rate = 0.006 //Lasts ~166 seconds)
 	matchmes = "<span class='notice'>USER lights their NAME with their FLAME.</span>"
 	lightermes = "<span class='notice'>USER manages to light their NAME with FLAME.</span>"
 	zippomes = "<span class='notice'>With a flick of their wrist, USER lights their NAME with their FLAME.</span>"
 	weldermes = "<span class='notice'>USER casually lights the NAME with FLAME.</span>"
 	ignitermes = "<span class='notice'>USER fiddles with FLAME, and manages to light their NAME.</span>"
-
-/obj/item/clothing/mask/smokable/cigarette/Initialize()
-	. = ..()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco,10)
-	reagents.add_reagent(/datum/reagent/mental/nicotine,5) // 2/3 ratio, Adds 0.03 units per second
+	reagents_to_add = list(
+		/decl/reagent/toxin/tobacco = 10,
+		/decl/reagent/mental/nicotine = 5
+	)
 
 /obj/item/clothing/mask/smokable/cigarette/attackby(obj/item/W as obj, mob/user as mob)
 	..()
@@ -317,6 +316,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		if(S.active)
 			light(SPAN_WARNING("[user] swings their [W], barely missing themselves. They light their [name] in the process."))
 	return
+
+/obj/item/clothing/mask/smokable/cigarette/catch_fire()
+	if(!lit)
+		light(SPAN_WARNING("\The [src] is lit by the flames!"))
+
+/obj/item/clothing/mask/smokable/cigarette/extinguish_fire()
+	if(lit)
+		die(TRUE)
 
 /obj/item/clothing/mask/smokable/cigarette/attack(mob/living/carbon/human/H, mob/user, def_zone)
 	if(lit && H == user && istype(H))
@@ -328,7 +335,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			last_drag = world.time
 			H.visible_message("<span class='notice'>[H.name] takes a drag of their [name].</span>")
 			playsound(H, 'sound/items/cigs_lighters/inhale.ogg', 50, 0, -1)
-			reagents.trans_to_mob(H, (rand(10,20)/10), CHEM_BREATHE) //Smokes it faster. Slightly random amount.
+			reagents.trans_to_mob(H, (rand(5,10)/10), CHEM_BREATHE) //Smokes it faster. Slightly random amount.
 			return 1
 	return ..()
 
@@ -348,73 +355,58 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 				to_chat(user, SPAN_NOTICE("[src] is full."))
 
 /obj/item/clothing/mask/smokable/cigarette/attack_self(mob/user as mob)
-	if(lit == TRUE)
-		user.visible_message(SPAN_NOTICE("[user] calmly drops and treads on the lit [src], putting it out instantly."))
+	if(lit)
+		user.visible_message(SPAN_NOTICE("<b>[user]</b> calmly drops and treads on the lit [src], putting it out instantly."), SPAN_NOTICE("You calmly drop and tread on the lit [src], putting it out instantly."))
 		playsound(src.loc, 'sound/items/cigs_lighters/cig_snuff.ogg', 50, 1)
 		die(TRUE)
+	else // Cigarette packing. For compulsive smokers.
+		user.visible_message(SPAN_NOTICE("<b>[user]</b> taps \the [src] against their palm."), SPAN_NOTICE("You tap \the [src] against your palm."))
 	return ..()
 
 
 /obj/item/clothing/mask/smokable/cigarette/vanilla
 	burn_rate = 0.015
-
-/obj/item/clothing/mask/smokable/cigarette/vanilla/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco,15)
+	reagents_to_add = list(/decl/reagent/toxin/tobacco = 15)
 
 /obj/item/clothing/mask/smokable/cigarette/acmeco
 	burn_rate = 0.015
-
-/obj/item/clothing/mask/smokable/cigarette/acmeco/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco,5)
-	reagents.add_reagent(/datum/reagent/mental/nicotine,5)
-	reagents.add_reagent(/datum/reagent/lexorin,2)
-	reagents.add_reagent(/datum/reagent/serotrotium,3)
+	reagents_to_add = list(
+		/decl/reagent/toxin/tobacco = 5,
+		/decl/reagent/mental/nicotine = 5,
+		/decl/reagent/lexorin = 2,
+		/decl/reagent/serotrotium = 3
+	)
 
 /obj/item/clothing/mask/smokable/cigarette/blank
 	burn_rate = 0.015
 	chem_volume = 15
-
-/obj/item/clothing/mask/smokable/cigarette/blank/Initialize()
-	. = ..()
-	reagents.clear_reagents()
+	reagents_to_add = null
 
 /obj/item/clothing/mask/smokable/cigarette/dromedaryco
-
-/obj/item/clothing/mask/smokable/cigarette/dromedaryco/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco,5)
-	reagents.add_reagent(/datum/reagent/mental/nicotine,10)
+	reagents_to_add = list(
+		/decl/reagent/toxin/tobacco = 5,
+		/decl/reagent/mental/nicotine = 10
+	)
 
 /obj/item/clothing/mask/smokable/cigarette/nicotine
-
-/obj/item/clothing/mask/smokable/cigarette/nicotine/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco/rich,5)
-	reagents.add_reagent(/datum/reagent/mental/nicotine,10)
+	reagents_to_add = list(
+		/decl/reagent/toxin/tobacco/rich = 5,
+		/decl/reagent/mental/nicotine = 10
+	)
 
 /obj/item/clothing/mask/smokable/cigarette/rugged
-
-/obj/item/clothing/mask/smokable/cigarette/rugged/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco/fake,10)
-	reagents.add_reagent(/datum/reagent/mental/nicotine,5)
+	reagents_to_add = list(
+		/decl/reagent/toxin/tobacco/fake = 10,
+		/decl/reagent/mental/nicotine = 5
+	)
 
 /obj/item/clothing/mask/smokable/cigarette/adhomai
 	name = "adhomian cigarette"
 	desc = "An adhomian cigarette made from processed S'rendarr's Hand."
-
-/obj/item/clothing/mask/smokable/cigarette/adhomai/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco,5)
-	reagents.add_reagent(/datum/reagent/mental/nicotine,5)
+	reagents_to_add = list(
+		/decl/reagent/toxin/tobacco = 5,
+		/decl/reagent/mental/nicotine = 5
+	)
 
 ////////////
 // CIGARS //
@@ -437,12 +429,10 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	ignitermes = "<span class='notice'>USER fiddles with FLAME, and manages to light their NAME with the power of science.</span>"
 	drop_sound = 'sound/items/drop/gloves.ogg'
 	pickup_sound = 'sound/items/pickup/gloves.ogg'
-
-/obj/item/clothing/mask/smokable/cigarette/cigar/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco/rich,25)
-	reagents.add_reagent(/datum/reagent/mental/nicotine,5) // 1/5 Ratio
+	reagents_to_add = list(
+		/decl/reagent/toxin/tobacco/rich = 25,
+		/decl/reagent/mental/nicotine = 5
+	)
 
 /obj/item/clothing/mask/smokable/cigarette/cigar/havana
 	name = "premium Havanian cigar"
@@ -452,13 +442,11 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_off = "cigar2off"
 	type_butt = /obj/item/trash/cigbutt/cigarbutt/alt
 	chem_volume = 60
-
-/obj/item/clothing/mask/smokable/cigarette/cigar/havana/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco/rich,15)
-	reagents.add_reagent(/datum/reagent/mental/nicotine,5) // 1/6 Ratio
-	reagents.add_reagent(/datum/reagent/tricordrazine,10)
+	reagents_to_add = list(
+		/decl/reagent/toxin/tobacco/rich = 15,
+		/decl/reagent/mental/nicotine = 5,
+		/decl/reagent/tricordrazine = 10
+	)
 
 /obj/item/clothing/mask/smokable/cigarette/cigar/cohiba
 	name = "\improper Cohiba robusto cigar"
@@ -468,13 +456,11 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_off = "cigar2off"
 	type_butt = /obj/item/trash/cigbutt/cigarbutt/alt
 	chem_volume = 120
-
-/obj/item/clothing/mask/smokable/cigarette/cigar/cohiba/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/toxin/tobacco/rich,30)
-	reagents.add_reagent(/datum/reagent/mental/nicotine,10) //1/6 Ratio
-	reagents.add_reagent(/datum/reagent/tricordrazine,20)
+	reagents_to_add = list(
+		/decl/reagent/toxin/tobacco/rich = 30,
+		/decl/reagent/mental/nicotine = 10,
+		/decl/reagent/tricordrazine = 20
+	)
 
 /obj/item/trash/cigbutt
 	name = "cigarette butt"
@@ -515,11 +501,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_on = "sausageon"
 	type_butt = /obj/item/trash/cigbutt/sausagebutt
 	chem_volume = 6
-
-/obj/item/clothing/mask/smokable/cigarette/rolled/sausage/Initialize()
-	. = ..()
-	reagents.clear_reagents()
-	reagents.add_reagent(/datum/reagent/nutriment/protein,6)
+	reagents_to_add = list(/decl/reagent/nutriment/protein = 6)
 
 /obj/item/trash/cigbutt/sausagebutt
 	name = "sausage butt"
@@ -630,6 +612,16 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_off = "cobpipeoff"
 	chem_volume = 30
 
+/obj/item/clothing/mask/smokable/pipe/bonepipe
+	name = "Europan bone pipe"
+	desc = "A smoking pipe made out of the bones of the Europan bone whale."
+	desc_fluff = "While most commonly associated with bone charms, bones from various sea creatures on Europa are used in a variety of goods, such as this smoking pipe. While smoking in submarines is often an uncommon occurrence, due to a lack of available air or space, these pipes are a common sight in the many stations of Europa. Higher-quality pipes typically have scenes etched into their bones, and can tell the story of their owner's time on Europa."
+	icon_state = "bonepipeoff"
+	item_state = "bonepipeoff"
+	icon_on = "bonepipeon"
+	icon_off = "bonepipeoff"
+	chem_volume = 30
+
 /////////
 //ZIPPO//
 /////////
@@ -663,6 +655,17 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/flame_light_power = 2
 	var/flame_light_color = LIGHT_COLOR_LAVA
 
+/obj/item/flame/lighter/colourable
+	icon_state = "lighter-col"
+	item_state = "lighter-col"
+	base_state = "lighter-col"
+	build_from_parts = TRUE
+	worn_overlay = "top"
+
+/obj/item/flame/lighter/colourable/Initialize()
+	. = ..()
+	update_icon()
+
 /obj/item/flame/lighter/zippo
 	name = "\improper Zippo lighter"
 	desc = "The zippo. If you've spent that amount of money on a lighter, you're either a badass or a chain smoker."
@@ -672,6 +675,19 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	deactivation_sound = 'sound/items/cigs_lighters/zippo_off.ogg'
 	drop_sound = 'sound/items/drop/accessory.ogg'
 	pickup_sound = 'sound/items/pickup/accessory.ogg'
+
+/obj/item/flame/lighter/zippo/augment
+	name = "retractable lighter"
+	desc = "An augmented lighter, implanted directly into the hand, popping through the finger."
+	icon_state = "lighter-aug"
+	item_state = "lighter-aug"
+
+/obj/item/flame/lighter/zippo/augment/throw_at(atom/target, range, speed, mob/thrower)
+	thrower.drop_from_inventory(src)
+
+/obj/item/flame/lighter/zippo/augment/dropped()
+	loc = null
+	qdel(src)
 
 /obj/item/flame/lighter/zippo/dominia
 	name = "\improper Dominian Zippo lighter"
@@ -738,11 +754,58 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/flame/lighter/zippo/europa
 	name = "\improper Europan Zippo lighter"
-	desc = "A smokeless electrical coil lighter in the style of a zippo with the tricolour of the Jovian moon Europa on the side. It even its outside feels somewhat hot to the touch when it is turned on."
+	desc = "A smokeless electrical coil lighter in the style of a zippo with the tricolour of the Jovian moon Europa on the side. Even its outside feels somewhat hot to the touch when it is turned on."
 	desc_fluff = "Traditional lighters are often frowned upon in the various submarines and underwater bases of Europa for the fumes their open flames produce. As a result, flameless lighters using heated metal coils that ignite flammable material upon contact are employed instead. These lighters are often prized personal possessions of those who own them, as with living space, privacy and individual possessions are a luxury in the cramped quarters of Europan vessels and stations. A side effect of having lighters that use electrically heated metal coils as opposed to flames however, is that the exteriors of the lighters themselves can become heated to a point of inflicting superficial burns if left on for relatively short periods of time."
 	icon_state = "europazippo"
 	item_state = "europazippo"
 	flame_light_power = 1
+
+/obj/item/flame/lighter/zippo/gadpathur
+	name = "\improper Gadpathurian Zippo lighter"
+	desc = "A zippo lighter with a depiction of the flag of the United Planetary Defense Council of Gadpathur. The nozzle seems to be especially small in order to produce a weaker and dimmer flame."
+	desc_fluff = "Owing to the relative poverty of Gadpathur and the ever-present need for gasmasks, smoking is a rare habit on the planet. Still, Gadpathurians who choose to smoke typically keep lighters with smaller nozzles, both to reduce light and thus attention in the confines of a bunker and to conserve on fuel which too is hoarded for their endless war preparations. The Gadpathurian flag emblazoned on the side of the lighter is not a common feature, with most Gadpathurians who stay on the planet preferring to place a symbol of their cadre in its stead."
+	icon_state = "gadpathurzippo"
+	item_state = "gadpathurzippo"
+	flame_light_power = 1
+
+/obj/item/flame/lighter/zippo/asoral
+	name = "\improper Asoral jet lighter"
+	desc = "A thin lighter made from a heat-resistant polymer and a nozzle that wouldn't be out of place on a jet. While it might bear the logo of the Asoral Orbital and Suborbital Racing network on it, it utilizes advanced fuel from Xanu Prime which burns hotter, causing a blue flame."
+	desc_fluff = "The Asoral jet lighter began as a publicity stunt by a few intrepid engineers looking to recycle old and underperforming racing probe engines. Although that particular plan ended in disaster, the Asoral Racing network ended up loving the concept and adopting a smaller and safer version of the lighter as a form of advertising. In a pinch, lighters such as these are known to serve as replacement igniters for racers' engines. Until recently, they were produced with a plume similar to that of an afterburner before the merger of Crosk's racing networks with those of Xanu Prime."
+	icon_state = "lighter-asoral"
+	item_state = "lighter-asoral"
+	flame_light_color = LIGHT_COLOR_BLUE
+	flame_light_range = 2
+
+/obj/item/flame/lighter/zippo/nt
+	name = "\improper NanoTrasen Zippo lighter"
+	desc = "A zippo lighter with a depiction of NanoTrasen's iconic logo."
+	icon_state = "ntzippo"
+	item_state = "ntzippo"
+
+/obj/item/flame/lighter/zippo/fisanduh
+	name = "\improper Fisanduhian Zippo lighter"
+	desc = "A zippo with a depiction of the flag of the Confederate States of Fisanduh. This is a well crafted model that burns brighter and hotter than \
+	the usual lighter."
+	desc_fluff = "On Moroz it's rather hard to find a Confederate without at least some manner of lighter on their person. Fisanduhians don't \
+	smoke anymore than the rest of Moroz does, instead they prize these lighters for their utility. From burning loose thread to lighting a \
+	molotov and more. A common adage is that the fire of Fisanduh burns brighter than Dominia's, which seems to be true for their lighters at least. \
+	These have found purchase throughout the Spur due to their reliability and impressive capability to light up various things, causing a \
+	competition of sorts to arise with Fisanduhian and Himean producers over the best quality lighter."
+	icon_state = "fisanduhzippo"
+	item_state = "fisanduhzippo"
+	flame_light_range = 2
+
+/obj/item/flame/lighter/zippo/luceian
+	name = "\improper Luceian Zippo lighter"
+	desc = "A bright zippo lighter with the all-seeing eye of Ennoia on its front. Clearly Luceian."
+	desc_fluff = "Luceian lighters, sometimes referred to as “Ennoic Fires,” are commonly carried by Assunzionii as an emergency light \
+	source. A genuine lighter in the Luceian tradition will have a proving mark stamped upon its base that shows when and where it was \
+	blessed following its construction."
+	icon_state = "luceianzippo"
+	item_state = "luceianzippo"
+	flame_light_color = LIGHT_COLOR_WHITE
+	flame_light_range = 2
 
 /obj/item/flame/lighter/random/Initialize()
 	. = ..()
@@ -758,15 +821,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		icon_state = "[base_state]"
 		item_state = "[base_state]"
 	update_held_icon()
+	return ..()
 
 /obj/item/flame/lighter/attack_self(mob/living/user)
 	if(!base_state)
 		base_state = icon_state
 	if(user.r_hand == src || user.l_hand == src)
 		if(!lit)
-			lit = TRUE
-			update_icon()
-			playsound(src.loc, pick(activation_sound), 75, 1)
+			handle_lighting()
 			if(istype(src, /obj/item/flame/lighter/zippo))
 				if(last_open <= world.time - 20) //Spam limiter.
 					last_open = world.time
@@ -787,8 +849,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 					if(last_open <= world.time - 20) //Spam limiter.
 						last_open = world.time
 						user.visible_message(SPAN_DANGER("After a few attempts, <b>[user]</b> manages to light \the [src], they however burn their finger in the process."), range = 3)
-			set_light(flame_light_power, flame_light_range, l_color = flame_light_color)
-			START_PROCESSING(SSprocessing, src)
 		else
 			lit = FALSE
 			update_icon()
@@ -806,6 +866,15 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		return ..()
 	return
 
+/obj/item/flame/lighter/proc/handle_lighting()
+	lit = TRUE
+	update_icon()
+	playsound(src.loc, pick(activation_sound), 75, 1)
+	set_light(flame_light_power, flame_light_range, l_color = flame_light_color)
+	START_PROCESSING(SSprocessing, src)
+
+/obj/item/flame/lighter/vendor_action(var/obj/machinery/vending/V)
+	handle_lighting()
 
 /obj/item/flame/lighter/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
 	if(!istype(M, /mob))
@@ -960,7 +1029,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	..()
 
 /obj/item/reagent_containers/food/snacks/grown/attackby(obj/item/I, mob/user)
-	if(is_type_in_list(I, list(/obj/item/paper/cig/, /obj/item/paper/, /obj/item/teleportation_scroll)))
+	if(is_type_in_list(I, list(/obj/item/paper/cig/, /obj/item/paper/)))
 		if(!dry)
 			to_chat(user, SPAN_WARNING("You need to dry [src] first!"))
 			return

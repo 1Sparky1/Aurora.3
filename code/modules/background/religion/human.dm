@@ -26,12 +26,12 @@
 
 /datum/religion/hindu
 	name = RELIGION_HINDU
-	description = "An Indian religion encompassing a variety of traditions, beliefs and spiritual practices. Someone who practices Hinduism is called a Hindu."
+	description = "An Indian polytheistic religion encompassing a variety of traditions, beliefs and spiritual practices. Someone who practices Hinduism is called a Hindu."
 	book_name = "vedas"
 
 /datum/religion/buddhism
 	name = RELIGION_BUDDHISM
-	description = "An Indian religion encompassing a variety of traditions, beliefs and spiritual practices based on the teachings of the Buddha. Someone who practices Buddhism is called a Buddhist."
+	description = "An Indian nontheistic religion encompassing a variety of traditions, beliefs and spiritual practices based on the teachings of the Buddha. Someone who practices Buddhism is called a Buddhist."
 	book_name = "tripitaka"
 
 /datum/religion/moroz
@@ -58,3 +58,19 @@
 	and one must always be aware of the Shaitan - a malevolent spirit in Scarab folklore that personifies all evil."
 	book_name = "Collected Scarab Tales"
 	book_sprite = "scrapbook"
+
+/datum/religion/taoism
+	name = RELIGION_TAOISM
+	description = "A Chinese nontheistic religion and philosophical tradition which emphasises living in harmony with the Tao. Someone who practices Taoism is called a Taoist."
+	book_name = "tao te ching"
+	book_sprite = "scroll"
+
+/datum/religion/luceism
+	name = RELIGION_LUCEISM
+	description = "An unusual syncretic religion originating upon the planet of Assunzione, Luceism is a quasi-Abrahamic religion descended from a variety of faiths \
+					held by the original colonists that first emerged following the unexpected extinguishing of Assunzione's star in 2274. While arguably a branch of \
+					modern Abrahamic religions, Luceism is a hard-to-define religion dedicated to the worship of an abstract representation of light referred to as \
+					the Ennoia. Though it is, unsurprisingly, strongest on Assunzione, followers of the faith can be found throughout the Orion Spur alongside their \
+					houses of worship."
+	book_name = "Luceian Book of Scripture and Prayers"
+	book_sprite = "luce2"

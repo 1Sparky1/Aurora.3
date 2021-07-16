@@ -9,12 +9,14 @@
 	damage_overlays = 'icons/mob/human_races/masks/dam_monkey.dmi'
 	damage_mask = 'icons/mob/human_races/masks/dam_mask_monkey.dmi'
 	blood_mask = 'icons/mob/human_races/masks/blood_monkey.dmi'
-	language = null
+	language = LANGUAGE_CHIMPANZEE
 	default_language = LANGUAGE_CHIMPANZEE
+	secondary_langs = list(LANGUAGE_CHIMPANZEE)
 	greater_form = SPECIES_HUMAN
 	mob_size = MOB_SMALL
-	has_fine_manipulation = 0
 	show_ssd = null
+
+	bodytype = BODYTYPE_MONKEY
 
 	eyes = "blank_eyes"
 
@@ -27,7 +29,7 @@
 	tail = "chimptail"
 
 	unarmed_types = list(/datum/unarmed_attack/bite, /datum/unarmed_attack/claws)
-	inherent_verbs = list(/mob/living/proc/ventcrawl)
+	inherent_verbs = list(/mob/living/proc/ventcrawl, /mob/living/carbon/human/proc/change_animal_name)
 	hud_type = /datum/hud_data/monkey
 	meat_type = /obj/item/reagent_containers/food/snacks/meat/monkey
 
@@ -92,16 +94,10 @@
 
 	move_trail = /obj/effect/decal/cleanable/blood/tracks/paw
 
+	meat_type = /obj/item/reagent_containers/food/snacks/meat/adhomai
+
 /datum/species/monkey/tajaran/get_random_name()
 	return "farwa ([rand(100,999)])" // HACK HACK HACK, oh lords of coding please forgive me!
-
-/datum/species/monkey/tajaran/m_sai
-	name = SPECIES_MONKEY_TAJARA_MSAI
-	greater_form = SPECIES_TAJARA_MSAI
-
-/datum/species/monkey/tajaran/zhan_khazan
-	name = SPECIES_MONKEY_TAJARA_ZHAN
-	greater_form = SPECIES_TAJARA_ZHAN
 
 /datum/species/monkey/skrell
 	name = SPECIES_MONKEY_SKRELL
@@ -149,7 +145,8 @@
 	deform = 'icons/mob/human_races/monkeys/r_vkrexi.dmi'
 
 	inherent_verbs = list(
-		/mob/living/carbon/human/proc/bugbite
+		/mob/living/carbon/human/proc/bugbite,
+		/mob/living/carbon/human/proc/change_animal_name
 		)
 
 	tail = "vkrexitail"

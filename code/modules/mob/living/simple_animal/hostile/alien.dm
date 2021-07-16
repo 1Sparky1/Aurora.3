@@ -11,8 +11,10 @@
 	response_harm = "hits"
 	speed = -1
 	meat_type = /obj/item/reagent_containers/food/snacks/xenomeat
+	organ_names = list("chest", "lower body", "left arm", "right arm", "left leg", "right leg", "head")
 	maxHealth = 100
 	health = 100
+	blood_type = "#5BDD04"
 	harm_intent_damage = 5
 	melee_damage_lower = 25
 	melee_damage_upper = 25
@@ -37,7 +39,7 @@
 
 	tameable = FALSE
 	attack_emote = "growls at"
-	smart = TRUE
+	smart_ranged = TRUE
 
 	butchering_products = list(/obj/item/stack/material/animalhide/xeno = 5)
 

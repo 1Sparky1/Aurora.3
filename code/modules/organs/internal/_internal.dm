@@ -8,6 +8,7 @@
 	var/toxin_type = "undefined"
 	var/relative_size = 25 //Used for size calcs
 	var/on_mob_icon
+	var/list/possible_modifications = list("Normal","Assisted","Mechanical") //this is used in the character setup
 
 	min_broken_damage = 10 //Internal organs are frail, man.
 
@@ -120,9 +121,10 @@
 	if(istype(owner) && (toxin_type in owner.chem_effects))
 		take_damage(owner.chem_effects[toxin_type] * 0.1 * PROCESS_ACCURACY, prob(1))
 	handle_regeneration()
+	tick_surge_damage() //Yes, this is intentional.
 
 /obj/item/organ/internal/proc/handle_regeneration()
-	if(!damage || BP_IS_ROBOTIC(src) || !owner || owner.chem_effects[CE_TOXIN] || owner.is_asystole())
+	if(!damage || BP_IS_ROBOTIC(src) || !istype(owner) || owner.chem_effects[CE_TOXIN] || (toxin_type in owner.chem_effects) || owner.is_asystole())
 		return
 	if(damage < 0.1*max_damage)
 		heal_damage(0.1)

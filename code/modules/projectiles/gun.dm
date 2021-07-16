@@ -73,6 +73,7 @@
 	var/silenced = 0
 	var/muzzle_flash = 3
 	var/accuracy = 0   //accuracy is measured in tiles. +1 accuracy means that everything is effectively one tile closer for the purpose of miss chance, -1 means the opposite. launchers are not supported, at the moment.
+	var/offhand_accuracy = 0 // the higher this number, the more accurate this weapon is when fired from the off-hand
 	var/scoped_accuracy = null
 	var/list/burst_accuracy = list(0) //allows for different accuracies for each shot in a burst. Applied on top of accuracy
 	var/list/dispersion = list(0)
@@ -97,6 +98,8 @@
 	var/sel_mode = 1 //index of the currently selected mode
 	var/list/firemodes = list()
 
+	var/markings = 0 // for marking kills with a knife
+
 	//wielding information
 	var/fire_delay_wielded = 0
 	var/recoil_wielded = 0
@@ -106,6 +109,7 @@
 	var/is_wieldable = FALSE
 	var/wield_sound = /decl/sound_category/generic_wield_sound
 	var/unwield_sound = null
+	var/one_hand_fa_penalty = 0 // Additional accuracy/dispersion penalty for using full auto one-handed
 
 	//aiming system stuff
 	var/multi_aim = 0 //Used to determine if you can target multiple people.
@@ -146,8 +150,6 @@
 	if(istype(loc, /obj/item/rig_module))
 		has_safety = FALSE
 
-	update_wield_verb()
-
 	queue_icon_update()
 
 /obj/item/gun/update_icon()
@@ -166,6 +168,27 @@
 		if(!isturf(loc)) // In a mob, holster or bag or something
 			safety_overlay = image(gun_gui_icons,"[safety()]")
 			add_overlay(safety_overlay, TRUE)
+
+	if(is_wieldable)
+		if(wielded)
+			var/list/gun_states = icon_states(icon)
+			if(("[item_state]-wielded_lh" in gun_states) || ("[item_state]-wielded_rh" in gun_states))
+				item_state = "[item_state]-wielded"
+		else
+			item_state = replacetext(item_state,"-wielded","")
+
+	update_held_icon()
+
+/obj/item/gun/proc/unique_action(var/mob/user)
+	return
+
+/obj/item/gun/proc/toggle_firing_mode(var/mob/user, var/list/message_mobs)
+	var/datum/firemode/new_mode = switch_firemodes(user)
+	if(new_mode)
+		playsound(user, safetyoff_sound, 25)
+		to_chat(user, SPAN_NOTICE("\The [src] is now set to [new_mode.name]."))
+	for(var/M in message_mobs)
+		to_chat(M, SPAN_NOTICE("[user] has set \the [src] to [new_mode.name]."))
 
 //Checks whether a given mob can use the gun
 //Any checks that shouldn't result in handle_click_empty() being called if they fail should go here.
@@ -188,8 +211,9 @@
 
 	if(ishuman(M))
 		var/mob/living/carbon/human/A = M
-		if(A.martial_art?.no_guns)
-			to_chat(A, SPAN_WARNING("[A.martial_art.no_guns_message]"))
+		var/no_guns_check = A.check_no_guns()
+		if(no_guns_check)
+			to_chat(A, SPAN_WARNING("[no_guns_check]")) // the proc returns the no_guns_message
 			return FALSE
 
 	if((M.is_clumsy()) && prob(40)) //Clumsy handling
@@ -211,6 +235,7 @@
 			return TRUE
 		else
 			pin.auth_fail(user)
+			handle_click_empty(user)
 			return FALSE
 	else
 		if(needspin)
@@ -218,34 +243,6 @@
 			return FALSE
 		else
 			return TRUE
-
-/obj/item/gun/verb/wield_gun()
-	set name = "Wield Firearm"
-	set category = "Object"
-	set src in usr
-
-	if(is_wieldable)
-		toggle_wield(usr)
-		update_held_icon()
-	else
-		to_chat(usr, SPAN_WARNING("You can't wield \the [src]!"))
-
-/obj/item/gun/ui_action_click()
-	if(src in usr)
-		wield_gun()
-
-/obj/item/gun/proc/update_wield_verb()
-	if(is_wieldable) //If the gun is marked as wieldable, make the action button appear and add the verb.
-		action_button_name = "Wield Firearm"
-		verbs += /obj/item/gun/verb/wield_gun
-	else
-		action_button_name = ""
-		verbs -= /obj/item/gun/verb/wield_gun
-
-
-/obj/item/gun/emp_act(severity)
-	for(var/obj/O in contents)
-		O.emp_act(severity)
 
 /obj/item/gun/afterattack(atom/A, mob/living/user, adjacent, params)
 	if(adjacent) return //A is adjacent, is the user, or is on the user's person
@@ -296,20 +293,26 @@
 		return FALSE
 
 	if(world.time < next_fire_time)
-		if (world.time % 3) //to prevent spam
+		if(world.time % 3 && !can_autofire) //to prevent spam
 			to_chat(user, SPAN_WARNING("\The [src] is not ready to fire again!"))
 		return FALSE
 
-	var/shoot_time = (burst - 1) * burst_delay
+	var/shoot_time = max((burst - 1) * burst_delay, burst_delay)
 	user.setClickCooldown(shoot_time)
 	user.setMoveCooldown(shoot_time)
 	next_fire_time = world.time + shoot_time
 
 	return TRUE
 
-/obj/item/gun/proc/Fire(atom/target, mob/living/user, clickparams, pointblank=0, reflex=0)
+/obj/item/gun/proc/Fire(atom/target, mob/living/user, clickparams, pointblank=0, reflex=0, accuracy_decrease=0, is_offhand=0)
 	if(!fire_checks(target,user,clickparams,pointblank,reflex))
 		return FALSE
+
+	if(!is_offhand && user.a_intent == I_HURT) // no recursion
+		var/obj/item/gun/SG = user.get_inactive_hand()
+		if(istype(SG))
+			var/decreased_accuracy = (SG.w_class * 2) - SG.offhand_accuracy
+			addtimer(CALLBACK(SG, .proc/Fire, target, user, clickparams, pointblank, reflex, decreased_accuracy, TRUE), 5)
 
 	//actually attempt to shoot
 	var/turf/targloc = get_turf(target) //cache this in case target gets deleted during shooting, e.g. if it was a securitron that got destroyed.
@@ -319,7 +322,7 @@
 			handle_click_empty(user)
 			break
 
-		var/acc = burst_accuracy[min(i, burst_accuracy.len)]
+		var/acc = burst_accuracy[min(i, burst_accuracy.len)] - accuracy_decrease
 		var/disp = dispersion[min(i, dispersion.len)]
 		process_accuracy(projectile, user, target, acc, disp)
 
@@ -343,9 +346,7 @@
 
 	update_held_icon()
 
-	//update timing
-	var/delay = max(burst_delay+1, fire_delay)
-	user.setClickCooldown(min(delay, DEFAULT_QUICK_COOLDOWN))
+	user.setClickCooldown(max(burst_delay+1, fire_delay))
 	user.setMoveCooldown(move_delay)
 
 // Similar to the above proc, but does not require a user, which is ideal for things like turrets.
@@ -479,8 +480,7 @@
 			else if(grabstate >= GRAB_AGGRESSIVE)
 				damage_mult = 1.5
 	P.damage *= damage_mult
-	//you can't miss at point blank..
-	P.can_miss = 1
+	P.point_blank = TRUE
 
 /obj/item/gun/proc/process_accuracy(obj/projectile, mob/user, atom/target, acc_mod, dispersion)
 	var/obj/item/projectile/P = projectile
@@ -500,6 +500,13 @@
 		//Kinda balanced by fact you need like 2 seconds to aim
 		//As opposed to no-delay pew pew
 		P.accuracy += 2
+
+	var/datum/firemode/F
+	if(length(firemodes))
+		F = firemodes[sel_mode]
+	if(one_hand_fa_penalty > 2 && !wielded && F?.name == "full auto") // todo: make firemode names defines
+		P.accuracy -= one_hand_fa_penalty/2
+		P.dispersion -= one_hand_fa_penalty * 0.5
 
 //does the actual launching of the projectile
 /obj/item/gun/proc/process_projectile(obj/projectile, mob/user, atom/target, target_zone, params)
@@ -535,11 +542,11 @@
 	if (istype(in_chamber))
 		user.visible_message(SPAN_WARNING("\The [user] pulls the trigger."))
 		if (!pin && needspin)//Checks the pin of the gun.
-			user.visible_message(SPAN_WARNING("*click click*"))
+			handle_click_empty(user)
 			mouthshoot = FALSE
 			return
 		if (!pin.pin_auth() && needspin)
-			user.visible_message(SPAN_WARNING("*click click*"))
+			handle_click_empty(user)
 			mouthshoot = FALSE
 			return
 		if(safety() && user.a_intent != I_HURT)
@@ -565,7 +572,8 @@
 			log_and_message_admins("[key_name(user)] commited suicide using \a [src]")
 			user.apply_damage(in_chamber.damage*2.5, in_chamber.damage_type, BP_HEAD, used_weapon = "Point blank shot in the mouth with \a [in_chamber]", damage_flags = DAM_SHARP)
 			user.death()
-		qdel(in_chamber)
+
+		handle_post_fire(user, user, FALSE, FALSE, FALSE)
 		mouthshoot = FALSE
 		return
 	else
@@ -607,9 +615,12 @@
 	..()
 	if(get_dist(src, user) > 1)
 		return
+	if(markings)
+		to_chat(user, SPAN_NOTICE("It has [markings] [markings == 1 ? "notch" : "notches"] carved into the stock."))
 	if(needspin)
 		if(pin)
 			to_chat(user, "\The [pin] is installed in the trigger mechanism.")
+			pin.examine_info(user) // Allows people to check the current firemode of their wireless-control firing pin. Returns nothing if there's no wireless-control firing pin.
 		else
 			to_chat(user, "It doesn't have a firing pin installed, and won't fire.")
 	if(firemodes.len > 1)
@@ -617,6 +628,7 @@
 		to_chat(user, "The fire selector is set to [current_mode.name].")
 	if(has_safety)
 		to_chat(user, "The safety is [safety() ? "on" : "off"].")
+	return TRUE
 
 /obj/item/gun/proc/switch_firemodes()
 	if(!firemodes.len)
@@ -633,12 +645,12 @@
 
 	return new_mode
 
-/obj/item/gun/attack_self(mob/user, var/list/message_mobs)
-	var/datum/firemode/new_mode = switch_firemodes(user)
-	if(new_mode)
-		to_chat(user, SPAN_NOTICE("\The [src] is now set to [new_mode.name]."))
-	for(var/M in message_mobs)
-		to_chat(M, SPAN_NOTICE("[user] has set \the [src] to [new_mode.name]."))
+/obj/item/gun/attack_self(mob/user)
+	if(is_wieldable)
+		toggle_wield(usr)
+		update_held_icon()
+	else
+		to_chat(usr, SPAN_WARNING("You can't wield \the [src]!"))
 
 // Safety Procs
 
@@ -656,11 +668,11 @@
 	set src in usr
 	set category = "Object"
 	set name = "Toggle Gun Safety"
-	if(usr == loc)
+	if(has_safety && usr == loc)
 		toggle_safety(usr)
 
 /obj/item/gun/CtrlClick(var/mob/user)
-	if(user == loc)
+	if(has_safety && user == loc)
 		toggle_safety(user)
 		return TRUE
 	. = ..()
@@ -692,12 +704,8 @@
 		to_chat(user, SPAN_NOTICE("You are no-longer stabilizing \the [name] with both hands."))
 
 		var/obj/item/offhand/O = user.get_inactive_hand()
-		if(O && istype(O))
+		if(istype(O))
 			O.unwield()
-		else
-			O = user.get_active_hand()
-		return
-
 	else
 		if(user.get_inactive_hand())
 			to_chat(user, SPAN_WARNING("You need your other hand to be empty."))
@@ -742,11 +750,10 @@
 
 /obj/item/gun/mob_can_equip(M as mob, slot, disable_warning, ignore_blocked)
 	//Cannot equip wielded items.
-	if(is_wieldable)
-		if(wielded)
-			if(!disable_warning) // unfortunately not sure there's a way to get this to only fire once when it's looped
-				to_chat(M, SPAN_WARNING("Lower \the [initial(name)] first!"))
-			return FALSE
+	if(wielded)
+		if(!disable_warning) // unfortunately not sure there's a way to get this to only fire once when it's looped
+			to_chat(M, SPAN_WARNING("Lower \the [initial(name)] first!"))
+		return FALSE
 
 	return ..()
 
@@ -805,7 +812,7 @@
 	if(user)
 		var/obj/item/gun/O = user.get_inactive_hand()
 		if(istype(O))
-			to_chat(user, SPAN_NOTICE("You are no-longer stabilizing \the [name] with both hands."))
+			to_chat(user, SPAN_NOTICE("You are no-longer stabilizing \the [O] with both hands."))
 			O.unwield()
 			unwield()
 
@@ -813,6 +820,9 @@
 		qdel(src)
 
 /obj/item/offhand/mob_can_equip(var/mob/M, slot, disable_warning = FALSE)
+	var/static/list/equippable_slots = list(slot_l_hand, slot_r_hand)
+	if(slot in equippable_slots)
+		return TRUE
 	return FALSE
 
 /obj/item/gun/Destroy()
@@ -861,6 +871,9 @@
 		update_icon()
 		return
 
+	if(istype(pin) && pin.attackby(I, user)) //Allows users to use their ID on a gun with a wireless-control firing pin to register their identity.
+		return
+
 	if(istype(I, /obj/item/ammo_display))
 		if(!can_ammo_display)
 			to_chat(user, SPAN_WARNING("\The [I] cannot attach to \the [src]."))
@@ -896,7 +909,7 @@
 
 	if(pin && I.isscrewdriver())
 		visible_message(SPAN_WARNING("\The [user] begins to try and pry out \the [src]'s firing pin!"))
-		if(do_after(user,45 SECONDS,act_target = src))
+		if(do_after(user, 45 SECONDS))
 			if(pin.durable || prob(50))
 				visible_message(SPAN_NOTICE("\The [user] pops \the [pin] out of \the [src]!"))
 				pin.forceMove(get_turf(src))
@@ -910,6 +923,12 @@
 				qdel(pin)
 				pin = null
 		return
+
+	if(is_sharp(I))
+		user.visible_message("<b>[user]</b> carves a notched mark into \the [src].", SPAN_NOTICE("You carve a notched mark into \the [src]."))
+		markings++
+		return
+
 	return ..()
 
 /obj/item/gun/proc/get_ammo()
@@ -924,8 +943,18 @@
 		if(!ismob(loc) && !ismob(loc.loc))
 			maptext = ""
 			return
-		if(get_ammo() > 9)
-			maptext_x = 18
+		var/ammo = get_ammo()
+		if(ammo > 9)
+			if(ammo < 20)
+				maptext_x = 20
+			else
+				maptext_x = 18
 		else
 			maptext_x = 22
-		maptext = "<span style=\"font-family: 'Small Fonts'; -dm-text-outline: 1 black; font-size: 7px;\">[get_ammo()]</span>"
+		maptext = "<span style=\"font-family: 'Small Fonts'; -dm-text-outline: 1 black; font-size: 7px;\">[ammo]</span>"
+
+/obj/item/gun/get_print_info(var/no_clear = TRUE)
+	if(no_clear)
+		. = ""
+	. += "Burst: [burst]<br>"
+	. += "Reliability: [reliability]<br>"

@@ -61,7 +61,7 @@
 	ammo_type = /obj/item/ammo_casing/c45
 	matter = list(DEFAULT_WALL_MATERIAL = 525) //metal costs are very roughly based around 1 .45 casing = 75 metal
 	caliber = ".45"
-	max_ammo = 7
+	max_ammo = 9
 	multiple_sprites = 1
 
 /obj/item/ammo_magazine/c45m/empty
@@ -114,7 +114,7 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 600)
 	caliber = "9mm"
 	ammo_type = /obj/item/ammo_casing/c9mm
-	max_ammo = 10
+	max_ammo = 12
 	multiple_sprites = 1
 
 /obj/item/ammo_magazine/mc9mm/empty
@@ -191,7 +191,7 @@
 	caliber = "a556"
 	matter = list(DEFAULT_WALL_MATERIAL = 1800)
 	ammo_type = /obj/item/ammo_casing/a556
-	max_ammo = 10
+	max_ammo = 30
 	multiple_sprites = 1
 
 /obj/item/ammo_magazine/a556/empty
@@ -204,6 +204,26 @@
 /obj/item/ammo_magazine/a556/ap
 	name = "magazine (5.56mm AP)"
 	icon_state = "5.56AP"
+	origin_tech = list(TECH_COMBAT = 3)
+	ammo_type = /obj/item/ammo_casing/a556/ap
+
+/obj/item/ammo_magazine/a556/carbine
+	name = "carbine magazine (5.56mm)"
+	icon_state = "5.56c"
+	desc = "A 5.56 ammo magazine fit for a carbine, not an assault rifle."
+	matter = list(DEFAULT_WALL_MATERIAL = 1250)
+	max_ammo = 15
+
+/obj/item/ammo_magazine/a556/carbine/empty
+	max_ammo = 0
+
+/obj/item/ammo_magazine/a556/carbine/practice
+	name = "carbine magazine (5.56mm practice)"
+	ammo_type = /obj/item/ammo_casing/a556/practice
+
+/obj/item/ammo_magazine/a556/carbine/ap
+	name = "carbine magazine (5.56mm AP)"
+	icon_state = "5.56APc"
 	origin_tech = list(TECH_COMBAT = 3)
 	ammo_type = /obj/item/ammo_casing/a556/ap
 

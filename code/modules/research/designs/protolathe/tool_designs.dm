@@ -108,3 +108,45 @@ datum/design/item/tool/advanced_light_replacer
 	req_tech = list(TECH_DATA = 4, TECH_MATERIAL = 4)
 	materials = list(MATERIAL_GLASS = 1000, MATERIAL_GOLD = 200)
 	build_path = /obj/item/aicard
+
+/datum/design/item/tool/hand_tele
+	desc = "A hand-held bluespace teleporter that can rip open portals to a random nearby location, or lock onto a teleporter with a selected teleportation beacon."
+	req_tech = list(TECH_BLUESPACE = 4, TECH_MATERIAL = 6)
+	materials = list(MATERIAL_STEEL = 5000, MATERIAL_GLASS = 5000, MATERIAL_GOLD = 5000, MATERIAL_DIAMOND = 2500, MATERIAL_URANIUM = 2500, MATERIAL_PHORON = 2500)
+	build_path = /obj/item/hand_tele
+
+/datum/design/item/tool/rfd
+	desc = "A RFD, modified to construct walls and floors."
+	req_tech = list(TECH_ENGINEERING = 4, TECH_MATERIAL = 4)
+	materials = list(DEFAULT_WALL_MATERIAL = 2500, MATERIAL_GLASS = 2500, MATERIAL_SILVER = 2500, MATERIAL_GOLD = 2500)
+	build_path = /obj/item/rfd/construction
+
+/datum/design/item/tool/rfd_ammo
+	desc = "Highly compressed matter for the RFD."
+	req_tech = list(TECH_ENGINEERING = 4, TECH_MATERIAL = 4)
+	materials = list(DEFAULT_WALL_MATERIAL = 2000, MATERIAL_GLASS = 2000)
+	build_path = /obj/item/rfd_ammo
+
+/datum/design/item/tool/rfd_service
+	desc = "A RFD, modified to deploy service items."
+	req_tech = list(TECH_ENGINEERING = 4, TECH_MATERIAL = 4)
+	materials = list(DEFAULT_WALL_MATERIAL = 2000, MATERIAL_GLASS = 2000)
+	build_path = /obj/item/rfd/service
+
+/datum/design/item/tool/rfd_pipe
+	desc = "A heavily modified RFD, modified to construct pipes and piping accessories."
+	req_tech = list(TECH_ENGINEERING = 5, TECH_MATERIAL = 5)
+	materials = list(DEFAULT_WALL_MATERIAL = 3000, MATERIAL_GLASS = 2500, MATERIAL_SILVER = 2500)
+	build_path = /obj/item/rfd/piping
+
+/datum/design/item/tool/idris_backpack
+	desc = "The infamously Idris Service Standard refers to this monstrous, self-stabilizing back-mounted utensil and service item holder, not anything professional."
+	req_tech = list(TECH_ENGINEERING = 2, TECH_MATERIAL = 2)
+	materials = list(DEFAULT_WALL_MATERIAL = 1500, MATERIAL_GLASS = 1500)
+	build_path = /obj/item/storage/backpack/service
+
+/datum/design/item/tool/bluespace_neutralizer
+	desc = "A state of the art bluespace neutralizer, capable of shutting down any bluespace portal it gets used on. A special mode exists for severe interdimensional breaches, but this is highly unlikely to be necessary."
+	req_tech = list(TECH_ENGINEERING = 2, TECH_MATERIAL = 2, TECH_BLUESPACE = 4)
+	materials = list(DEFAULT_WALL_MATERIAL = 20000, MATERIAL_GLASS = 20000, MATERIAL_SILVER = 20000, MATERIAL_GOLD = 20000, MATERIAL_PHORON = 10000)
+	build_path = /obj/item/bluespace_neutralizer

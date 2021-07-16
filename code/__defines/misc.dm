@@ -57,14 +57,16 @@
 #define CHAT_GHOSTRADIO 0x2000
 #define SHOW_TYPING     0x4000
 #define CHAT_NOICONS    0x8000
+#define CHAT_GHOSTLOOC	0x10000
 
 #define PARALLAX_SPACE 0x1
 #define PARALLAX_DUST  0x2
 #define PROGRESS_BARS  0x4
 #define PARALLAX_IS_STATIC 0x8
 #define FLOATING_MESSAGES 0x10
+#define HOTKEY_DEFAULT 0x20
 
-#define TOGGLES_DEFAULT (SOUND_ADMINHELP|SOUND_MIDI|SOUND_AMBIENCE|SOUND_LOBBY|CHAT_OOC|CHAT_DEAD|CHAT_GHOSTEARS|CHAT_GHOSTSIGHT|CHAT_PRAYER|CHAT_RADIO|CHAT_ATTACKLOGS|CHAT_LOOC)
+#define TOGGLES_DEFAULT (SOUND_ADMINHELP|SOUND_MIDI|SOUND_AMBIENCE|SOUND_LOBBY|CHAT_OOC|CHAT_DEAD|CHAT_GHOSTEARS|CHAT_GHOSTSIGHT|CHAT_PRAYER|CHAT_RADIO|CHAT_ATTACKLOGS|CHAT_LOOC|CHAT_GHOSTLOOC)
 
 //Sound effects toggles
 #define ASFX_AMBIENCE	1
@@ -89,6 +91,7 @@
 #define SPECIALROLE_HUD 8 // AntagHUD image.
 #define  STATUS_HUD_OOC 9 // STATUS_HUD without virus DB check for someone being ill.
 #define 	  LIFE_HUD 10 // STATUS_HUD that only reports dead or alive
+#define     TRIAGE_HUD 11 // a HUD that creates a bar above the user showing their medical status
 
 //	Shuttles.
 
@@ -130,10 +133,12 @@
 #define DEFAULT_JOB_TYPE /datum/job/assistant
 
 //Area flags, possibly more to come
-#define RAD_SHIELDED 1 //shielded from radiation, clearly
-#define SPAWN_ROOF   2 // if we should attempt to spawn a roof above us.
-#define HIDE_FROM_HOLOMAP 4 // if we shouldn't be drawn on station holomaps
-#define FIRING_RANGE	8
+#define RAD_SHIELDED        1 //shielded from radiation, clearly
+#define SPAWN_ROOF          2 // if we should attempt to spawn a roof above us.
+#define HIDE_FROM_HOLOMAP   4 // if we shouldn't be drawn on station holomaps
+#define FIRING_RANGE        8
+#define NO_CREW_EXPECTED   16 // Areas where crew is not expected to ever be. Used to tell antag bases and such from crew-accessible areas on centcom level.
+#define PRISON             32 // Marks prison area for purposes of checking if brigged/imprisoned
 
 // Convoluted setup so defines can be supplied by Bay12 main server compile script.
 // Should still work fine for people jamming the icons into their repo.
@@ -197,7 +202,9 @@
 #define PROGRAM_SILICON (PROGRAM_SILICON_AI | PROGRAM_SILICON_ROBOT | PROGRAM_SILICON_PAI)
 #define PROGRAM_STATIONBOUND (PROGRAM_SILICON_AI | PROGRAM_SILICON_ROBOT)
 #define PROGRAM_ALL_REGULAR (PROGRAM_CONSOLE | PROGRAM_LAPTOP | PROGRAM_TABLET | PROGRAM_WRISTBOUND | PROGRAM_TELESCREEN)
+#define PROGRAM_ALL_HANDHELD (PROGRAM_TABLET | PROGRAM_WRISTBOUND)
 
+#define PROGRAM_STATE_DISABLED -1
 #define PROGRAM_STATE_KILLED 0
 #define PROGRAM_STATE_BACKGROUND 1
 #define PROGRAM_STATE_ACTIVE 2
@@ -214,9 +221,19 @@
 #define PROGRAM_SERVICE 2
 #define PROGRAM_TYPE_ALL (PROGRAM_NORMAL | PROGRAM_SERVICE)
 
+#define DEVICE_UNKNOWN 0
+#define DEVICE_COMPANY 1
+#define DEVICE_PRIVATE 2
+
+#define SCANNER_MEDICAL 1
+#define SCANNER_REAGENT 2
+#define SCANNER_GAS 4
+
 // Special return values from bullet_act(). Positive return values are already used to indicate the blocked level of the projectile.
 #define PROJECTILE_CONTINUE   -1 //if the projectile should continue flying after calling bullet_act()
 #define PROJECTILE_FORCE_MISS -2 //if the projectile should treat the attack as a miss (suppresses attack and admin logs) - only applies to mobs.
+#define PROJECTILE_DODGED     -3 //this is similar to the above, but the check and message is run on the mob, instead of on the projectile code. basically just has a unique message
+#define PROJECTILE_STOPPED    -4 //stops the projectile completely, as if a shield absorbed it
 
 //Camera capture modes
 #define CAPTURE_MODE_REGULAR 0 //Regular polaroid camera mode
@@ -226,12 +243,12 @@
 //Cargo random stock vars
 //These are used in randomstock.dm
 //And also for generating random loot crates in crates.dm
-#define TOTAL_STOCK 	200//The total number of items we'll spawn in cargo stock
+#define TOTAL_STOCK 	180//The total number of items we'll spawn in cargo stock
 
-#define STOCK_UNCOMMON_PROB	23
+#define STOCK_UNCOMMON_PROB	25
 //The probability, as a percentage for each item, that we'll choose from the uncommon spawns list
 
-#define STOCK_RARE_PROB	2.8
+#define STOCK_RARE_PROB	3
 //The probability, as a percentage for each item, that we'll choose from the rare spawns list
 
 //If an item is not rare or uncommon, it will be chosen from the common spawns list.
@@ -259,6 +276,10 @@
   )
 
 #define get_turf(A) (get_step(A, 0))
+#define NORTH_OF_TURF(T)	locate(T.x, T.y + 1, T.z)
+#define EAST_OF_TURF(T)		locate(T.x + 1, T.y, T.z)
+#define SOUTH_OF_TURF(T)	locate(T.x, T.y - 1, T.z)
+#define WEST_OF_TURF(T)		locate(T.x - 1, T.y, T.z)
 
 #define UNTIL(X) while(!(X)) stoplag()
 
@@ -305,6 +326,7 @@
 #define USE_ALLOW_NON_ADJACENT 16
 #define USE_FORCE_SRC_IN_USER 32
 #define USE_DISALLOW_SILICONS 64
+#define USE_DISALLOW_SPECIALS 128 // revenants, zombies, etc
 
 #define USE_SUCCESS 0
 #define USE_FAIL_NON_ADJACENT 1
@@ -314,6 +336,7 @@
 #define USE_FAIL_INCAPACITATED 5
 #define USE_FAIL_NOT_IN_USER 6
 #define USE_FAIL_IS_SILICON 7
+#define USE_FAIL_IS_MOB_SPECIAL 8
 
 #define DEFAULT_SIGHT (SEE_SELF)
 
@@ -420,6 +443,8 @@ Define for getting a bitfield of adjacent turfs that meet a condition.
 #define GET_ABOVE(A) (HAS_ABOVE(A:z) ? get_step(A, UP) : null)
 #define GET_BELOW(A) (HAS_BELOW(A:z) ? get_step(A, DOWN) : null)
 
+#define GET_Z(A) (get_step(A, 0)?.z || 0)
+
 #define NULL_OR_EQUAL(self,other) (!(self) || (self) == (other))
 
 //Lying animation
@@ -432,6 +457,7 @@ Define for getting a bitfield of adjacent turfs that meet a condition.
 #define SKILLET				1 << 3
 #define SAUCEPAN			1 << 4
 #define POT					1 << 5
+#define GRILL				1 << 6
 
 // Cooking misc.
 // can_insert return values
@@ -442,3 +468,12 @@ Define for getting a bitfield of adjacent turfs that meet a condition.
 #define CONTAINER_EMPTY		0
 #define CONTAINER_SINGLE	1
 #define CONTAINER_MANY		2
+//Misc text define. Does 4 spaces. Used as a makeshift tabulator.
+#define FOURSPACES "&nbsp;&nbsp;&nbsp;&nbsp;"
+#define CLIENT_FROM_VAR(I) (ismob(I) ? I:client : (isclient(I) ? I : (istype(I, /datum/mind) ? I:current?:client : null)))
+
+// check_items/check_reagents/check_fruits return values
+#define COOK_CHECK_FAIL		-1
+#define COOK_CHECK_EXTRA	0
+#define COOK_CHECK_EXACT	1
+

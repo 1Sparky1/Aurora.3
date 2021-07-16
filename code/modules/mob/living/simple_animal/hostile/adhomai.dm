@@ -6,6 +6,8 @@
 	icon_dead = "devil_dead"
 	icon_rest = "devil_rest"
 	turns_per_move = 3
+
+	organ_names = list("head", "chest", "right wing", "left wing", "right leg", "left leg")
 	response_help = "pets the"
 	response_disarm = "gently pushes aside the"
 	response_harm = "hits the"
@@ -16,7 +18,6 @@
 
 	pass_flags = PASSTABLE
 
-	harm_intent_damage = 5
 	melee_damage_lower = 15
 	melee_damage_upper = 15
 	attacktext = "bitten"

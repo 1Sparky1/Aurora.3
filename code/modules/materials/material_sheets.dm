@@ -3,10 +3,12 @@
 	desc_info = "Use in your hand to bring up the recipe menu.  If you have enough sheets, click on something on the list to build it."
 	force = 5
 	throwforce = 5
+	flags = HELDMAPTEXT
 	w_class = ITEMSIZE_NORMAL
 	throw_speed = 3
 	throw_range = 3
 	max_amount = 50
+	recyclable = TRUE // Pretty much all materials should be recyclable
 
 	var/default_type = DEFAULT_WALL_MATERIAL
 	var/material/material
@@ -14,16 +16,15 @@
 	var/apply_colour //temp pending icon rewrite
 	var/use_material_sound = TRUE
 
-/obj/item/stack/material/Initialize()
-	. = ..()
+/obj/item/stack/material/Initialize(mapload, amount)
+	..()
 	randpixel_xy()
 
 	if(!default_type)
 		default_type = DEFAULT_WALL_MATERIAL
 	material = SSmaterials.get_material_by_name(default_type)
 	if(!material)
-		qdel(src)
-		return
+		return INITIALIZE_HINT_QDEL
 
 	recipes = material.get_recipes()
 	stacktype = material.stack_type
@@ -42,6 +43,9 @@
 		flags |= CONDUCT
 
 	matter = material.get_matter()
+	return INITIALIZE_HINT_LATELOAD
+
+/obj/item/stack/material/LateInitialize()
 	update_strings()
 
 /obj/item/stack/material/get_material()
@@ -59,6 +63,7 @@
 		name = "[material.use_name] [material.sheet_singular_name]"
 		desc = "A [material.sheet_singular_name] of [material.use_name]."
 		gender = NEUTER
+	check_maptext(SMALL_FONTS(7, amount))
 
 /obj/item/stack/material/use(var/used)
 	. = ..()
@@ -246,6 +251,21 @@
 	default_type = DEFAULT_WALL_MATERIAL
 	icon_has_variants = TRUE
 
+/obj/item/stack/material/steel/attackby(obj/item/W, mob/user)
+	. = ..()
+	if(is_sharp(W))
+		if(amount < 5)
+			to_chat(user, SPAN_WARNING("You need at least five sheets of steel to do this!"))
+			return
+		user.visible_message("<b>[user]</b> starts carving some steel wool out of \the [src].", SPAN_NOTICE("You start carving some steel wool out of \the [src]."))
+		if(do_after(user, 10 SECONDS))
+			if(amount < 5)
+				return
+			to_chat(user, SPAN_NOTICE("You carve some steel wool out of \the [src]."))
+			var/obj/item/steelwool/SW = new /obj/item/steelwool(get_turf(src))
+			user.put_in_hands(SW)
+			use(5)
+
 /obj/item/stack/material/steel/full/Initialize()
 	. = ..()
 	amount = max_amount
@@ -328,7 +348,7 @@
 
 /obj/item/stack/material/leather
 	name = "leather"
-	desc = "The by-product of mob grinding."
+	desc = "Created by only the finest of biogenerators!"
 	icon_state = "sheet-leather"
 	default_type = MATERIAL_LEATHER
 	icon_has_variants = TRUE
@@ -337,6 +357,11 @@
 	. = ..()
 	amount = max_amount
 	update_icon()
+
+/obj/item/stack/material/leather/fine
+	name = "fine leather"
+	desc = "Handcrafted by an artisan, this leather is a wonderful status symbol for the wealthy few... Despite it not being any tougher than its biogenerated counterpart."
+	default_type = MATERIAL_LEATHER_FINE
 
 /obj/item/stack/material/glass
 	name = "glass"
@@ -352,8 +377,8 @@
 /obj/item/stack/material/glass/wired
 	name = "wired glass"
 	icon = 'icons/obj/stacks/tiles.dmi'
-	icon_state = MATERIAL_GLASS_WIRED
-	default_type = "wired glass"
+	icon_state = "glass_wire"
+	default_type = MATERIAL_GLASS_WIRED
 
 /obj/item/stack/material/glass/wired/full/Initialize()
 	. = ..()

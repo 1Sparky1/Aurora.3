@@ -54,17 +54,23 @@
 				var/mob/living/carbon/C = usr
 				C.toggle_throw_mode()
 			else
-				to_chat(usr, "<span class='warning'>This mob type cannot throw items.</span>")
+				to_chat(usr, SPAN_WARNING("This mob type cannot throw items."))
 			return
 		if(NORTHWEST)
 			if(iscarbon(usr))
 				var/mob/living/carbon/C = usr
 				if(!C.get_active_hand())
-					to_chat(usr, "<span class='warning'>You have nothing to drop in your hand.</span>")
+					to_chat(usr, SPAN_WARNING("You have nothing to drop in your hand."))
 					return
 				drop_item()
+			else if(isrobot(usr))
+				var/mob/living/silicon/robot/R = usr
+				var/I = R.get_active_hand()
+				if(istype(I, /obj/item/gripper))
+					var/obj/item/gripper/G = I
+					G.drop_item()
 			else
-				to_chat(usr, "<span class='warning'>This mob type cannot drop items.</span>")
+				to_chat(usr, SPAN_WARNING("This mob type cannot drop items."))
 			return
 
 //This gets called when you press the delete button.
@@ -72,7 +78,7 @@
 	set hidden = 1
 
 	if(!usr.pulling)
-		to_chat(usr, "<span class='notice'>You are not pulling anything.</span>")
+		to_chat(usr, SPAN_NOTICE("You are not pulling anything."))
 		return
 	usr.stop_pulling()
 
@@ -250,33 +256,34 @@
 			for(var/mob/M in range(mob, 1))
 				if(M.pulling == mob)
 					if(!M.restrained() && M.stat == 0 && M.canmove && mob.Adjacent(M))
-						to_chat(src, "<span class='notice'>You're restrained! You can't move!</span>")
+						to_chat(src, SPAN_NOTICE("You're restrained! You can't move!"))
 						return 0
 					else
 						M.stop_pulling()
 
 		if(mob.pinned.len)
-			to_chat(src, "<span class='notice'>You're pinned to a wall by [mob.pinned[1]]!</span>")
+			to_chat(src, SPAN_WARNING("You're pinned to a wall by [mob.pinned[1]]!"))
+			move_delay = world.time + 1 SECOND // prevent spam
 			return 0
 
 		move_delay = world.time - leftover//set move delay
 
-		if (mob.buckled)
-			if(istype(mob.buckled, /obj/vehicle))
+		if (mob.buckled_to)
+			if(istype(mob.buckled_to, /obj/vehicle))
 				//manually set move_delay for vehicles so we don't inherit any mob movement penalties
 				//specific vehicle move delays are set in code\modules\vehicles\vehicle.dm
 				move_delay = world.time
 				//drunk driving
 				if(mob.confused && prob(25))
 					direct = pick(cardinal)
-				return mob.buckled.relaymove(mob,direct)
+				return mob.buckled_to.relaymove(mob,direct)
 
 			//TODO: Fuck wheelchairs.
 			//Toss away all this snowflake code here, and rewrite wheelchairs as a vehicle.
-			else if(istype(mob.buckled, /obj/structure/bed/chair/wheelchair))
+			else if(istype(mob.buckled_to, /obj/structure/bed/chair/wheelchair))
 				var/min_move_delay = 0
-				if(ishuman(mob.buckled))
-					var/mob/living/carbon/human/driver = mob.buckled
+				if(ishuman(mob.buckled_to))
+					var/mob/living/carbon/human/driver = mob.buckled_to
 					var/obj/item/organ/external/l_hand = driver.get_organ(BP_L_HAND)
 					var/obj/item/organ/external/r_hand = driver.get_organ(BP_R_HAND)
 					if((!l_hand || l_hand.is_stump()) && (!r_hand || r_hand.is_stump()))
@@ -286,16 +293,18 @@
 				if(mob.confused && prob(25))
 					direct = pick(cardinal)
 				move_delay += max((mob.movement_delay() + config.walk_speed) * config.walk_delay_multiplier, min_move_delay)
-				return mob.buckled.relaymove(mob,direct)
+				return mob.buckled_to.relaymove(mob,direct)
 
 		var/tally = mob.movement_delay() + config.walk_speed
 
 		// Apply human specific modifiers.
 		var/mob_is_human = ishuman(mob)	// Only check this once and just reuse the value.
+		var/sprint_tally = 0
 		if (mob_is_human)
 			var/mob/living/carbon/human/H = mob
 			//If we're sprinting and able to continue sprinting, then apply the sprint bonus ontop of this
-			if (H.m_intent == "run" && H.species.handle_sprint_cost(H, tally)) //This will return false if we collapse from exhaustion
+			if (H.m_intent == M_RUN && (H.status_flags & GODMODE || H.species.handle_sprint_cost(H, tally, TRUE))) //This will return false if we collapse from exhaustion
+				sprint_tally = tally
 				tally = (tally / (1 + H.sprint_speed_factor)) * config.run_delay_multiplier
 			else
 				tally = max(tally * config.walk_delay_multiplier, H.min_walk_delay) //clamp walking speed if its limited
@@ -319,6 +328,8 @@
 		if(istype(mob.pulledby, /obj/structure/bed/chair/wheelchair) || istype(mob.pulledby, /obj/structure/janitorialcart))
 			move_delay += 1
 			return mob.pulledby.relaymove(mob, direct)
+
+		var/old_loc = mob.loc
 
 		//We are now going to move
 		moving = 1
@@ -355,7 +366,7 @@
 							M.animate_movement = 2
 							return
 
-		else if(mob.confused && prob(25))
+		else if(mob.confused && prob(25) && mob.m_intent == M_RUN)
 			step(mob, pick(cardinal))
 		else
 			. = mob.SelfMove(n, direct)
@@ -370,6 +381,10 @@
 
 		moving = 0
 
+		if(sprint_tally && mob.loc != old_loc)
+			var/mob/living/carbon/human/H = mob
+			H.species.handle_sprint_cost(H, sprint_tally, FALSE)
+
 	if(isobj(mob.loc) || ismob(mob.loc))	//Inside an object, tell it we moved
 		var/atom/O = mob.loc
 		return O.relaymove(mob, direct)
@@ -383,20 +398,19 @@
 /client/proc/Process_Incorpmove(direct)
 	var/turf/mobloc = get_turf(mob)
 	switch(mob.incorporeal_move)
-		if(1)
+		if(INCORPOREAL_GHOST)
 			var/turf/T = get_step(mob, direct)
 			if(mob.check_holy(T))
-				to_chat(mob, "<span class='warning'>You cannot get past holy grounds while you are in this plane of existence!</span>")
+				to_chat(mob, SPAN_WARNING("You cannot get past holy grounds while you are in this plane of existence!"))
 				return
 			else
 				mob.forceMove(get_step(mob, direct))
 				mob.dir = direct
-		if(2)
-			anim(mobloc,mob,'icons/mob/mob.dmi',,"shadow",,mob.dir)
+		if(INCORPOREAL_NINJA, INCORPOREAL_BSTECH)
+			anim(mobloc, mob, 'icons/mob/mob.dmi', null, "shadow", null, mob.dir)
 			mob.forceMove(get_step(mob, direct))
 			mob.dir = direct
-
-		if(3)
+		if(INCORPOREAL_SHADE)
 			if(!mob.canmove || mob.anchored)
 				return
 			move_delay = 1 + world.time
@@ -404,19 +418,19 @@
 			for(var/obj/structure/window/W in T)
 				if(istype(W, /obj/structure/window/phoronbasic) || istype(W, /obj/structure/window/phoronreinforced))
 					if(W.is_full_window())
-						to_chat(mob, "<span class='warning'>\The [W] obstructs your movement!</span>")
+						to_chat(mob, SPAN_WARNING("\The [W] obstructs your movement!"))
 						return
 
 					if((direct & W.dir) && W.density)
-						to_chat(mob, "<span class='warning'>\The [W] obstructs your movement!</span>")
+						to_chat(mob, SPAN_WARNING("\The [W] obstructs your movement!"))
 						return
 			if(istype(T, /turf/simulated/wall/phoron) || istype(T, /turf/simulated/wall/ironphoron))
-				to_chat(mob, "<span class='warning'>\The [T] obstructs your movement!</span>")
+				to_chat(mob, SPAN_WARNING("\The [T] obstructs your movement!"))
 				return
 
 			for(var/mob/living/L in T)
 				if(L.is_diona() == DIONA_WORKER)
-					to_chat(mob, "<span class='danger'>You struggle briefly as you are photovored into \the [L], trapped within a nymphomatic husk!</span>")
+					to_chat(mob, SPAN_DANGER("You struggle briefly as you are photovored into \the [L], trapped within a nymphomatic husk!"))
 					var/mob/living/carbon/alien/diona/D = new /mob/living/carbon/alien/diona(L)
 					var/mob/living/simple_animal/shade/bluespace/BS = mob
 					if (!(/mob/living/carbon/proc/echo_eject in L.verbs))
@@ -455,6 +469,9 @@
 // Return 1 for movement, 0 for none,
 // -1 to allow movement but with a chance of slipping
 /mob/proc/Allow_Spacemove(var/check_drift = 0)
+	if(status_flags & NOFALL || incorporeal_move == INCORPOREAL_BSTECH)
+		return 1
+
 	if(!Check_Dense_Object()) //Nothing to push off of so end here
 		return 0
 
@@ -515,8 +532,8 @@
 
 //return 1 if slipped, 0 otherwise
 /mob/proc/handle_spaceslipping()
-	if(prob(slip_chance(5)) && !buckled)
-		to_chat(src, "<span class='warning'>You slipped!</span>")
+	if(prob(slip_chance(5)) && !buckled_to)
+		to_chat(src, SPAN_WARNING("You slipped!"))
 		src.inertia_dir = src.last_move
 		step(src, src.inertia_dir)
 		return 1

@@ -84,10 +84,6 @@
 	name = "Infiltration Items"
 	antag_roles = list(MODE_NINJA)
 
-/datum/uplink_category/ninja_rigs
-	name = "Equipped Hardsuits"
-	antag_roles = list(MODE_NINJA)
-
 /datum/uplink_category/gear_loadout
 	name = "Gear Loadout"
 	antag_roles = list(MODE_MERCENARY)
@@ -95,3 +91,6 @@
 /datum/uplink_category/revolution
 	name = "Revolution Items"
 	antag_roles = list(MODE_REVOLUTIONARY)
+
+/datum/uplink_category/martial_arts
+	name = "Martial Arts"

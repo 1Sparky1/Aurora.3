@@ -24,7 +24,9 @@
 		/obj/item/smes_coil,
 		/obj/item/device/assembly,//Primarily for making improved cameras, but opens many possibilities
 		/obj/item/computer_hardware,
-		/obj/item/pipe
+		/obj/item/pipe,
+		/obj/item/smallDelivery,
+		/obj/item/gift
 		)
 
 	var/obj/item/wrapped
@@ -57,6 +59,8 @@
 			if(istype(I,typepath))
 				if(feedback)
 					to_chat(user, SPAN_NOTICE("You collect \the [I]."))
+				if(isturf(I.loc) && I.Adjacent(user))
+					I.do_pickup_animation(user)
 				I.forceMove(src)
 				wrapped = I
 				wrapped.pixel_x = 0
@@ -72,6 +76,7 @@
 
 /obj/item/gripper/update_icon()
 	underlays.Cut()
+	grippersafety(src)
 	if(wrapped && wrapped.icon)
 		var/mutable_appearance/MA = new(wrapped)
 		MA.layer = FLOAT_LAYER
@@ -105,14 +110,15 @@
 
 	drop(get_turf(src))
 
-/obj/item/gripper/proc/drop(var/atom/target)
+/obj/item/gripper/proc/drop(var/atom/target, var/feedback = TRUE)
 	if(wrapped)
 		if(wrapped.loc == src)
 			if(force_holder)
 				wrapped.force = force_holder
 			wrapped.forceMove(target)
 			force_holder = null
-		to_chat(loc, SPAN_NOTICE("You release \the [wrapped].")) // loc will always be the cyborg
+		if(feedback)
+			to_chat(loc, SPAN_NOTICE("You release \the [wrapped].")) // loc will always be the cyborg
 	wrapped = null
 	update_icon()
 	return TRUE
@@ -120,16 +126,16 @@
 /obj/item/gripper/attack(mob/living/carbon/M, mob/living/carbon/user)
 	if(wrapped) //The force of the wrapped obj gets set to zero during the attack() and afterattack().
 		force_holder = wrapped.force
-		wrapped.force = 0.0
+		wrapped.force = 0
 		wrapped.attack(M,user)
 		if(QDELETED(wrapped))
 			wrapped = null
 		return TRUE
 	else // mob interactions
 		switch(user.a_intent)
-			if("help")
+			if(I_HELP)
 				user.visible_message("\The [user] [pick("boops", "squeezes", "pokes", "prods", "strokes", "bonks")] \the [M] with \the [src]")
-			if("harm")
+			if(I_HURT)
 				M.attack_generic(user, user.mob_size, "crushed")//about 16 dmg for a cyborg
 				//Attack generic does a visible message so we dont need one here
 				user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN * 3)
@@ -179,13 +185,17 @@
 // VEEEEERY limited version for mining borgs. Basically only for swapping cells, upgrading the drills, and upgrading custom KAs.
 /obj/item/gripper/miner
 	name = "drill maintenance gripper"
-	desc = "A simple grasping tool for the maintenance of heavy drilling machines."
+	desc = "A simple grasping tool for the maintenance and upgrade of heavy drilling machines."
 	icon_state = "gripper-mining"
 
 	can_hold = list(
 		/obj/item/cell,
 		/obj/item/stock_parts,
-		/obj/item/custom_ka_upgrade
+		/obj/item/custom_ka_upgrade,
+		/obj/item/warp_core,
+		/obj/item/extraction_pack,
+		/obj/item/smallDelivery,
+		/obj/item/gift
 	)
 
 /obj/item/gripper/paperwork
@@ -200,7 +210,11 @@
 		/obj/item/book,
 		/obj/item/newspaper,
 		/obj/item/stamp,
-		/obj/item/ducttape
+		/obj/item/ducttape,
+		/obj/item/smallDelivery,
+		/obj/item/gift,
+		/obj/item/stack/packageWrap,
+		/obj/item/stack/wrapping_paper
 		)
 
 /obj/item/gripper/research //A general usage gripper, used for toxins/robotics/xenobio/etc
@@ -234,7 +248,9 @@
 		/obj/item/slimesteroid2,
 		/obj/item/slimepotion,
 		/obj/item/slimepotion2,
-		/obj/item/remote_mecha
+		/obj/item/remote_mecha,
+		/obj/item/smallDelivery,
+		/obj/item/gift
 		)
 
 /obj/item/gripper/chemistry //A gripper designed for chemistry, to allow borgs to work efficiently in the lab
@@ -249,12 +265,14 @@
 		/obj/item/reagent_containers/pill,
 		/obj/item/reagent_containers/spray,
 		/obj/item/storage/pill_bottle,
-		/obj/item/hand_labeler,
+		/obj/item/device/hand_labeler,
 		/obj/item/paper,
 		/obj/item/stack/material/phoron,
 		/obj/item/reagent_containers/blood,
 		/obj/item/reagent_containers/food/drinks/sillycup,
-		/obj/item/reagent_containers/food/drinks/medcup
+		/obj/item/reagent_containers/food/drinks/medcup,
+		/obj/item/smallDelivery,
+		/obj/item/gift
 		)
 
 /obj/item/gripper/service //Used to handle food, drinks, and seeds.
@@ -269,7 +287,12 @@
 		/obj/item/grown,
 		/obj/item/trash,
 		/obj/item/reagent_containers/cooking_container,
-		/obj/item/material/kitchen
+		/obj/item/material/kitchen,
+		/obj/item/reagent_containers/food/snacks,
+		/obj/item/smallDelivery,
+		/obj/item/gift,
+		/obj/item/stack/packageWrap,
+		/obj/item/stack/wrapping_paper
 		)
 
 /obj/item/gripper/no_use //Used when you want to hold and put items in other things, but not able to 'use' the item

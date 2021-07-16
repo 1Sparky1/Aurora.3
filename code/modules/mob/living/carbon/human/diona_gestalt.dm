@@ -12,7 +12,7 @@
 
 
 /mob/living/carbon/human/proc/setup_gestalt()
-	composition_reagent = /datum/reagent/nutriment //Dionae are plants, so eating them doesn't give animal protein
+	composition_reagent = /decl/reagent/nutriment //Dionae are plants, so eating them doesn't give animal protein
 	setup_dionastats()
 	verbs += /mob/living/carbon/human/proc/check_light
 	verbs += /mob/living/carbon/human/proc/diona_split_nymph
@@ -24,7 +24,7 @@
 	//These initial nymphs are the nymph which grows into a gestalt, and any others it had inside it
 	//There are no initial nymphs for a newly spawned diona player
 
-		if (mind && mind.name && name && mind.name != name)
+		if (mind?.name && mind.name != real_name)
 			verbs += /mob/living/carbon/human/proc/gestalt_set_name
 			var/datum/language/L = locate(/datum/language/diona) in languages
 			var/newname
@@ -100,7 +100,7 @@
 	if (severity)
 		damage_factor = (1 / severity)
 
-	var/armorval = 	getarmor(null, "bomb")
+	var/armorval = get_blocked_ratio(BP_CHEST, BRUTE, DAM_DISPERSED, damage = damage)
 	if (armorval)
 		damage_factor *= (1 - (armorval * 0.01))
 
@@ -278,6 +278,7 @@
 	M.detached = TRUE
 	M.update_verbs(TRUE)
 	M.languages = languages.Copy()
+	M.accent = accent
 
 	update_dionastats() //Re-find the organs in case they were lost or regained
 	nutrition -= REGROW_FOOD_REQ

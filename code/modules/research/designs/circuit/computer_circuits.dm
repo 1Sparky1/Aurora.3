@@ -5,10 +5,6 @@
 	name = "Security Camera Monitor"
 	build_path = /obj/item/circuitboard/security
 
-/datum/design/circuit/computer/prisonmanage
-	name = "Prisoner Management Console"
-	build_path = /obj/item/circuitboard/prisoner
-
 /datum/design/circuit/computer/sentencing
 	name = "Criminal Sentencing Console"
 	build_path = /obj/item/circuitboard/sentencing
@@ -16,11 +12,6 @@
 /datum/design/circuit/computer/operating
 	name = "Patient Monitoring Console"
 	build_path = /obj/item/circuitboard/operating
-
-/datum/design/circuit/computer/teleconsole
-	name = "Teleporter Control Console"
-	req_tech = list(TECH_DATA = 3, TECH_BLUESPACE = 2)
-	build_path = /obj/item/circuitboard/teleporter
 
 /datum/design/circuit/computer/robocontrol
 	name = "Robotics Control Console"

@@ -15,10 +15,10 @@
 	accuracy = 0.1
 	w_class = ITEMSIZE_SMALL
 	flags = OPENCONTAINER
+	fragile = 2
 	unacidable = 1 //glass doesn't dissolve in acid
 	drop_sound = 'sound/items/drop/bottle.ogg'
 	pickup_sound = 'sound/items/pickup/bottle.ogg'
-	shatter = TRUE
 	var/label_text = ""
 
 /obj/item/reagent_containers/glass/Initialize()
@@ -28,9 +28,10 @@
 /obj/item/reagent_containers/glass/examine(var/mob/user)
 	if(!..(user, 2))
 		return
-	if(reagents && reagents.reagent_list.len)
+	if(LAZYLEN(reagents.reagent_volumes))
 		to_chat(user, "<span class='notice'>It contains [round(reagents.total_volume, accuracy)] units of liquid.</span>")
-		for(var/datum/reagent/T in reagents.reagent_list)
+		for(var/_T in reagents.reagent_volumes)
+			var/decl/reagent/T = decls_repository.get_decl(_T)
 			if(T.reagent_state == SOLID)
 				to_chat(user, "<span class='notice'>You see something solid in the beaker.</span>")
 				break // to stop multiple messages of this
@@ -41,12 +42,15 @@
 
 /obj/item/reagent_containers/glass/get_additional_forensics_swab_info()
 	var/list/additional_evidence = ..()
-	var/datum/reagent/blood/B = locate() in reagents.reagent_list
-	if(B)
+	var/list/Bdata = REAGENT_DATA(reagents, /decl/reagent/blood/)
+	var/list/blood_Data = list(
+		Bdata["blood_DNA"] = Bdata["blood_type"]
+	)
+	if(Bdata)
 		additional_evidence["type"] = EVIDENCE_TYPE_BLOOD
 		additional_evidence["sample_type"] = "blood"
-		additional_evidence["dna"] += B.data["blood_DNA"]
-		additional_evidence["sample_message"] = "You dip the swab inside \the [src.name] to sample its contents."
+		additional_evidence["dna"] += blood_Data
+		additional_evidence["sample_message"] = "You dip the swab inside [src] to sample its contents."
 
 	return additional_evidence
 
@@ -172,7 +176,7 @@
 	desc = "A bluespace beaker, powered by experimental bluespace technology."
 	icon_state = "beakerbluespace"
 	center_of_mass = list("x" = 16,"y" = 11)
-	matter = list(MATERIAL_GLASS = 5000)
+	matter = list(MATERIAL_PHORON = 1000, MATERIAL_DIAMOND = 100)
 	volume = 300
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,25,30,60,120,300)
@@ -189,11 +193,11 @@
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,25)
 	flags = OPENCONTAINER
-	fragile = 1
+	fragile = 1 // very fragile
 
-/obj/item/reagent_containers/glass/beaker/cryoxadone/reagents_to_add = list(/datum/reagent/cryoxadone = 30)
+/obj/item/reagent_containers/glass/beaker/cryoxadone/reagents_to_add = list(/decl/reagent/cryoxadone = 30)
 
-/obj/item/reagent_containers/glass/beaker/sulphuric/reagents_to_add = list(/datum/reagent/acid = 60)
+/obj/item/reagent_containers/glass/beaker/sulphuric/reagents_to_add = list(/decl/reagent/acid = 60)
 
 /obj/item/reagent_containers/glass/bucket
 	desc = "A blue plastic bucket."
@@ -209,15 +213,14 @@
 	accuracy = 1
 	matter = list(DEFAULT_WALL_MATERIAL = 200)
 	w_class = ITEMSIZE_NORMAL
-	amount_per_transfer_from_this = 20
-	possible_transfer_amounts = list(10,20,30,60,120)
-	volume = 120
+	amount_per_transfer_from_this = 120
+	possible_transfer_amounts = list(5,10,15,25,30,50,60,100,120,250,300)
+	volume = 300
 	flags = OPENCONTAINER
 	unacidable = 0
 	drop_sound = 'sound/items/drop/helm.ogg'
 	pickup_sound = 'sound/items/pickup/helm.ogg'
 	var/helmet_type = /obj/item/clothing/head/helmet/bucket
-	shatter = FALSE
 	fragile = 0
 
 /obj/item/reagent_containers/glass/bucket/attackby(var/obj/D, mob/user as mob)

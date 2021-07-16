@@ -1,6 +1,7 @@
 /obj/item/gun/projectile/colt
 	name = "vintage .45 pistol"
-	desc = "A cheap Martian knock-off of a Colt M1911. Uses .45 rounds."
+	desc = "A rugged Zavodskoi-designed pistol. Uses .45 rounds."
+	desc_fluff = "The Zavodskoi Interstellar Colt was designed and marketed as an homage to classic Human firearms, and looks and acts much the same way - it was deliberately designed with some anachronistic features, but in spite of that artificial age of the design it performs well enough to see service all over Human space. Chambered in .45 caliber."
 	magazine_type = /obj/item/ammo_magazine/c45m
 	allowed_magazines = list(/obj/item/ammo_magazine/c45m)
 	icon = 'icons/obj/guns/colt.dmi'
@@ -8,6 +9,7 @@
 	item_state = "colt"
 	caliber = ".45"
 	accuracy = 1
+	offhand_accuracy = 1
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	fire_sound = 'sound/weapons/gunshot/gunshot_light.ogg'
 	load_method = MAGAZINE
@@ -51,6 +53,7 @@
 	allowed_magazines = list(/obj/item/ammo_magazine/c45m)
 	caliber = ".45"
 	accuracy = 1
+	offhand_accuracy = 1
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	fire_sound = 'sound/weapons/gunshot/gunshot_pistol.ogg'
 	load_method = MAGAZINE
@@ -92,6 +95,7 @@
 	item_state = "x9"
 	w_class = ITEMSIZE_NORMAL
 	accuracy = 1
+	offhand_accuracy = 1
 	load_method = MAGAZINE
 	slot_flags = SLOT_BELT|SLOT_HOLSTER
 	max_shells = 16
@@ -114,6 +118,7 @@
 	allowed_magazines = list(/obj/item/ammo_magazine/mc10mm)
 	caliber = "10mm"
 	accuracy = 1
+	offhand_accuracy = 1
 	origin_tech = list(TECH_COMBAT = 3, TECH_MATERIAL = 2)
 	fire_sound = 'sound/weapons/gunshot/gunshot_pistol.ogg'
 	load_method = MAGAZINE
@@ -141,6 +146,7 @@
 	fire_sound = 'sound/weapons/gunshot/gunshot_suppressed.ogg'
 	w_class = ITEMSIZE_NORMAL
 	accuracy = 1
+	offhand_accuracy = 1
 	caliber = ".45"
 	silenced = 1
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2, TECH_ILLEGAL = 8)
@@ -225,6 +231,7 @@
 	item_state = "pistol"
 	w_class = ITEMSIZE_SMALL
 	accuracy = 1
+	offhand_accuracy = 2
 	caliber = "9mm"
 	silenced = 0
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2, TECH_ILLEGAL = 2)

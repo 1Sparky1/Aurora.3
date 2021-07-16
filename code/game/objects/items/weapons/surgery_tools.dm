@@ -8,7 +8,7 @@
  *		Circular Saw
  *   	Tray
  */
-/obj/item/surgery/
+/obj/item/surgery
 	name = "surgery tool"
 	desc = "hey, you aren't supposed to have this"
 	icon = 'icons/obj/surgery.dmi'
@@ -19,6 +19,7 @@
 		slot_l_hand_str = 'icons/mob/items/lefthand_medical.dmi',
 		slot_r_hand_str = 'icons/mob/items/righthand_medical.dmi',
 		)
+	recyclable = TRUE
 
 /*
  * Retractor
@@ -87,7 +88,7 @@
 	flags = CONDUCT
 	force = 10.0
 	sharp = 1
-	edge = 1
+	edge = TRUE
 	w_class = ITEMSIZE_TINY
 	slot_flags = SLOT_EARS
 	throwforce = 5.0
@@ -135,7 +136,7 @@
 	name = "circular saw"
 	desc = "For heavy duty cutting."
 	icon_state = "saw"
-	item_state = "scalpel"
+	item_state = "saw"
 	hitsound = 'sound/weapons/saw/circsawhit.ogg'
 	flags = CONDUCT
 	force = 15.0
@@ -147,7 +148,7 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 20000, MATERIAL_GLASS = 10000)
 	attack_verb = list("attacked", "slashed", "sawed", "cut")
 	sharp = 1
-	edge = 1
+	edge = TRUE
 	drop_sound = 'sound/items/drop/accessory.ogg'
 	pickup_sound = 'sound/items/pickup/accessory.ogg'
 

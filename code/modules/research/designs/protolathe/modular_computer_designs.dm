@@ -37,21 +37,28 @@
 	req_tech = list(TECH_DATA = 2, TECH_ENGINEERING = 1)
 	build_type = IMPRINTER
 	materials = list(DEFAULT_WALL_MATERIAL = 250, MATERIAL_GLASS = 100)
-	chemicals = list(/datum/reagent/acid = 20)
+	chemicals = list(/decl/reagent/acid = 20)
 	build_path = /obj/item/computer_hardware/network_card
+
+/datum/design/item/modularcomponent/netcard/signaler
+	req_tech = list(TECH_DATA = 3, TECH_ENGINEERING = 1)
+	build_type = IMPRINTER
+	materials = list(DEFAULT_WALL_MATERIAL = 300, MATERIAL_GLASS = 150)
+	chemicals = list(/decl/reagent/acid = 20)
+	build_path = /obj/item/computer_hardware/network_card/signaler
 
 /datum/design/item/modularcomponent/netcard/advanced
 	req_tech = list(TECH_DATA = 4, TECH_ENGINEERING = 2)
 	build_type = IMPRINTER
 	materials = list(DEFAULT_WALL_MATERIAL = 500, MATERIAL_GLASS = 200)
-	chemicals = list(/datum/reagent/acid = 20)
+	chemicals = list(/decl/reagent/acid = 20)
 	build_path = /obj/item/computer_hardware/network_card/advanced
 
 /datum/design/item/modularcomponent/netcard/wired
 	req_tech = list(TECH_DATA = 5, TECH_ENGINEERING = 3)
 	build_type = IMPRINTER
 	materials = list(DEFAULT_WALL_MATERIAL = 2500, MATERIAL_GLASS = 400)
-	chemicals = list(/datum/reagent/acid = 20)
+	chemicals = list(/decl/reagent/acid = 20)
 	build_path = /obj/item/computer_hardware/network_card/wired
 
 // Data crystals (USB flash drives)
@@ -59,21 +66,21 @@
 	req_tech = list(TECH_DATA = 1)
 	build_type = IMPRINTER
 	materials = list(MATERIAL_GLASS = 800)
-	chemicals = list(/datum/reagent/acid = 20)
+	chemicals = list(/decl/reagent/acid = 20)
 	build_path = /obj/item/computer_hardware/hard_drive/portable
 
 /datum/design/item/modularcomponent/portabledrive/advanced
 	req_tech = list(TECH_DATA = 2)
 	build_type = IMPRINTER
 	materials = list(MATERIAL_GLASS = 1600)
-	chemicals = list(/datum/reagent/acid = 20)
+	chemicals = list(/decl/reagent/acid = 20)
 	build_path = /obj/item/computer_hardware/hard_drive/portable/advanced
 
 /datum/design/item/modularcomponent/portabledrive/super
 	req_tech = list(TECH_DATA = 4)
 	build_type = IMPRINTER
 	materials = list(MATERIAL_GLASS = 3200)
-	chemicals = list(/datum/reagent/acid = 20)
+	chemicals = list(/decl/reagent/acid = 20)
 	build_path = /obj/item/computer_hardware/hard_drive/portable/super
 
 // Card slot
@@ -95,11 +102,21 @@
 	materials = list(DEFAULT_WALL_MATERIAL = 2000)
 	build_path = /obj/item/computer_hardware/tesla_link
 
+/datum/design/item/modularcomponent/teslalink/charging_cable
+	req_tech = list(TECH_POWER = 1, TECH_ENGINEERING = 1)
+	materials = list(DEFAULT_WALL_MATERIAL = 200)
+	build_path = /obj/item/computer_hardware/tesla_link/charging_cable
+
 // Batteries
 /datum/design/item/modularcomponent/battery/normal
 	req_tech = list(TECH_POWER = 1, TECH_ENGINEERING = 1)
 	materials = list(DEFAULT_WALL_MATERIAL = 400)
 	build_path = /obj/item/computer_hardware/battery_module
+
+/datum/design/item/modularcomponent/battery/hotswap
+	req_tech = list(TECH_POWER = 1, TECH_ENGINEERING = 1)
+	materials = list(DEFAULT_WALL_MATERIAL = 600)
+	build_path = /obj/item/computer_hardware/battery_module/hotswap
 
 /datum/design/item/modularcomponent/battery/advanced
 	req_tech = list(TECH_POWER = 2, TECH_ENGINEERING = 2)
@@ -132,28 +149,28 @@
 	req_tech = list(TECH_DATA = 3, TECH_ENGINEERING = 2)
 	build_type = IMPRINTER
 	materials = list(DEFAULT_WALL_MATERIAL = 1600)
-	chemicals = list(/datum/reagent/acid = 20)
+	chemicals = list(/decl/reagent/acid = 20)
 	build_path = /obj/item/computer_hardware/processor_unit
 
 /datum/design/item/modularcomponent/cpu/small
 	req_tech = list(TECH_DATA = 2, TECH_ENGINEERING = 2)
 	build_type = IMPRINTER
 	materials = list(DEFAULT_WALL_MATERIAL = 800)
-	chemicals = list(/datum/reagent/acid = 20)
+	chemicals = list(/decl/reagent/acid = 20)
 	build_path = /obj/item/computer_hardware/processor_unit/small
 
 /datum/design/item/modularcomponent/cpu/photonic
 	req_tech = list(TECH_DATA = 5, TECH_ENGINEERING = 4)
 	build_type = IMPRINTER
 	materials = list(DEFAULT_WALL_MATERIAL = 6400, MATERIAL_GLASS = 2000)
-	chemicals = list(/datum/reagent/acid = 40)
+	chemicals = list(/decl/reagent/acid = 40)
 	build_path = /obj/item/computer_hardware/processor_unit/photonic
 
 /datum/design/item/modularcomponent/cpu/photonic/small
 	req_tech = list(TECH_DATA = 4, TECH_ENGINEERING = 3)
 	build_type = IMPRINTER
 	materials = list(DEFAULT_WALL_MATERIAL = 3200, MATERIAL_GLASS = 1000)
-	chemicals = list(/datum/reagent/acid = 20)
+	chemicals = list(/decl/reagent/acid = 20)
 	build_path = /obj/item/computer_hardware/processor_unit/photonic/small
 
 // AI Slot
@@ -162,3 +179,11 @@
 	build_type = IMPRINTER
 	materials = list(DEFAULT_WALL_MATERIAL = 2000)
 	build_path = /obj/item/computer_hardware/ai_slot
+
+// Flashlight
+
+/datum/design/item/modularcomponent/flashlight
+	req_tech = list(TECH_POWER = 1, TECH_ENGINEERING = 1)
+	build_type = IMPRINTER
+	materials = list(DEFAULT_WALL_MATERIAL = 1000, MATERIAL_GLASS = 500)
+	build_path = /obj/item/computer_hardware/flashlight

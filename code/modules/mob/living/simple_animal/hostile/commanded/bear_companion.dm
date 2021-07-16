@@ -10,7 +10,8 @@
 	health = 100
 	maxHealth = 100
 
-	density = 1
+	density = TRUE
+	belongs_to_station = FALSE
 
 	attacktext = "swatted"
 	melee_damage_lower = 25
@@ -23,6 +24,7 @@
 
 	mob_size = 17
 
+	organ_names = list("chest", "lower body", "left arm", "right arm", "left leg", "right leg", "head")
 	response_help = "pets"
 	response_harm = "hits"
 	response_disarm = "pushes"
@@ -31,13 +33,15 @@
 
 	tameable = FALSE
 
+	hostile_nameable = TRUE
+
 	meat_type = /obj/item/reagent_containers/food/snacks/bearmeat
 	butchering_products = list(/obj/item/clothing/head/bearpelt = 1)
 	meat_amount = 5
 
 /mob/living/simple_animal/hostile/commanded/bear/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 	. = ..()
-	if(!.)
+	if(.)
 		src.emote("roars in rage!")
 
 /mob/living/simple_animal/hostile/commanded/bear/attack_hand(mob/living/carbon/human/M as mob)

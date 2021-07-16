@@ -162,21 +162,16 @@
 			return
 
 	// OTHER
-	else if (can_use() && (istype(W, /obj/item/paper) || istype(W, /obj/item/device/pda)) && isliving(user))
+	else if (can_use() && (istype(W, /obj/item/paper)) && isliving(user))
 		var/info = null
 		var/mob/living/U = user
 		var/obj/item/paper/X = null
-		var/obj/item/device/pda/P = null
 
 		var/itemname = ""
 		if(istype(W, /obj/item/paper))
 			X = W
 			itemname = X.name
 			info = X.info
-		else
-			P = W
-			itemname = P.name
-			info = P.notehtml
 		to_chat(U, "You hold \a [itemname] up to the camera ...")
 		for(var/mob/living/silicon/ai/O in living_mob_list)
 			var/entry = O.addCameraRecord(itemname,info)
@@ -212,7 +207,7 @@
 			if (istype(W, /obj/item)) //is it even possible to get into attackby() with non-items?
 				var/obj/item/I = W
 				if (I.hitsound)
-					playsound(loc, I.hitsound, 50, 1, -1)
+					playsound(loc, I.hitsound, I.get_clamped_volume(), 1, -1)
 		take_damage(W.force)
 
 	else
@@ -455,4 +450,3 @@
 	wires.MendAll()
 	update_icon()
 	update_coverage()
-

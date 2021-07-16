@@ -74,7 +74,7 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 	return return_name
 
 /obj/machinery/computer/rdconsole/proc/CallReagentName(ID)
-	var/datum/reagent/R = SSchemistry.chemical_reagents[ID]
+	var/decl/reagent/R = decls_repository.get_decl(ID)
 	return R ? R.name : "(none)"
 
 /obj/machinery/computer/rdconsole/proc/SyncRDevices() //Makes sure it is properly sync'ed up with the devices attached to it (if any).
@@ -96,20 +96,19 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 	return
 
 /obj/machinery/computer/rdconsole/proc/SyncTechs()
-	if(src)
-		for(var/obj/machinery/r_n_d/server/S in SSmachinery.all_machines)
-			var/server_processed = 0
-			if((id in S.id_with_upload) || istype(S, /obj/machinery/r_n_d/server/centcom))
-				for(var/tech_id in files.known_tech)
-					var/datum/tech/T = files.known_tech[tech_id]
-					S.files.AddTech2Known(T)
-				S.files.RefreshResearch()
-				server_processed = 1
-			files.known_tech = S.files.known_tech.Copy()
-			if(!istype(S, /obj/machinery/r_n_d/server/centcom) && server_processed)
-				S.produce_heat()
-		screen = 1.6
-		updateUsrDialog()
+	for(var/obj/machinery/r_n_d/server/S in SSmachinery.all_machines)
+		var/server_processed = 0
+		if((id in S.id_with_upload) || istype(S, /obj/machinery/r_n_d/server/centcom))
+			for(var/tech_id in files.known_tech)
+				var/datum/tech/T = files.known_tech[tech_id]
+				S.files.AddTech2Known(T)
+			S.files.RefreshResearch()
+			server_processed = 1
+		files.known_tech = S.files.known_tech.Copy()
+		if(!istype(S, /obj/machinery/r_n_d/server/centcom) && server_processed)
+			S.produce_heat()
+	screen = 1.6
+	updateUsrDialog()
 
 /obj/machinery/computer/rdconsole/proc/griefProtection() //Have it automatically push research to the centcomm server so wild griffins can't fuck up R&D's work
 	for(var/obj/machinery/r_n_d/server/centcom/C in SSmachinery.all_machines)
@@ -309,14 +308,14 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 		sync = !sync
 
 	else if(href_list["protolathe_category"])
-		var/choice = input("Which category do you wish to display?") as null|anything in files.protolathe_categories+"All"
+		var/choice = input("Which category do you wish to display?") as null|anything in designs_protolathe_categories+"All"
 		if(!choice)
 			return
 		protolathe_category = choice
 		updateUsrDialog()
 
 	else if(href_list["imprinter_category"])
-		var/choice = input("Which category do you wish to display?") as null|anything in files.imprinter_categories+"All"
+		var/choice = input("Which category do you wish to display?") as null|anything in designs_imprinter_categories+"All"
 		if(!choice)
 			return
 		imprinter_category = choice
@@ -738,9 +737,10 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 			dat += "<A href='?src=\ref[src];menu=1.0'>Main Menu</A> || "
 			dat += "<A href='?src=\ref[src];menu=3.1'>Protolathe Menu</A><HR>"
 			dat += "<b><u>Chemical Storage</u></b><BR><HR>"
-			for(var/datum/reagent/R in linked_lathe.reagents.reagent_list)
-				dat += "Name: [R.name] | Units: [R.volume] "
-				dat += "<A href='?src=\ref[src];disposeP=[R.type]'>(Purge)</A><BR>"
+			for(var/_R in linked_lathe.reagents.reagent_volumes)
+				var/decl/reagent/R = decls_repository.get_decl(_R)
+				dat += "Name: [R.name] | Units: [linked_lathe.reagents.reagent_volumes[_R]] "
+				dat += "<A href='?src=\ref[src];disposeP=[_R]'>(Purge)</A><BR>"
 				dat += "<A href='?src=\ref[src];disposeallP=1'><U>Disposal All Chemicals in Storage</U></A><BR>"
 
 		if(3.4) // Protolathe queue
@@ -806,9 +806,10 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 			dat += "<A href='?src=\ref[src];menu=1.0'>Main Menu</A> || "
 			dat += "<A href='?src=\ref[src];menu=4.1'>Imprinter Menu</A><HR>"
 			dat += "<b><u>Chemical Storage</u></b><BR><HR>"
-			for(var/datum/reagent/R in linked_imprinter.reagents.reagent_list)
-				dat += "Name: [R.name] | Units: [R.volume] "
-				dat += "<A href='?src=\ref[src];disposeI=[R.type]'>(Purge)</A><BR>"
+			for(var/_R in linked_imprinter.reagents.reagent_volumes)
+				var/decl/reagent/R = decls_repository.get_decl(_R)
+				dat += "Name: [R.name] | Units: [linked_imprinter.reagents.reagent_volumes[_R]] "
+				dat += "<A href='?src=\ref[src];disposeI=[_R]'>(Purge)</A><BR>"
 				dat += "<A href='?src=\ref[src];disposeallI=1'><U>Disposal All Chemicals in Storage</U></A><BR>"
 
 		if(4.3)
@@ -859,7 +860,7 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 
 /obj/machinery/computer/rdconsole/robotics
 	name = "robotics R&D console"
-	id = 2
+	id = 1
 	req_access = list(access_robotics)
 	allow_analyzer = FALSE
 	allow_lathe = FALSE

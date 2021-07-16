@@ -19,7 +19,14 @@
 	name = form.real_name
 	loc = pick(dream_entries)
 	body = form
+	old_mob = body
 
+	if(client)
+		client.screen |= body.healths
+
+/mob/living/brain_ghost/LateLogin()
+	..()
+	client.screen |= body.healths
 
 /mob/living/brain_ghost/verb/awaken()
 	set name = "Awaken"

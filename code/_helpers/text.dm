@@ -1,3 +1,5 @@
+#define SMALL_FONTS(FONTSIZE, MSG) "<span style=\"font-family: 'Small Fonts'; -dm-text-outline: 1 black; font-size: [FONTSIZE]px;\">[MSG]</span>"
+
 /*
  * Holds procs designed to help with filtering text
  * Contains groups:
@@ -56,6 +58,17 @@
 //this is a problem of double-encode(when & becomes &amp;), use sanitize() with encode=0, but not the sanitizeSafe()!
 /proc/sanitizeSafe(var/input, var/max_length = MAX_MESSAGE_LEN, var/encode = 1, var/trim = 1, var/extra = 1)
 	return sanitize(replace_characters(input, list(">"=" ","<"=" ", "\""="'")), max_length, encode, trim, extra)
+
+/proc/sanitize_simple(t,list/repl_chars = list("\n"="#","\t"="#"))
+	for(var/char in repl_chars)
+		var/index = findtext(t, char)
+		while(index)
+			t = copytext(t, 1, index) + repl_chars[char] + copytext(t, index + length(char))
+			index = findtext(t, char, index + length(char))
+	return t
+
+/proc/sanitize_filename(t)
+	return sanitize_simple(t, list("\n"="", "\t"="", "/"="", "\\"="", "?"="", "%"="", "*"="", ":"="", "|"="", "\""="", "<"="", ">"=""))
 
 #define NO_CHARS_DETECTED 0
 #define SPACES_DETECTED 1
@@ -376,10 +389,26 @@
 //For generating neat chat tag-images
 //The icon var could be local in the proc, but it's a waste of resources
 //	to always create it and then throw it out.
-/proc/create_text_tag(var/tagname, var/tagdesc = tagname, var/client/C = null)
+/proc/create_text_tag(var/tagname, var/client/C = null)
 	if(C && (C.prefs.toggles & CHAT_NOICONS))
-		return tagdesc
-	return "<IMG src='\ref['./icons/chattags.dmi']' class='text_tag' iconstate='[tagname]'" + (tagdesc ? " alt='[tagdesc]'" : "") + ">"
+		return tagname
+
+	var/list/tagname_to_class = list(
+		"OOC" = "ooc",
+		"LOOC" = "looc",
+		"ALOOC" = "adminlooc",
+		"DEV" = "dev",
+		"ADMIN" = "admin",
+		"MOD" = "mod",
+		"DEAD" = "dead",
+		"PM ->" = "pmin",
+		"PM <-" = "pmout",
+		"PM <->" = "pmother",
+		"HELP" = "help",
+		"A-OOC" = "aooc"
+	)
+
+	return "<span class=\"tag [tagname_to_class[tagname]]_tag\">[tagname]</span>"
 
 // For processing simple markup, similar to what Skype and Discord use.
 // Enabled from a config setting.
@@ -511,17 +540,41 @@
 	t = replacetext(t, @"[image id=([\w]*?\.[\w]*?)]", "<img style=\"display:block;width:90%;\" src = [config.docs_image_host]$1></img>")
 	return t
 
-/proc/html2pencode(t)
+/proc/html2pencode(t, var/include_images = FALSE)
 	t = replacetext(t, "<B>", "\[b\]")
 	t = replacetext(t, "</B>", "\[/b\]")
 	t = replacetext(t, "<I>", "\[i\]")
 	t = replacetext(t, "</I>", "\[/i\]")
 	t = replacetext(t, "<U>", "\[u\]")
 	t = replacetext(t, "</U>", "\[/u\]")
+	t = replacetext(t, "<BR>", "\[br\]")
+	t = replacetext(t, "<HR>", "\[hr\]")
+	t = replacetext(t, "<ul>", "\[list\]")
+	t = replacetext(t, "</ul>", "\[/list\]")
+	t = replacetext(t, "<li>", "\[*\]")
 	t = replacetext(t, "<font size=\"4\">", "\[large\]")
 	t = replacetext(t, "</font>", "\[/large\]")
 	t = replacetext(t, "<font size = \"1\">", "\[small\]")
 	t = replacetext(t, "</font>", "\[/small\]")
+
+	if(include_images)
+		t = replacetext(t, "<img src = ntlogo.png>", "\[logo_nt\]")
+		t = replacetext(t, "<img src = ntlogo_small.png>", "\[logo_nt_small\]")
+		t = replacetext(t, "<img src = zhlogo.png>", "\[logo_zh\]")
+		t = replacetext(t, "<img src = idrislogo.png>", "\[logo_idris\]")
+		t = replacetext(t, "<img src = eridanilogo.png>", "\[logo_eridani\]")
+		t = replacetext(t, "<img src = zavodlogo.png>", "\[logo_zavod\]")
+		t = replacetext(t, "<img src = hplogo.png>", "\[logo_hp\]")
+		t = replacetext(t, "<img src = beflag.png>", "\[flag_be\]")
+		t = replacetext(t, "<img src = elyraflag.png>", "\[flag_elyra\]")
+		t = replacetext(t, "<img src = solflag.png>", "\[flag_sol\]")
+		t = replacetext(t, "<img src = cocflag.png>", "\[flag_coc\]")
+		t = replacetext(t, "<img src = domflag.png>", "\[flag_dom\]")
+		t = replacetext(t, "<img src = jargonflag.png>", "\[flag_jargon\]")
+		t = replacetext(t, "<img src = praflag.png>", "\[flag_pra\]")
+		t = replacetext(t, "<img src = dpraflag.png>", "\[flag_dpra\]")
+		t = replacetext(t, "<img src = nkaflag.png>", "\[flag_nka\]")
+		t = replacetext(t, "<img src = izweskiflag.png>", "\[flag_izweski\]")
 
 	return t
 
@@ -597,3 +650,18 @@
 	for(var/word in text)
 		finalized_text += capitalize(word)
 	return jointext(finalized_text, " ")
+
+// makes text uppercase, makes sure it has a correct line-end symbol (ie fullstop)
+/proc/formalize_text(var/string)
+	string = capitalize(string)
+	var/ending = copytext(string, length(string), (length(string) + 1))
+	if(ending && !correct_punctuation[ending])
+		string += "."
+	return string
+
+/proc/num2loadingbar(percent as num, numSquares = 20, reverse = FALSE)
+	var/loadstring = ""
+	var/limit = reverse ? numSquares - percent*numSquares : percent*numSquares
+	for (var/i in 1 to numSquares)
+		loadstring += i <= limit ? "█" : "░"
+	return "\[[loadstring]\]"

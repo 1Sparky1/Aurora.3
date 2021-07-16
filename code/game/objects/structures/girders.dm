@@ -14,6 +14,7 @@
 	build_amt = 2
 	var/material/reinf_material
 	var/reinforcing = 0
+	var/plating = FALSE
 
 /obj/structure/girder/examine(mob/user, distance, infix, suffix)
 	. = ..()
@@ -86,10 +87,14 @@
 				reset_girder()
 
 	else if(istype(W, /obj/item/gun/energy/plasmacutter))
-		to_chat(user, "<span class='notice'>Now slicing apart the girder...</span>")
-		if(do_after(user,30/W.toolspeed))
-			if(!src) return
-			to_chat(user, "<span class='notice'>You slice apart the girder!</span>")
+		var/obj/item/gun/energy/plasmacutter/PC = W
+		to_chat(user, SPAN_NOTICE("You start lining up \the [PC] to the joints of \the [src]..."))
+		if(do_after(user, 2 SECONDS))
+			if(!src)
+				return
+			playsound(loc, PC.fire_sound, 100, 1)
+			to_chat(user, SPAN_NOTICE("You blast apart the girder!"))
+			W.use_resource(user, 1)
 			dismantle()
 
 	else if(istype(W, /obj/item/melee/energy))
@@ -213,10 +218,17 @@
 		to_chat(user, "<span class='notice'>This material is too soft for use in wall construction.</span>")
 		return 0
 
-	to_chat(user, "<span class='notice'>You begin adding the plating...</span>")
+	if(!plating)
+		to_chat(user, "<span class='notice'>You begin adding the plating...</span>")
+		plating = TRUE
+	else
+		return TRUE
 
 	if(!do_after(user,40) || !S.use(2))
+		plating = FALSE
 		return 1 //once we've gotten this far don't call parent attackby()
+
+	plating = FALSE
 
 	if(anchored)
 		to_chat(user, "<span class='notice'>You added the plating!</span>")

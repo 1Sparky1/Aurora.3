@@ -15,6 +15,7 @@
 
 	tameable = FALSE
 
+	organ_names = list("chest", "lower body", "left arm", "right arm", "left leg", "right leg", "head")
 	response_help  = "pets"
 	response_disarm = "shoves"
 	response_harm   = "harmlessly punches"
@@ -196,6 +197,6 @@
 			new /obj/item/xmasgift/large(get_turf(src))
 
 		else
-			new /obj/item/xmasgift/small(get_turf(src))
+			new /obj/item/xmasgift(get_turf(src))
 
 	qdel(src)

@@ -12,7 +12,7 @@
 	adding = list()
 	var/obj/screen/using
 
-	using = new /obj/screen/new_player/title()
+	using = new /obj/screen/new_player/title(src)
 	using.name = "Title"
 	adding += using
 
@@ -20,24 +20,28 @@
 	using.name = "Join Game"
 	adding += using
 
-	using = new /obj/screen/new_player/selection/settings()
+	using = new /obj/screen/new_player/selection/settings(src)
 	using.name = "Setup Character"
 	adding += using
 
-	using = new /obj/screen/new_player/selection/manifest()
+	using = new /obj/screen/new_player/selection/manifest(src)
 	using.name = "Crew Manifest"
 	adding += using
 
-	using = new /obj/screen/new_player/selection/observe()
+	using = new /obj/screen/new_player/selection/observe(src)
 	using.name = "Observe"
 	adding += using
 
-	using = new /obj/screen/new_player/selection/changelog()
+	using = new /obj/screen/new_player/selection/changelog(src)
 	using.name = "Changelog"
 	adding += using
 
-	using = new /obj/screen/new_player/selection/polls()
+	using = new /obj/screen/new_player/selection/polls(src)
 	using.name = "Polls"
+	adding += using
+
+	using = new /obj/screen/new_player/selection/lore_summary(src)
+	using.name = "Current Lore Summary"
 	adding += using
 
 	mymob.client.screen = list()
@@ -90,56 +94,58 @@
 	else
 		addtimer(CALLBACK(src, .proc/Update), current_map.lobby_transitions, TIMER_UNIQUE | TIMER_CLIENT_TIME | TIMER_OVERRIDE)
 
+/obj/screen/new_player/selection/New(var/datum/hud/H)
+	color = null
+	hud = H
+	..()
+
+/obj/screen/new_player/selection/MouseEntered(location, control, params)
+	var/matrix/M = matrix()
+	M.Scale(1.1, 1)
+	animate(src, color = color_rotation(30), transform = M, time = 3, easing = CUBIC_EASING)
+	return ..()
+
+/obj/screen/new_player/selection/MouseExited(location,control,params)
+	animate(src, color = null, transform = null, time = 3, easing = CUBIC_EASING)
+	return ..()
+
 /obj/screen/new_player/selection/join_game
 	name = "Join Game"
 	icon_state = "unready"
-	screen_loc = "LEFT+1,CENTER"
+	screen_loc = "LEFT+0.1,CENTER-1"
 
 /obj/screen/new_player/selection/settings
 	name = "Setup"
 	icon_state = "setup"
-	screen_loc = "LEFT+1,CENTER-1"
+	screen_loc = "LEFT+0.1,CENTER-2"
 
 /obj/screen/new_player/selection/manifest
 	name = "Crew Manifest"
 	icon_state = "manifest"
-	screen_loc = "LEFT+1,CENTER-2"
+	screen_loc = "LEFT+0.1,CENTER-3"
 
 /obj/screen/new_player/selection/observe
 	name = "Observe"
 	icon_state = "observe"
-	screen_loc = "LEFT+1,CENTER-3"
+	screen_loc = "LEFT+0.1,CENTER-4"
 
 /obj/screen/new_player/selection/changelog
 	name = "Changelog"
 	icon_state = "changelog"
-	screen_loc = "LEFT+1,CENTER-4"
+	screen_loc = "LEFT+0.1,CENTER-5"
 
 /obj/screen/new_player/selection/polls
 	name = "Polls"
 	icon_state = "polls"
-	screen_loc = "LEFT+1,CENTER-5"
+	screen_loc = "LEFT+0.1,CENTER-6"
 
-//SELECTION
+/obj/screen/new_player/selection/lore_summary
+	name = "Current Lore Summary"
+	icon_state = "lore_summary"
+	screen_loc = "LEFT+0.1,CENTER-7"
 
-/obj/screen/new_player/selection/New(var/desired_loc)
-	color = null
-	return ..()
-
-/obj/screen/new_player/selection/MouseEntered(location,control,params) //Yellow color for the font
-	color = "#ffb200"
-	var/matrix/M = matrix()
-	M.Scale(1.1, 1.1)
-	animate(src, transform = M, time = 1, easing = CUBIC_EASING)
-	return ..()
-
-/obj/screen/new_player/selection/MouseExited(location,control,params)
-	color = null
-	animate(src, transform = null, time = 1, easing = CUBIC_EASING)
-	return ..()
-
-/obj/screen/new_player/selection/join_game/New(var/datum/hud/H)
-	hud = H
+/obj/screen/new_player/selection/join_game/Initialize()
+	. = ..()
 	var/mob/abstract/new_player/player = hud.mymob
 	update_icon(player)
 
@@ -148,10 +154,8 @@
 	sound_to(player, 'sound/effects/menu_click.ogg')
 	if(SSticker.current_state <= GAME_STATE_SETTING_UP)
 		if(player.ready)
-			player.ready = FALSE
 			player.ready(FALSE)
 		else
-			player.ready = TRUE
 			player.ready(TRUE)
 	else
 		player.join_game()
@@ -169,6 +173,9 @@
 /obj/screen/new_player/selection/manifest/Click()
 	var/mob/abstract/new_player/player = usr
 	sound_to(player, 'sound/effects/menu_click.ogg')
+	if(SSticker.current_state < GAME_STATE_PLAYING)
+		to_chat(player, SPAN_WARNING("The game hasn't started yet!"))
+		return
 	player.ViewManifest()
 
 /obj/screen/new_player/selection/observe/Click()
@@ -186,10 +193,27 @@
 	sound_to(player, 'sound/effects/menu_click.ogg')
 	player.client.changes()
 
-/obj/screen/new_player/selection/poll/Click()
+/obj/screen/new_player/selection/polls/Initialize()
+	. = ..()
+	if(establish_db_connection(dbcon))
+		var/mob/M = hud.mymob
+		var/isadmin = M && M.client && M.client.holder
+		var/DBQuery/query = dbcon.NewQuery("SELECT id FROM ss13_poll_question WHERE [(isadmin ? "" : "adminonly = false AND")] Now() BETWEEN starttime AND endtime AND id NOT IN (SELECT pollid FROM ss13_poll_vote WHERE ckey = \"[M.ckey]\") AND id NOT IN (SELECT pollid FROM ss13_poll_textreply WHERE ckey = \"[M.ckey]\")")
+		query.Execute()
+		var/newpoll = query.NextRow()
+
+		if(newpoll)
+			icon_state = "polls_new"
+
+/obj/screen/new_player/selection/polls/Click()
 	var/mob/abstract/new_player/player = usr
 	sound_to(player, 'sound/effects/menu_click.ogg')
 	player.handle_player_polling()
+
+/obj/screen/new_player/selection/lore_summary/Click()
+	var/mob/abstract/new_player/player = usr
+	sound_to(player, 'sound/effects/menu_click.ogg')
+	player.show_lore_summary()
 
 /mob/abstract/new_player/proc/setupcharacter()
 	client.prefs.ShowChoices(src)
@@ -202,7 +226,7 @@
 			alert(src, "You have not saved your character yet. Please do so before readying up.")
 			return
 		if(client.unacked_warning_count > 0)
-			alert(src, "You can not ready up, because you have unacknowledged warnings. Acknowledge your warnings in OOC->Warnings and Notifications.")
+			alert(src, "You can not ready up, because you have unacknowledged warnings or notifications. Acknowledge them in OOC->Warnings and Notifications.")
 			return
 
 		ready = readying
@@ -232,7 +256,7 @@
 
 		observer.started_as_observer = 1
 		close_spawn_windows()
-		var/obj/O = locate("landmark*Observer-Start")
+		var/obj/O = locate("landmark*Observer-Start") in landmarks_list
 		if(istype(O))
 			to_chat(src, "<span class='notice'>Now teleporting.</span>")
 			observer.forceMove(O.loc)
@@ -244,6 +268,7 @@
 		var/mob/living/carbon/human/dummy/mannequin/mannequin = new
 		client.prefs.dress_preview_mob(mannequin)
 		observer.appearance = mannequin
+		observer.appearance_flags = KEEP_TOGETHER
 		observer.alpha = 127
 		observer.layer = initial(observer.layer)
 		observer.invisibility = initial(observer.invisibility)
@@ -256,3 +281,9 @@
 		observer.ckey = ckey
 		observer.initialise_postkey()
 		qdel(src)
+
+/mob/abstract/new_player/proc/show_lore_summary()
+	if(config.lore_summary)
+		var/output = "<div align='center'><hr1><B>Welcome to the [station_name()]!</B></hr1><br>"
+		output += "<i>[config.lore_summary]</i><hr>"
+		to_chat(src, output)

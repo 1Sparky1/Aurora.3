@@ -8,6 +8,7 @@ var/list/gamemode_cache = list()
 	var/log_access = 0					// log login/logout
 	var/log_say = 0						// log client say
 	var/log_admin = 0					// log admin actions
+	var/log_signaler = 0				// log signaler actions
 	var/log_debug = 1					// log debug output
 	var/log_game = 0					// log game events
 	var/log_vote = 0					// log voting
@@ -15,11 +16,11 @@ var/list/gamemode_cache = list()
 	var/log_emote = 0					// log emotes
 	var/log_attack = 0					// log attack messages
 	var/log_adminchat = 0				// log admin chat messages
-	var/log_pda = 0						// log pda messages
+	var/log_pda = 0						// log NTIRC messages
 	var/log_hrefs = 0					// logs all links clicked in-game. Could be used for debugging and tracking down exploits
 	var/log_runtime = 0					// logs world.log to a file
 	var/log_world_output = 0			// log world.log <<  messages
-	var/sql_enabled = 1					// for sql switching
+	var/sql_enabled = 0					// for sql switching
 	var/allow_admin_ooccolor = 0		// Allows admins with relevant permissions to have their own ooc colour
 	var/allow_vote_restart = 0 			// allow votes to restart
 	var/ert_admin_call_only = 0
@@ -33,6 +34,7 @@ var/list/gamemode_cache = list()
 	var/vote_autotransfer_interval = 36000 // length of time before next sequential autotransfer vote
 	var/vote_autogamemode_timeleft = 100 //Length of time before round start when autogamemode vote is called (in seconds, default 100).
 	var/transfer_timeout = 72000		// timeout before a transfer vote can be called (deciseconds, 120 minute default)
+	var/restart_timeout = 1200			// time after round end & admin tickets are resolved until server restarts (deciseconds, 2 minute default)
 	var/vote_no_default = 0				// vote does not default to nochange/norestart (tbi)
 	var/vote_no_dead = 0				// dead people can't vote (tbi)
 //	var/enable_authentication = 0		// goon authentication
@@ -160,6 +162,7 @@ var/list/gamemode_cache = list()
 	var/animal_delay = 0
 
 
+	var/auto_local_admin = FALSE
 	var/admin_legacy_system = 0	//Defines whether the server uses the legacy admin system with admins.txt or the SQL system. Config option in config.txt
 	var/ban_legacy_system = 0	//Defines whether the server uses the legacy banning system with the files in /data or the SQL system. Config option in config.txt
 	var/use_age_restriction_for_jobs = 0 //Do jobs use account age restrictions? --requires database
@@ -178,9 +181,7 @@ var/list/gamemode_cache = list()
 	var/gateway_delay = 18000 //How long the gateway takes before it activates. Default is half an hour.
 	var/ghost_interaction = 0
 
-	var/night_lighting = 0
-	var/nl_start = 19
-	var/nl_finish = 8
+	var/time_offset = 6 //GMT to CST
 
 	var/enter_allowed = 1
 
@@ -316,6 +317,12 @@ var/list/gamemode_cache = list()
 	var/profiler_restart_period = 120 SECONDS
 	var/profiler_timeout_threshold = 5 SECONDS
 
+	var/list/external_rsc_urls = list()
+
+	var/lore_summary
+
+	var/current_space_sector
+
 /datum/configuration/New()
 	var/list/L = typesof(/datum/game_mode) - /datum/game_mode
 	for (var/T in L)
@@ -361,6 +368,9 @@ var/list/gamemode_cache = list()
 
 		if(type == "config")
 			switch (name)
+				if ("auto_local_admin")
+					config.auto_local_admin = TRUE
+
 				if ("admin_legacy_system")
 					config.admin_legacy_system = 1
 
@@ -399,6 +409,9 @@ var/list/gamemode_cache = list()
 
 				if ("log_admin")
 					config.log_admin = 1
+
+				if ("log_signaler")
+					config.log_signaler = 1
 
 				if ("log_debug")
 					config.log_debug = text2num(value)
@@ -483,6 +496,9 @@ var/list/gamemode_cache = list()
 
 				if ("transfer_timeout")
 					config.transfer_timeout = text2num(value)
+
+				if ("restart_timeout")
+					config.restart_timeout = text2num(value)
 
 				if("ert_admin_only")
 					config.ert_admin_call_only = 1
@@ -696,14 +712,8 @@ var/list/gamemode_cache = list()
 				if("ghost_interaction")
 					config.ghost_interaction = 1
 
-				if("night_lighting")
-					config.night_lighting = 1
-
-				if("nl_start_hour")
-					config.nl_start = text2num(value)
-
-				if("nl_finish_hour")
-					config.nl_finish = text2num(value)
+				if("time_offset")
+					config.time_offset = text2num(value)
 
 				if("disable_player_rats")
 					config.disable_player_rats = 1
@@ -887,6 +897,9 @@ var/list/gamemode_cache = list()
 				if("time_to_call_emergency_shuttle")
 					config.time_to_call_emergency_shuttle = text2num(value)
 
+				if("current_space_sector")
+					config.current_space_sector = value
+
 				if("force_map")
 					override_map = value
 
@@ -956,6 +969,12 @@ var/list/gamemode_cache = list()
 					use_forumuser_api = TRUE
 				if ("forumuser_api_key")
 					global.forumuser_api_key = value
+
+				if ("external_rsc_urls")
+					external_rsc_urls = splittext(value, ",")
+
+				if("lore_summary")
+					lore_summary = value
 
 				else
 					log_misc("Unknown setting in configuration: '[name]'")

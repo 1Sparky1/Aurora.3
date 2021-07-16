@@ -99,11 +99,11 @@
 	last_process_worldtime = world.time
 
 /obj/machinery/dnaforensics/proc/complete_scan()
-	visible_message("<span class='notice'>\icon[src] makes an insistent chime.</span>", range = 2)
+	visible_message("<span class='notice'>[icon2html(src, viewers(get_turf(src)))] makes an insistent chime.</span>", range = 2)
 	update_icon()
 	if(bloodsamp)
 		var/obj/item/paper/P = new()
-		var/pname = "[src] report #[++report_num]: [bloodsamp.name]"
+		var/pname = "[src] report #[++report_num]"
 		var/info
 		P.stamped = list(/obj/item/stamp)
 		P.overlays = list("paper_stamped")
@@ -124,6 +124,8 @@
 	return
 
 /obj/machinery/dnaforensics/attack_ai(mob/user as mob)
+	if(!ai_can_interact(user))
+		return
 	ui_interact(user)
 
 /obj/machinery/dnaforensics/attack_hand(mob/user as mob)

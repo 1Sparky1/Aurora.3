@@ -1,11 +1,8 @@
-/mob/proc/flash_pain()
-	flick("pain", pain)
+/mob/proc/flash_pain(var/target)
+	if(pain)
+		animate(pain, alpha = target, time = 15, easing = ELASTIC_EASING)
+		animate(pain, alpha = 0, time = 20)
 
-/mob/living/carbon/human/flash_pain()
-	if(can_feel_pain())
-		flick("pain", pain)
-
-mob/var/list/pain_stored = list()
 mob/var/last_pain_message = ""
 mob/var/next_pain_time = 0
 
@@ -25,6 +22,8 @@ mob/var/next_pain_time = 0
 		else
 			affecting.add_pain(Ceiling(power/2))
 
+	flash_pain(min(round(2*power)+55, 255))
+
 	// Anti message spam checks
 	if(force || (message != last_pain_message) || (world.time >= next_pain_time))
 		last_pain_message = message
@@ -32,13 +31,10 @@ mob/var/next_pain_time = 0
 			flash_strong_pain()
 			to_chat(src, "<span class='danger'><font size=3>[message]</font></span>")
 		else if(power >= 70)
-			flash_pain()
 			to_chat(src, "<span class='danger'><font size=3>[message]</font></span>")
 		else if(power >= 40)
-			flash_pain()
 			to_chat(src, "<span class='danger'><font size=2>[message]</font></span>")
 		else if(power >= 10)
-			flash_weak_pain()
 			to_chat(src, "<span class='danger'>[message]</span>")
 		else
 			to_chat(src, "<span class='warning'>[message]</span>")
@@ -76,6 +72,7 @@ mob/var/next_pain_time = 0
 		if(maxdam > 10 && paralysis)
 			paralysis = max(0, paralysis - round(maxdam / 10))
 		if(maxdam > 50 && prob(maxdam / 5))
+			to_chat(src, SPAN_WARNING("A bolt of pain shoots through your body, causing your hands to spasm!"))
 			drop_item()
 		var/burning = damaged_organ.burn_dam > damaged_organ.brute_dam
 		var/msg

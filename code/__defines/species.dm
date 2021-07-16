@@ -29,16 +29,13 @@
 
 #define SPECIES_SLIMEPERSON			"Slime"
 
-#define SPECIES_VOX					"Vox"
-#define SPECIES_VOX_ARMALIS			"Vox Armalis"
-
 #define SPECIES_SKELETON			"Skeleton"
 #define SPECIES_CULTGHOST			"Apparition"
 #define SPECIES_ZOMBIE				"Zombie"
 #define SPECIES_ZOMBIE_TAJARA		"Tajara Zombie"
 #define SPECIES_ZOMBIE_UNATHI		"Unathi Zombie"
 #define SPECIES_ZOMBIE_SKRELL		"Skrell Zombie"
-#define SPECIES_SHADOW				"Shadow"
+#define SPECIES_REVENANT			"Revenant"
 
 #define SPECIES_MONKEY				"Monkey"
 #define SPECIES_MONKEY_SKRELL		"Neaera"
@@ -89,7 +86,5 @@
 #define BODYTYPE_GOLEM				"Golem"
 #define BODYTYPE_MONKEY				"Monkey"
 
-#define BODYTYPE_VOX				"Vox"
-#define BODYTYPE_VOX_ARMALIS		"Vox Armalis"
 #define BODYTYPE_SKELETON			"Skeleton"
 #define BODYTYPE_CULTGHOST			"Apparition"

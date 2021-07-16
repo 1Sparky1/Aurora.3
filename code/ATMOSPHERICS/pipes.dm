@@ -175,7 +175,14 @@
 	level = 1
 	gfi_layer_rotation = GFI_ROTATION_DEFDIR
 
-/obj/machinery/atmospherics/pipe/simple/Initialize()
+/obj/machinery/atmospherics/pipe/simple/Initialize(mapload)
+	if(mapload)
+		var/turf/T = loc
+		var/image/I = image(icon, T, icon_state, EFFECTS_ABOVE_LIGHTING_LAYER, dir, pixel_x, pixel_y)
+		I.plane = 0
+		I.color = color
+		I.alpha = 125
+		LAZYADD(T.blueprints, I)
 
 	// Pipe colors and icon states are handled by an image cache - so color and icon should
 	//  be null. For mapping purposes color is defined in the object definitions.
@@ -451,7 +458,15 @@
 
 	gfi_layer_rotation = GFI_ROTATION_OVERDIR
 
-/obj/machinery/atmospherics/pipe/manifold/Initialize()
+/obj/machinery/atmospherics/pipe/manifold/Initialize(mapload)
+	if(mapload)
+		var/turf/T = loc
+		var/image/I = image(icon, T, icon_state, EFFECTS_ABOVE_LIGHTING_LAYER, dir, pixel_x, pixel_y)
+		I.plane = 0
+		I.color = color
+		I.alpha = 125
+		LAZYADD(T.blueprints, I)
+
 	alpha = 255
 	icon = null
 
@@ -719,8 +734,17 @@
 	level = 1
 	layer = 2.4 //under wires with their 2.44
 
-/obj/machinery/atmospherics/pipe/manifold4w/Initialize()
+/obj/machinery/atmospherics/pipe/manifold4w/Initialize(mapload)
+	if(mapload)
+		var/turf/T = loc
+		var/image/I = image(icon, T, icon_state, EFFECTS_ABOVE_LIGHTING_LAYER, dir, pixel_x, pixel_y)
+		I.plane = 0
+		I.color = color
+		I.alpha = 125
+		LAZYADD(T.blueprints, I)
+
 	. = ..()
+
 	alpha = 255
 	icon = null
 
@@ -1238,6 +1262,20 @@
 
 	. = ..()
 	icon_state = GAS_PHORON
+
+/obj/machinery/atmospherics/pipe/tank/hydrogen
+	name = "Pressure Tank (Hydrogen)"
+	icon_state = "hydrogen_map"
+
+/obj/machinery/atmospherics/pipe/tank/hydrogen/Initialize()
+	air_temporary = new
+	air_temporary.volume = ATMOS_DEFAULT_VOLUME_FILTER
+	air_temporary.temperature = T0C
+
+	air_temporary.adjust_gas(GAS_HYDROGEN, (start_pressure)*(air_temporary.volume)/(R_IDEAL_GAS_EQUATION*air_temporary.temperature))
+
+	. = ..()
+	icon_state = "hydrogen"
 
 /obj/machinery/atmospherics/pipe/tank/nitrous_oxide
 	name = "Pressure Tank (Nitrous Oxide)"

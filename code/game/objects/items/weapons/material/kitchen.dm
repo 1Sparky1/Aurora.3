@@ -23,20 +23,20 @@
 	var/loaded      //Descriptive string for currently loaded food object.
 	var/is_liquid = FALSE //whether you've got liquid on your utensil
 	var/scoop_food = 1
+	var/transfer_amt = 5
 
-/obj/item/material/kitchen/utensil/New()
-	..()
+/obj/item/material/kitchen/utensil/Initialize(newloc, material_key)
+	. = ..()
 	if (prob(60))
 		src.pixel_y = rand(0, 4)
 	create_reagents(5)
-	return
 
 /obj/item/material/kitchen/utensil/attack(mob/living/carbon/M, mob/user, var/target_zone)
 	if(!istype(M))
 		return ..()
 
 	if(user.a_intent != I_HELP)
-		if(target_zone == BP_HEAD || target_zone == BP_EYES)
+		if((target_zone == BP_HEAD || target_zone == BP_EYES) && !M.eyes_protected(src, FALSE))
 			if((user.is_clumsy()) && prob(50))
 				M = user
 			return eyestab(M,user)
@@ -79,6 +79,19 @@
 
 /obj/item/material/kitchen/utensil/fork/plastic
 	default_material = MATERIAL_PLASTIC
+
+/obj/item/material/kitchen/utensil/fork/chopsticks
+	name = "chopsticks"
+	desc = "A pair of chopsticks. The most challenging utensil in the Spur."
+	icon_state = "chopsticks"
+	default_material = MATERIAL_WOOD
+	transfer_amt = 2 //Chopsticks are hard to grab stuff with
+
+/obj/item/material/kitchen/utensil/fork/chopsticks/cheap
+	name = "cheap chopsticks"
+	desc = "A pair of cheap, disposable chopsticks."
+	use_material_name = 0
+	applies_material_colour = 0
 
 /obj/item/material/kitchen/utensil/spoon
 	name = "spoon"

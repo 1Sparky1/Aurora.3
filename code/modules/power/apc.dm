@@ -71,6 +71,9 @@
 /obj/machinery/power/apc/critical
 	is_critical = TRUE
 
+/obj/machinery/power/apc/low
+	cell_type = /obj/item/cell
+
 /obj/machinery/power/apc/high
 	cell_type = /obj/item/cell/high
 
@@ -124,7 +127,6 @@
 	var/obj/item/cell/cell
 	var/chargelevel = 0.0005  // Cap for how fast APC cells charge, as a percentage-per-tick (0.01 means cellcharge is capped to 1% per second)
 	var/cellused = 0
-	var/initalchargelevel = 0.0005  // Cap for how fast APC cells charge, as a percentage-per-tick (0.01 means cellcharge is capped to 1% per second)
 	var/start_charge = 90				// initial cell charge %
 	var/cell_type = /obj/item/cell/apc
 	var/opened = COVER_CLOSED
@@ -136,7 +138,7 @@
 	var/infected = FALSE
 	var/operating = TRUE
 	var/charging = CHARGING_OFF
-	var/chargemode = CHARGE_MODE_DISCHARGE
+	var/chargemode = TRUE // whether we're trying to charge
 	var/chargecount = 0
 	var/locked = TRUE
 	var/coverlocked = TRUE
@@ -174,7 +176,7 @@
 	var/emergency_lights = FALSE
 
 	var/time = 0
-	var/charge_mode = CHARGE_MODE_CHARGE
+	var/charge_mode = CHARGE_MODE_CHARGE // if we're actually able to charge
 	var/last_time = 1
 
 /obj/machinery/power/apc/updateDialog()
@@ -483,6 +485,12 @@
 		return attack_hand(user)
 	if(!istype(W, /obj/item/forensics))
 		add_fingerprint(user)
+	if(istype(W, /obj/item/modular_computer))
+		var/obj/item/modular_computer/C = W
+		if(istype(C.tesla_link, /obj/item/computer_hardware/tesla_link/charging_cable))
+			var/obj/item/computer_hardware/tesla_link/charging_cable/CC = C.tesla_link
+			CC.toggle(src, user)
+			return
 	if (W.iscrowbar() && opened)
 		if (has_electronics == HAS_ELECTRONICS_CONNECT)
 			if (terminal)
@@ -528,6 +536,7 @@
 				//to_chat(user, "You remove the power cell.")
 				charging = CHARGING_OFF
 				update_icon()
+				SSvueui.check_uis_for_change(src)
 				return
 	else if	(istype(W, /obj/item/cell) && opened != COVER_CLOSED)	// trying to put a cell inside
 		if(cell)
@@ -547,6 +556,7 @@
 			SPAN_NOTICE("You insert \the [cell]."))
 		chargecount = 0
 		update_icon()
+		SSvueui.check_uis_for_change(src)
 	else if	(W.isscrewdriver())	// haxing
 		if(opened != COVER_CLOSED)
 			if (cell)
@@ -572,13 +582,13 @@
 			to_chat(user, "The wires have been [wiresexposed ? "exposed" : "unexposed"]")
 			update_icon()
 
-	else if (istype(W, /obj/item/card/id)||istype(W, /obj/item/device/pda))			// trying to unlock the interface with an ID card
+	else if (W.GetID())			// trying to unlock the interface with an ID card
 		if(emagged)
 			to_chat(user, "The interface is broken.")
 		else if(opened != COVER_CLOSED)
 			to_chat(user, "You must close the cover to swipe an ID card.")
 		else if(wiresexposed)
-			to_chat(user, "You must close the panel")
+			to_chat(user, "You must close the wiring panel to swipe an ID card.")
 		else if(stat & (BROKEN|MAINT))
 			to_chat(user, "Nothing happens.")
 		else if(hacker)
@@ -587,6 +597,7 @@
 			if(allowed(usr) && !isWireCut(APC_WIRE_IDSCAN))
 				locked = !locked
 				to_chat(user, "You [ locked ? "lock" : "unlock"] the APC interface.")
+				SSvueui.check_uis_for_change(src)
 				update_icon()
 			else
 				to_chat(user, SPAN_WARNING("Access denied."))
@@ -721,6 +732,7 @@
 							emagged = FALSE
 						if(infected)
 							infected = FALSE
+						SSvueui.check_uis_for_change(src)
 			else
 				to_chat(user, SPAN_NOTICE("There has been a connection issue."))
 				return
@@ -780,6 +792,7 @@
 			to_chat(user, SPAN_NOTICE("You hack the charging slot. The next IPC that charges from this APC will be hacked and slaved to you."))
 			infected = TRUE
 			hacker = user
+			SSvueui.check_uis_for_change(src)
 	if(!(emagged || hacker))		// trying to unlock with an emag card
 		if(opened != COVER_CLOSED)
 			to_chat(user, "You must close the cover to swipe an ID card.")
@@ -795,6 +808,7 @@
 					locked = FALSE
 					to_chat(user, SPAN_NOTICE("You hack the APC interface open."))
 					update_icon()
+					SSvueui.check_uis_for_change(src)
 				else
 					to_chat(user, SPAN_WARNING("You fail to [ locked ? "unlock" : "lock"] the APC interface."))
 				return TRUE
@@ -825,20 +839,16 @@
 				if(issilicon(hacker))
 					to_chat(hacker, SPAN_NOTICE("Corrupt files transfered to [H]. They are now under your control until they are repaired."))
 			else if(cell && cell.charge > 0)
-				if(H.max_nutrition > 0 && H.nutrition < H.max_nutrition)
-					if(cell.charge >= H.max_nutrition)
-						H.adjustNutritionLoss(-50)
-						cell.charge -= 500
-					else
-						H.adjustNutritionLoss( -cell.charge / 10)
-						cell.charge = 0
-
+				var/obj/item/organ/internal/cell/C = H.internal_organs_by_name[BP_CELL]
+				var/obj/item/cell/HC
+				if(C)
+					HC = C.cell
+				if(HC && HC.percent() < 95)
+					var/used = cell.use(500)
+					HC.give(used)
 					to_chat(user, SPAN_NOTICE("You slot your fingers into the APC interface and siphon off some of the stored charge for your own use."))
-
 					if (cell.charge < 0)
 						cell.charge = 0
-					if (H.nutrition > H.max_nutrition)
-						H.nutrition = H.max_nutrition
 					if (prob(0.5))
 						spark(src, 5, alldirs)
 						to_chat(H, SPAN_DANGER("The APC power currents surge eratically, damaging your chassis!"))
@@ -882,6 +892,7 @@
 								 SPAN_NOTICE("You remove the power cell."))
 			charging = CHARGING_ON
 			update_icon()
+			SSvueui.check_uis_for_change(src)
 		return
 	if(stat & (BROKEN|MAINT))
 		return
@@ -897,67 +908,49 @@
 
 	return ui_interact(user)
 
-/obj/machinery/power/apc/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = 1)
-	if(!user)
-		return
-
-	var/list/data = list(
-		"locked" = (locked && !emagged) ? TRUE : FALSE,
-		"isOperating" = operating,
-		"externalPower" = main_status,
-		"powerCellStatus" = cell ? cell.percent() : null,
-		"chargeMode" = chargemode,
-		"lightingMode" = night_mode,
-		"chargingStatus" = charging,
-		"totalLoad" = round(lastused_total),
-		"totalCharging" = round(lastused_charging),
-		"coverLocked" = coverlocked,
-		"failTime" = failure_timer * 2,
-		"siliconUser" = issilicon(user),
-		"emergencyMode" = !emergency_lights,
-		"time" = time,
-		"charge_mode" = charge_mode,
-
-		"powerChannels" = list(
-			list(
-				"title" = "Equipment",
-				"powerLoad" = lastused_equip,
-				"status" = equipment,
-				"topicParams" = list(
-					"auto" = list("eqp" = 3),
-					"on"   = list("eqp" = 2),
-					"off"  = list("eqp" = 1)
-				)
-			),
-			list(
-				"title" = "Lighting",
-				"powerLoad" = round(lastused_light),
-				"status" = lighting,
-				"topicParams" = list(
-					"auto" = list("lgt" = 3),
-					"on"   = list("lgt" = 2),
-					"off"  = list("lgt" = 1)
-				)
-			),
-			list(
-				"title" = "Environment",
-				"powerLoad" = round(lastused_environ),
-				"status" = environ,
-				"topicParams" = list(
-					"auto" = list("env" = 3),
-					"on"   = list("env" = 2),
-					"off"  = list("env" = 1)
-				)
-			)
+/obj/machinery/power/apc/vueui_data_change(list/data, mob/user, datum/vueui/ui)
+	var/list/monitordata = ..()
+	data = list()
+	if(monitordata)
+		data = monitordata
+	var/isAdmin = isobserver(user) && check_rights(R_ADMIN, FALSE, user)
+	data["locked"] = (locked && !emagged)
+	data["powerCellStatus"] = cell?.percent()
+	data["failTime"] = failure_timer * 2
+	data["siliconUser"] = isAdmin || issilicon(user)
+	data["totalLoad"] = round(lastused_total)
+	data["totalCharging"] = round(lastused_charging)
+	data["isOperating"] = operating
+	data["chargeMode"] = chargemode
+	data["externalPower"] = main_status
+	data["lightingMode"] = night_mode
+	data["chargingStatus"] = charging
+	data["coverLocked"] = coverlocked
+	data["emergencyMode"] = !emergency_lights
+	data["time"] = time
+	data["charge_mode"] = charge_mode
+	data["powerChannels"] = list(\
+		"Equipment" = list(\
+			"powerLoad" = lastused_equip,\
+			"status" = equipment
+		),
+		"Lighting" = list(
+			"powerLoad" = round(lastused_light),
+			"status" = lighting
+		),
+		"Environment" = list(
+			"powerLoad" = round(lastused_environ),
+			"status" = environ
 		)
 	)
+	return data
 
-	ui = SSnanoui.try_update_ui(user, src, ui_key, ui, data, force_open)
+/obj/machinery/power/apc/ui_interact(mob/user)
+	var/datum/vueui/ui = SSvueui.get_open_ui(user, src)
 	if (!ui)
-		ui = new(user, src, ui_key, "apc.tmpl", "[area.name] - APC", 665, data["siliconUser"] ? 485 : 460)
-		ui.set_initial_data(data)
+		ui = new(user, src, "machinery-power-apc", 665, (isobserver(user) && check_rights(R_ADMIN, FALSE, user) || issilicon(user)) ? 540 : 480, "[area.name] - APC")
 		ui.open()
-		ui.set_auto_update(TRUE)
+		ui.auto_update_content = TRUE
 
 /obj/machinery/power/apc/proc/report()
 	return "[area.name] : [equipment]/[lighting]/[environ] ([lastused_equip+lastused_light+lastused_environ]) : [cell? cell.percent() : "N/C"] ([charging])"
@@ -972,19 +965,21 @@
 		area.power_equip = FALSE
 		area.power_environ = FALSE
 	area.power_change()
+	SSvueui.check_uis_for_change(src)
 
 /obj/machinery/power/apc/proc/isWireCut(var/wireIndex)
 	return wires.IsIndexCut(wireIndex)
 
 /obj/machinery/power/apc/proc/can_use(mob/user, var/loud = 0) //used by attack_hand() and Topic()
-	if (user.stat)
-		to_chat(user, SPAN_WARNING("You must be conscious to use [src]!"))
-		return FALSE
-	if(!user.client)
-		return FALSE
 	if(inoperable())
 		return FALSE
-	if(!user.IsAdvancedToolUser())
+	var/use_flags = issilicon(user) && USE_ALLOW_NON_ADJACENT // AIs and borgs can use it at range
+	use_flags |= (check_rights(R_ADMIN, FALSE, user) && USE_ALLOW_NONLIVING) // admins can use the UI when ghosting
+	if(use_check(user, use_flags, show_messages = TRUE))
+		return FALSE
+	if(isobserver(user))
+		return check_rights(R_ADMIN, FALSE, user)
+	if(!user.client)
 		return FALSE
 	if(user.restrained())
 		to_chat(user, SPAN_WARNING("You must have free hands to use [src]."))
@@ -995,21 +990,18 @@
 
 	if (issilicon(user))
 		var/permit = FALSE // Malfunction variable. If AI hacks APC it can control it even without AI control wire.
-		var/mob/living/silicon/ai/AI = user
-		var/mob/living/silicon/robot/robot = user
-		if(hacker)
-			if(hacker == AI)
+		if(hacker) // handle malf hacking
+			var/mob/living/silicon/robot/robot = user
+			if(hacker == user)
 				permit = TRUE
-			else if(istype(robot) && robot.connected_ai && robot.connected_ai == hacker) // Cyborgs can use APCs hacked by their AI
+			else if(istype(robot) && hacker == robot.connected_ai) // Cyborgs can use APCs hacked by their AI
 				permit = TRUE
 
 		if(aidisabled && !permit)
 			if(!loud)
-				to_chat(user, SPAN_DANGER("\The [src] have AI control disabled!"))
+				to_chat(user, SPAN_DANGER("[src] has AI control disabled!"))
 			return FALSE
-	else
-		if (!in_range(src, user) || !isturf(loc))
-			return FALSE
+
 	var/mob/living/carbon/human/H = user
 	if (istype(H))
 		if(H.getBrainLoss() >= 60)
@@ -1018,33 +1010,36 @@
 		else if(prob(H.getBrainLoss()))
 			to_chat(user, SPAN_DANGER("You momentarily forget how to use [src]."))
 			return FALSE
+
 	return TRUE
 
 /obj/machinery/power/apc/Topic(href, href_list)
 	if(..())
-		return TRUE
+		return TOPIC_NOACTION
 
 	if(!can_use(usr, 1))
-		return TRUE
+		return TOPIC_NOACTION
 
 	if (href_list["lmode"])
 		toggle_nightlight(href_list["lmode"])
 		update_icon()
-		return TRUE
+		SSvueui.check_uis_for_change(src)
+		return TOPIC_REFRESH
 
-	else if(!issilicon(usr) && (locked && !emagged))
+	var/isAdmin = isobserver(usr) && check_rights(R_ADMIN, FALSE)
+	if(!issilicon(usr) && !isAdmin && locked && !emagged)
 		// Shouldn't happen, this is here to prevent href exploits
 		to_chat(usr, "You must unlock the panel to use this!")
-		return TRUE
+		return TOPIC_NOACTION
 
-	else if (href_list["emergency_lights"])
-		emergency_lights = href_list["emergency_lights"] != "off"
+	if (href_list["emergency_lights"])
+		emergency_lights = !emergency_lights
 		for (var/obj/machinery/light/L in area)
 			if (!initial(L.no_emergency))
 				L.no_emergency = emergency_lights	//If there was an override set on creation, keep that override
 				INVOKE_ASYNC(L, /obj/machinery/light/.proc/update, FALSE)
 			CHECK_TICK
-		return TRUE
+		return TOPIC_REFRESH
 
 	if (href_list["lock"])
 		coverlocked = !coverlocked
@@ -1062,38 +1057,35 @@
 		if(!chargemode)
 			charging = CHARGING_OFF
 			update_icon()
+			SSvueui.check_uis_for_change(src)
 
-	else if (href_list["eqp"])
-		var/val = text2num(href_list["eqp"])
-		equipment = setsubsystem(val)
-		update_icon()
-		update()
-
-	else if (href_list["lgt"])
-		var/val = text2num(href_list["lgt"])
-		lighting = setsubsystem(val)
-		update_icon()
-		update()
-
-	else if (href_list["env"])
-		var/val = text2num(href_list["env"])
-		environ = setsubsystem(val)
+	else if (href_list["set"])
+		var/val = text2num(href_list["set"])
+		switch(href_list["chan"])
+			if("Equipment")
+				equipment = setsubsystem(val)
+			if("Lighting")
+				lighting = setsubsystem(val)
+			if("Environment")
+				environ = setsubsystem(val)
 		update_icon()
 		update()
 
 	else if (href_list["overload"])
-		if(issilicon(usr))
+		if(isAdmin || issilicon(usr))
 			overload_lighting()
 
 	else if (href_list["toggleaccess"])
-		if(issilicon(usr))
-			if(emagged || (stat & (BROKEN|MAINT)))
-				to_chat(usr, "The APC does not respond to the command.")
+		if(isAdmin || issilicon(usr))
+			if(emagged || stat & MAINT)
+				to_chat(usr, SPAN_DANGER("The APC does not respond to the command."))
 			else
 				locked = !locked
 				update_icon()
+				SSvueui.check_uis_for_change(src)
 
-	return FALSE
+	SSvueui.check_uis_for_change(src)
+	return TOPIC_REFRESH
 
 /obj/machinery/power/apc/proc/toggle_breaker()
 	operating = !operating
@@ -1174,14 +1166,14 @@
 		// draw power from cell as before to power the area
 		cellused = min(cell.charge, CELLRATE * lastused_total)	// clamp deduction to a max, amount left in cell
 		cell.use(cellused)
-
+		var/draw = 0
 		if(excess > lastused_total)		// if power excess recharge the cell
 										// by the same amount just used
-			var/draw = draw_power(cellused/CELLRATE) // draw the power needed to charge this cell
+			draw = draw_power(cellused/CELLRATE) // draw the power needed to charge this cell
 			cell.give(draw * CELLRATE)
 		else		// no excess, and not enough per-apc
 			if( (cell.charge/CELLRATE + excess) >= lastused_total)		// can we draw enough from cell+grid to cover last usage?
-				var/draw = draw_power(excess)
+				draw = draw_power(excess)
 				cell.charge = min(cell.maxcharge, cell.charge + CELLRATE * draw)	//recharge with what we can
 				charging = CHARGING_OFF
 			else	// not enough power available to run the last tick!
@@ -1205,8 +1197,8 @@
 
 				ch = draw_power(ch/CELLRATE) // Removes the power we're taking from the grid
 				cell.give(ch*CELLRATE) // actually recharge the cell
-				lastused_charging = ch
-				lastused_total += ch // Sensors need this to stop reporting APC charging as "Other" load
+				lastused_charging = ch + draw
+				lastused_total += ch + draw // Sensors need this to stop reporting APC charging as "Other" load
 			else
 				charging = CHARGING_OFF		// stop charging
 				chargecount = 0
@@ -1229,7 +1221,7 @@
 					charging = CHARGING_ON
 
 		else // chargemode off
-			charging = CHARGING_ON
+			charging = CHARGING_OFF
 			chargecount = 0
 
 	else // no cell, switch everything off
@@ -1413,12 +1405,12 @@
 
 /obj/machinery/power/apc/proc/update_time()
 
-	var/delta_power = (lastused_charging) ? (-lastused_charging) : (lastused_total)
-	delta_power *= 0.0005
+	var/delta_power = (lastused_charging * 2) - lastused_total
+	delta_power *= CELLRATE
 
-	var/goal = (delta_power > 0) ? (cell.charge) : (cell.maxcharge - cell.charge)
-
-	var/time_secs = (delta_power) ? ((goal / abs(delta_power)) / (round(world.time - last_time) / 10)) : (0)
+	var/goal = (delta_power < 0) ? (cell.charge) : (cell.maxcharge - cell.charge)
+	time = world.time + (delta_power ? ((goal / abs(delta_power)) * (world.time - last_time)) : 0)
+	// If it is negative - we are discharging
 	if(delta_power < 0)
 		charge_mode = CHARGE_MODE_DISCHARGE
 	else if(delta_power > 0)
@@ -1426,7 +1418,6 @@
 	else
 		charge_mode = CHARGE_MODE_STABLE
 	last_time = world.time
-	time = ((time_secs / 3600) > 1) ? ("[round(time_secs / 3600)] hours, [round((time_secs % 3600) / 60)] minutes") : ("[round(time_secs / 60)] minutes, [round(time_secs % 60)] seconds")
 
 #undef UPDATE_CELL_IN
 #undef UPDATE_OPENED1

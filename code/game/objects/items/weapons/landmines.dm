@@ -57,6 +57,11 @@
 
 /obj/item/landmine/Crossed(AM as mob|obj)
 	if(deployed)
+		if(ishuman(AM))
+			var/mob/living/carbon/human/H = AM
+			if(H.shoes?.item_flags & LIGHTSTEP)
+				..()
+				return
 		if(isliving(AM))
 			var/mob/living/L = AM
 			if(L.mob_size >= 5)
@@ -128,7 +133,7 @@
 
 /obj/item/landmine/frag/trigger(mob/living/L)
 	spark(src, 3, alldirs)
-	fragem(src,num_fragments,num_fragments,explosion_size,explosion_size+1,fragment_damage,damage_step,1)
+	fragem(src,num_fragments,num_fragments,explosion_size,explosion_size+1,fragment_damage,damage_step,TRUE)
 	qdel(src)
 
 /obj/item/landmine/radiation

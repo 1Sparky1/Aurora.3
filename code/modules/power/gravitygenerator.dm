@@ -281,7 +281,7 @@
 
 	if(href_list["gentoggle"])
 		breaker = !breaker
-		investigate_log("was toggled [breaker ? "<font color='green'>ON</font>" : "<font color='red'>OFF</font>"] by [usr.key].", "gravity")
+		investigate_log("was toggled [breaker ? "<font color='green'>ON</font>" : "<span class='warning'>OFF</span>"] by [usr.key].", "gravity")
 		set_power()
 		src.updateUsrDialog()
 	else if(href_list["eshutoff"])
@@ -413,7 +413,7 @@
 
 /obj/machinery/gravity_generator/main/proc/pulse_radiation(var/amount = 20)
 	for(var/mob/living/L in view(7, src))
-		L.apply_effect(amount, IRRADIATE, blocked = L.getarmor(null, "rad"))
+		L.apply_damage(amount, IRRADIATE, damage_flags = DAM_DISPERSED)
 
 // Shake everyone on the z level to let them know that gravity was enagaged/disenagaged.
 /obj/machinery/gravity_generator/main/proc/shake_everyone()

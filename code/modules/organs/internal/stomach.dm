@@ -12,6 +12,7 @@
 	var/datum/reagents/metabolism/ingested
 	var/next_cramp = 0
 	var/should_process_alcohol = TRUE
+	var/stomach_volume = 65
 
 /obj/item/organ/internal/stomach/Destroy()
 	QDEL_NULL(ingested)
@@ -22,10 +23,10 @@
 
 /obj/item/organ/internal/stomach/Initialize()
 	. = ..()
-	ingested = new /datum/reagents/metabolism(240, owner, CHEM_INGEST)
+	ingested = new /datum/reagents/metabolism(stomach_volume, owner, CHEM_INGEST)
 	if(!ingested.my_atom)
 		ingested.my_atom = src
-	if(species.gluttonous)
+	if(species && species.gluttonous)
 		action_button_name = PUKE_ACTION_NAME
 
 /obj/item/organ/internal/stomach/removed()
@@ -99,8 +100,6 @@
 	if(is_usable())
 		ingested.metabolize()
 
-#define STOMACH_VOLUME 65
-
 /obj/item/organ/internal/stomach/process()
 	..()
 	if(owner)
@@ -111,11 +110,10 @@
 		if(functioning)
 			for(var/mob/living/M in contents)
 				if(M.stat == DEAD)
-					addtimer(CALLBACK(src, .proc/digest_mob, M), 30 SECONDS, TIMER_UNIQUE)
+					addtimer(CALLBACK(src, .proc/digest_mob, M), 5 MINUTES, TIMER_UNIQUE)
 
-				M.adjustBruteLoss(3)
-				M.adjustFireLoss(3)
-				M.adjustToxLoss(3)
+				M.adjustBruteLoss(2)
+				M.adjustFireLoss(2)
 
 				var/digestion_product = M.get_digestion_product()
 				if(digestion_product)
@@ -127,13 +125,13 @@
 
 		if(should_process_alcohol)
 
-			var/alcohol_volume = ingested.get_reagent_amount(/datum/reagent/alcohol/ethanol)
+			var/alcohol_volume = REAGENT_VOLUME(ingested, /decl/reagent/alcohol)
 
 			// Alcohol counts as double volume for the purposes of vomit probability
 			var/effective_volume = ingested.total_volume + alcohol_volume
 
 			// Just over the limit, the probability will be low. It rises a lot such that at double ingested it's 64% chance.
-			var/vomit_probability = (effective_volume / STOMACH_VOLUME) ** 6
+			var/vomit_probability = (effective_volume / stomach_volume) ** 6
 			if(prob(vomit_probability))
 				owner.vomit()
 
@@ -141,5 +139,4 @@
 	if(!QDELETED(M))
 		qdel(M)
 
-#undef STOMACH_VOLUME
 #undef PUKE_ACTION_NAME

@@ -42,7 +42,7 @@
 	// If the machine has multiple output modes, define them here.
 	var/selected_option
 	var/list/output_options = list()
-
+	var/finish_verb = "pings!"
 	var/combine_first = FALSE//If 1, this appliance will do combination cooking before checking recipes
 
 /obj/machinery/appliance/Initialize()
@@ -99,14 +99,20 @@
 		return SPAN_WARNING("It looks overcooked, get it out!")
 	return SPAN_DANGER("It is burning!")
 
+/obj/machinery/appliance/proc/get_cooking_item_from_container(var/obj/item/reagent_containers/cooking_container/CC)
+	for(var/C in cooking_objs)
+		var/datum/cooking_item/CI = C
+		if(CI.container == CC)
+			return CI
+
 /obj/machinery/appliance/update_icon()
 	if (!stat && length(cooking_objs))
 		icon_state = on_icon
 	else
 		icon_state = off_icon
 
-/obj/machinery/appliance/proc/attempt_toggle_power(mob/user, ranged = FALSE)
-	if (use_check_and_message(user, ranged ? USE_ALLOW_NON_ADJACENT : 0))
+/obj/machinery/appliance/proc/attempt_toggle_power(mob/user)
+	if (use_check_and_message(user, issilicon(user) ? USE_ALLOW_NON_ADJACENT : 0))
 		return
 
 	stat ^= POWEROFF // Toggles power
@@ -119,16 +125,16 @@
 /obj/machinery/appliance/AICtrlClick(mob/user)
 	attempt_toggle_power(user, TRUE)
 
-/obj/machinery/appliance/proc/choose_output(ranged = FALSE)
+/obj/machinery/appliance/proc/choose_output()
 	set src in view()
 	set name = "Choose output"
 	set category = "Object"
 
-	if (use_check_and_message(usr, ranged && USE_ALLOW_NON_ADJACENT))
+	if (use_check_and_message(usr, issilicon(usr) ? USE_ALLOW_NON_ADJACENT : 0))
 		return
 	if(isemptylist(output_options))
 		return
-	var/choice = input("What specific food do you wish to make with [src]?") as null|anything in output_options+"Default"
+	var/choice = input("What specific food do you wish to make with [src]?", "Choose Output") as null|anything in output_options+"Default"
 	if(!choice)
 		return
 	selected_option = (choice == "Default") ? null : choice
@@ -136,7 +142,7 @@
 
 //Handles all validity checking and error messages for inserting things
 /obj/machinery/appliance/proc/can_insert(var/obj/item/I, var/mob/user)
-	if(!dropsafety(I))
+	if(!I.dropsafety())
 		return CANNOT_INSERT
 
 	// We are trying to cook a grabbed mob.
@@ -247,17 +253,16 @@
 	for (var/obj/item/J in CI.container)
 		oilwork(J, CI)
 
-	for (var/r in CI.container.reagents.reagent_list)
-		var/datum/reagent/R = r
-		if (istype(R, /datum/reagent/nutriment))
-			CI.max_cookwork += R.volume *2//Added reagents contribute less than those in food items due to granular form
+	for (var/_R in CI.container.reagents.reagent_volumes)
+		if (ispath(_R, /decl/reagent/nutriment))
+			CI.max_cookwork += CI.container.reagents.reagent_volumes[_R] *2//Added reagents contribute less than those in food items due to granular form
 
 			//Nonfat reagents will soak oil
-			if (!istype(R, /datum/reagent/nutriment/triglyceride))
-				CI.max_oil += R.volume * 0.25
+			if (!ispath(_R, /decl/reagent/nutriment/triglyceride))
+				CI.max_oil += CI.container.reagents.reagent_volumes[_R] * 0.25
 		else
-			CI.max_cookwork += R.volume
-			CI.max_oil += R.volume * 0.10
+			CI.max_cookwork += CI.container.reagents.reagent_volumes[_R]
+			CI.max_oil += CI.container.reagents.reagent_volumes[_R]* 0.10
 
 	//Rescaling cooking work to avoid insanely long times for large things
 	var/brackets = CI.max_cookwork / 4
@@ -268,17 +273,16 @@
 	var/obj/item/reagent_containers/food/snacks/S = I
 	var/work = 0
 	if (istype(S) && S.reagents)
-		for (var/r in S.reagents.reagent_list)
-			var/datum/reagent/R = r
-			if (istype(R, /datum/reagent/nutriment))
-				work += R.volume *3//Core nutrients contribute much more than peripheral chemicals
+		for (var/_R in S.reagents.reagent_volumes)
+			if (ispath(_R, /decl/reagent/nutriment))
+				work += S.reagents.reagent_volumes[_R] *3//Core nutrients contribute much more than peripheral chemicals
 
 				//Nonfat reagents will soak oil
-				if (!istype(R, /datum/reagent/nutriment/triglyceride))
-					CI.max_oil += R.volume * 0.35
+				if (!ispath(_R, /decl/reagent/nutriment/triglyceride))
+					CI.max_oil += S.reagents.reagent_volumes[_R] * 0.35
 			else
-				work += R.volume
-				CI.max_oil += R.volume * 0.15
+				work += S.reagents.reagent_volumes[_R]
+				CI.max_oil += S.reagents.reagent_volumes[_R] * 0.15
 
 
 	else if(istype(I, /obj/item/holder))
@@ -320,21 +324,21 @@
 
 
 /obj/machinery/appliance/proc/finish_cooking(var/datum/cooking_item/CI)
-
-	visible_message("<b>[src]</b> pings!")
+	audible_message("<b>[src]</b> [finish_verb]")
 	if(cooked_sound)
 		playsound(get_turf(src), cooked_sound, 50, 1)
 	//Check recipes first, a valid recipe overrides other options
 	var/decl/recipe/recipe = null
 	var/atom/C = null
 	var/appliance
-	if (CI.container)
+	if (CI.container && CI.container.appliancetype)
 		C = CI.container
 		appliance = CI.container.appliancetype
-	else
+	else if(appliancetype)
 		C = src
 		appliance = appliancetype
-	recipe = select_recipe(C, appliance = appliance)
+	if(appliance)
+		recipe = select_recipe(C, appliance = appliance)
 
 	if (recipe)
 		var/list/results = recipe.make_food(C)
@@ -420,7 +424,7 @@
 
 	CI.container.reagents.trans_to_holder(buffer, CI.container.reagents.total_volume)
 
-	var/obj/item/reagent_containers/food/snacks/result = new cook_path(CI.container)
+	var/obj/item/reagent_containers/food/snacks/variable/result = new cook_path(CI.container)
 	buffer.trans_to(result, buffer.total_volume)
 
 	//Filling overlay
@@ -436,6 +440,7 @@
 	words.Remove(result.name)
 	shuffle(words)
 	var/num = 6 //Maximum number of words
+	result.name = result.get_name_sans_prefix()
 	while (num > 0)
 		num--
 		if (isemptylist(words))
@@ -444,7 +449,7 @@
 		result.name = "[pop(words)] [result.name]"
 
 	//This proc sets the size of the output result
-	result.update_icon()
+	result.update_prefix()
 	return result
 
 //Helper proc for standard modification cooking
@@ -568,15 +573,15 @@
 		result.kitchen_tag = SA.kitchen_tag
 		if (SA.meat_amount)
 			reagent_amount = SA.meat_amount*9 // at a rate of 9 protein per meat
-	var/datum/reagent/digest_product = victim.get_digestion_product()
+	var/digest_product_type = victim.get_digestion_product() // DOES NOT RETURN A DECL, RETURNS A PATH
 	var/list/data
 	var/meat_name = result.kitchen_tag || victim.name
 	if(ishuman(victim))
 		var/mob/living/carbon/human/CH = victim
 		meat_name = CH.species?.name || meat_name
-	if(istype(digest_product, /datum/reagent/nutriment/protein))
+	if(ispath(digest_product_type, /decl/reagent/nutriment/protein))
 		data = list("[meat_name] meat" = reagent_amount)
-	result.reagents.add_reagent(victim.get_digestion_product(), reagent_amount, data)
+	result.reagents.add_reagent(digest_product_type, reagent_amount, data)
 
 	if (victim.reagents)
 		victim.reagents.trans_to(result, victim.reagents.total_volume)
@@ -619,6 +624,9 @@
 	oil = 0
 	combine_target = null
 	//Container is not reset
+
+/obj/machinery/appliance/proc/update_cooking_power()
+	cooking_power = cooking_coeff
 
 /obj/machinery/appliance/RefreshParts()
 	..()

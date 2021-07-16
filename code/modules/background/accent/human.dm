@@ -43,12 +43,19 @@
 	individual ships, most of which have their own unique variations upon the standard Scarab accent."
 	tag_icon = "scarabs"
 
-/datum/accent/silversun
-	name = ACCENT_SILVERSUN
-	description = "The native accent of Silversun is a sing-songy take on standard Sol Common that has, since massive investment into the planet by Idris Incorporated, come to be \
-	associated with the planet's renowned tourism industry. Many native residents of Silversun are bitter that their accent - and planet - are seen as nothing more than an enormous \
-	vacation retreat by the greater Orion Spur."
-	tag_icon = "silversun"
+/datum/accent/silversun_original
+	name = ACCENT_SILVERSUN_ORIGINAL
+	description = "The native accent of Silversun is a sing-song take on standard Sol Common that has, since massive investment into the planet by Idris Incorporated, come to be associated with the planet's renowned tourism industry. \
+	Many native residents of Silversun are bitter that their accent - and planet - are seen as nothing more than an enormous vacation retreat by the greater Orion Spur. This accent is commonly used by Idris Incorporated shell positronic \
+	frames, much to the consternation of Silversun's Originals."
+	tag_icon = "silversun_original"
+
+/datum/accent/silversun_expatriate
+	name = ACCENT_SILVERSUN_EXPATRIATE
+	description = "The accent of Silversun's wealthy Idris Incorporated-aligned minority population is rooted in Tradeband dialects from Eridani and Luna rather than the Sol Common dialect of the Originals, making it audibly distinctive \
+	compared to the 'native' accent of the planet. This accent is most commonly associated with Idris Incorporated employees from Silversun, which tend to be overwhelmingly from the Expatriate population. Many Idris Incorporated positronics \
+	are programmed with this accent, and it is often regarded as the unofficial accent of the megacorporation."
+	tag_icon = "silversun_expatriate"
 
 /datum/accent/phong
 	name = ACCENT_PHONG
@@ -110,13 +117,19 @@
 	character as villainous or untrustworthy. As a result, it is often looked down upon throughout human space."
 	tag_icon = "venus_surfacer"
 
-/datum/accent/dominia
-	name = ACCENT_DOMINIA
-	description = "The most common Dominian accent is Vulgar Morozi, a variation of Sol Common found upon Moroz itself. Dominion-spoken Sol Common and Tau Ceti Basic are both heavily \
-	influenced by Tradeband, the common language of both human and unathi nobility in the Empire. Vulgar Morozi has regional variations on the colonies of the Dominian Empire, and in \
-	the rebellious Morozian region of Fisanduh. The Fisanduhian accent is considered to be a distinctive higher-pitched variation of Vulgar Morozi that is often suppressed by insurgents \
-	to better blend in with the greater Imperial population."
-	tag_icon = "dominia"
+/datum/accent/dominia_high
+	name = ACCENT_DOMINIA_HIGH
+	description = "The less common Dominian accent is High Morozi, a variation of Tradeband found upon Moroz itself. While Vulgar Morozi is typically associated with the common citizenry of the Empire, \
+	High Morozi is associated with the Imperial nobility. While most typically associated with nobles it is often taught to wealthy commoners in order to more easily brush shoulders with nobility. \
+	This accent is one of the most readily-recognised markers of Dominian nobility abroad."
+	tag_icon = "dominia_high"
+
+/datum/accent/dominia_vulgar
+	name = ACCENT_DOMINIA_VULGAR
+	description = "The most common Dominian accent is Vulgar Morozi, a variation of Sol Common found upon Moroz itself. Though heavily influenced by Tradeband Vulgar Morozi is considered to be a \
+	dialect of Sol Common rather than a distinct Tradeband dialect. Vulgar Morozi has regional variations on the colonies of the Dominian Empire, and in the rebellious Morozian region of Fisanduh. \
+	The Fisanduhian accent is considered to be a distinctive higher-pitched variation of Vulgar Morozi that is often suppressed by insurgents to better blend in with the greater Imperial population."
+	tag_icon = "dominia_vulgar"
 
 /datum/accent/jupiter
 	name = ACCENT_JUPITER
@@ -128,7 +141,7 @@
 /datum/accent/europa
 	name = ACCENT_EUROPA
 	description = "Europans are known to be much quieter and speak at a slower pace than their counterparts on Callisto, despite the close proximity of the two moons. Solarian linguists have \
-	traced the whisper-like nature of the accent origins to the planet’s submarines: crews believed that quieter voices interfered less with sonar, and were less likely to be heard by whatever was \
+	traced the whisper-like nature of the accent origins to the planet's submarines: crews believed that quieter voices interfered less with sonar, and were less likely to be heard by whatever was \
 	outside the hull. Europans that have succumbed to \"Deep Crazy\", a psychological phenomenon found on the moon, are known to abandon the typically hushed nature of Europan speech for screaming hysterically."
 	tag_icon = "europa"
 
@@ -138,9 +151,35 @@
 	from Luna to Xanu - are, one way or another, descended from this ancient accent."
 	tag_icon = "earth"
 
-/datum/accent/deepfrontier
-	name = ACCENT_DEEPFRONTIER
-	description = "The so-called \"Deep Frontier\" accent is not truly a unified accent at all, and instead defines a broad range of accents from the more \"wild\" frontier outside of human control. \
-	Those with these accents are almost universally looked down upon as wild savages by their counterparts in more civilized space at best. Speakers of this accent are almost always found in lower-end \
-	positions in civilized space, due to the typically impoverished and anarchic nature of the Deep Frontier."
-	tag_icon = "deepfrontier"
+/datum/accent/ncf
+	name = ACCENT_NCF
+	description = "The non-Coalition frontier 'accent' is not a true accent in of itself, but is instead used as a catch-all term for human accents originating outside of the frontier controlled by the Coalition of Colonies. \
+	These planets and systems vary wildly, and all sorts of people and places can be found within them."
+	tag_icon = "noncoalitionfrontier"
+
+/datum/accent/fisanduh
+	name = ACCENT_FISANDUH
+	description = "While it is similar to the typical Morozian accent, to those not familiar with it; or not from the Empire of Dominia, the standard Fisanduhian accent has some variations that mark it as distinctive. \
+	The accent is higher pitched than its Dominian counterpart, and has been described as more tonal. Members of the Fisanduh Freedom Front will often go to great lengths to disguise this accent, \
+	though most will slip back into it when off-world."
+	tag_icon = "fisanduh"
+
+/datum/accent/gadpathur
+	name = ACCENT_GADPATHUR
+	description = "The Gadpathurian accent, otherwise known as Gadpathurian Common, is an older dialect of Sol Common that is often regarded as dated-sounding by other speakers due to the \
+	isolation of the planet during its period of reunification. Due to the government's tight control over Gadpathur, and push for unity in the face of the Sol Alliance, Gadpathurians have \
+	been described as sounding relatively similar no matter which area of the planet they hail from."
+	tag_icon = "gadpathur"
+
+/datum/accent/pluto
+	name = ACCENT_PLUTO
+	description = "The Plutonian accent is one of many Sol Common accents found throughout the Sol System itself, though it is almost undoubtedly the furthest one out from the Sun itself. Rooted in a combination \
+	of Central Asian and Eastern European dialects, the Plutonian accent is notable for its slow, methodical method of speech. Very few positronics can be found with this accent, due to Pluto's unusual relationship with corporations."
+	tag_icon = "pluto"
+
+/datum/accent/assunzione
+	name = ACCENT_ASSUNZIONE
+	description = "The Assunzionii accent is one of the most unusual found in the Coalition of Colonies, due to the planet's colonial roots in the Mediterranean. Heavily influenced by Romance languages the Assunzionii dialect is \
+	most notable for its elegant-sounding and evenly-paced method of speaking compared to rougher-sounding Coalition and frontier dialects. Liturgical Assunzionii is a small subset of this dialect, and is generally only spoken during \
+	Luceian services and can be distinguished by its use of archaic language."
+	tag_icon = "assunzione"

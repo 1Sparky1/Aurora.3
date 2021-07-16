@@ -46,6 +46,11 @@
 	req_tech = list(TECH_DATA = 3)
 	build_path = /obj/item/circuitboard/rdserver
 
+/datum/design/circuit/machine/rdtechprocessor
+	name = "R&D Tech Processor"
+	req_tech = list(TECH_DATA = 3)
+	build_path = /obj/item/circuitboard/rdtechprocessor
+
 /datum/design/circuit/machine/mechfab
 	name = "Exosuit Fabricator"
 	req_tech = list(TECH_DATA = 3, TECH_ENGINEERING = 3)
@@ -55,6 +60,11 @@
 	name = "Mech Recharger"
 	req_tech = list(TECH_DATA = 2, TECH_POWER = 2, TECH_ENGINEERING = 2)
 	build_path = /obj/item/circuitboard/mech_recharger
+
+/datum/design/circuit/machine/heph_mech_recharger
+	name = "Hephaestus Mech Recharger"
+	req_tech = list(TECH_DATA = 3, TECH_POWER = 3, TECH_ENGINEERING = 4)
+	build_path = /obj/item/circuitboard/mech_recharger/hephaestus
 
 /datum/design/circuit/machine/recharge_station
 	name = "Cyborg Recharge Station"
@@ -70,6 +80,11 @@
 	name = "Sleeper"
 	req_tech = list(TECH_DATA = 2, TECH_ENGINEERING = 2)
 	build_path = /obj/item/circuitboard/sleeper
+
+/datum/design/circuit/machine/stasis_bed
+	name = "Lifeform Stasis Unit"
+	req_tech = list(TECH_MAGNET = 4, TECH_ENGINEERING = 4, TECH_BIO = 4)
+	build_path = /obj/item/circuitboard/stasis_bed
 
 /datum/design/circuit/machine/bodyscannerm
 	name = "Body Scanner"
@@ -130,6 +145,11 @@
 	name = "Cereal Maker"
 	req_tech = list(TECH_MAGNET = 2, TECH_ENGINEERING = 2)
 	build_path = /obj/item/circuitboard/cerealmaker
+
+/datum/design/circuit/machine/grill
+	name = "Grill"
+	req_tech = list(TECH_MAGNET = 2, TECH_ENGINEERING = 2)
+	build_path = /obj/item/circuitboard/grill
 
 /datum/design/circuit/machine/candymaker
 	name = "Candy Machine"
@@ -217,7 +237,17 @@
 	req_tech = list(TECH_DATA = 1, TECH_ENGINEERING = 1)
 	build_path = /obj/item/circuitboard/miningdrillbrace
 
+/datum/design/circuit/machine/cargo_trolley
+	name = "Cargo Trolley"
+	req_tech = list(TECH_DATA = 1, TECH_ENGINEERING = 1)
+	build_path = /obj/item/circuitboard/cargo_trolley
+
 /datum/design/circuit/machine/weapons_analyzer
 	name = "Weapons Analyzer"
 	req_tech = list(TECH_DATA = 2, TECH_ENGINEERING = 3, TECH_COMBAT = 2)
 	build_path = /obj/item/circuitboard/weapons_analyzer
+
+/datum/design/circuit/machine/slime_extractor
+	name = "Slime Extractor"
+	req_tech = list(TECH_BIO = 2, TECH_ENGINEERING = 1, TECH_BLUESPACE = 1)
+	build_path = /obj/item/circuitboard/slime_extractor

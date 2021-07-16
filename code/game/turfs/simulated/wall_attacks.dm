@@ -53,7 +53,7 @@
 
 	if(!can_open)
 		to_chat(user, SPAN_NOTICE("You push the wall, but nothing happens."))
-		playsound(src, 'sound/weapons/genhit.ogg', 25, TRUE)
+		playsound(src, hitsound, 25, TRUE)
 	else
 		toggle_open(user)
 	return FALSE
@@ -104,7 +104,6 @@
 	return fail_smash(user, wallbreaker)
 
 /turf/simulated/wall/attackby(obj/item/W, mob/user)
-
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(!user)
 		to_chat(user, SPAN_WARNING("You don't have the dexterity to do this!"))
@@ -113,6 +112,9 @@
 	//get the user's location
 	if(!istype(user.loc, /turf))
 		return	//can't do this stuff whilst inside objects and such
+
+	if(istype(W, /obj/item/plastique))
+		return
 
 	if(W)
 		radiate()
@@ -128,9 +130,18 @@
 				for(var/obj/effect/overlay/wallrot/WR in src)
 					qdel(WR)
 				return
-		else if(!is_sharp(W) && W.force >= 10 || W.force >= 20)
-			to_chat(user, SPAN_NOTICE("\The [src] crumbles away under the force of your [W.name]."))
-			src.dismantle_wall(1)
+		else if(W.sharp)
+			user.visible_message("<b>[user]</b> starts scraping the rot away with \the [W].", SPAN_NOTICE("You start scraping the rot away with \the [W]."))
+			if(do_after(user, rand(3 SECONDS, 5 SECONDS), TRUE))
+				user.visible_message("<b>[user]</b> scrapes away the rot with \the [W].", SPAN_NOTICE("You start scraping away the rot with \the [W]."))
+				playsound(src, W.hitsound, W.get_clamped_volume(), TRUE)
+				for(var/obj/effect/overlay/wallrot/WR in src)
+					WR.scrape(user)
+				return
+		else if(W.force >= 10)
+			user.do_attack_animation(src, W)
+			to_chat(user, SPAN_NOTICE("\The [src] crumbles away under the force of your [W]."))
+			dismantle_wall(TRUE)
 			return
 
 	//THERMITE related stuff. Calls src.thermitemelt() which handles melting simulated walls and the relevant effects
@@ -193,10 +204,9 @@
 			cut_delay *= 0.7
 		else if(istype(W, /obj/item/gun/energy/plasmacutter))
 			var/obj/item/gun/energy/plasmacutter/PC = W
-			if(!PC.power_supply)
-				to_chat(user, SPAN_WARNING("\The [src] doesn't have a power supply installed!"))
+			if(PC.check_power_and_message(user))
 				return
-			dismantle_sound = "zapping and melting"
+			dismantle_sound = PC.fire_sound
 			dismantle_verb = "slicing"
 			cut_delay *= 0.8
 		else if(istype(W,/obj/item/melee/energy))
@@ -232,10 +242,7 @@
 			cut_delay *= 1.5
 
 		if(dismantle_verb)
-
 			to_chat(user, SPAN_NOTICE("You begin [dismantle_verb] through the outer plating."))
-			if(dismantle_sound)
-				playsound(src, dismantle_sound, 100, 1)
 
 			if(cut_delay<0)
 				cut_delay = 1
@@ -243,14 +250,15 @@
 			if(!do_after(user,cut_delay/W.toolspeed))
 				return
 
-
 			//This prevents runtime errors if someone clicks the same wall more than once
 			if (!istype(src, /turf/simulated/wall))
 				return
 
-			to_chat(user, SPAN_NOTICE("You remove the outer plating."))
+			if(dismantle_sound)
+				playsound(src, dismantle_sound, 100, 1)
+			W.use_resource(user, 1)
 			dismantle_wall()
-			user.visible_message(SPAN_WARNING("The wall was torn open by [user]!"))
+			user.visible_message(SPAN_WARNING("The wall was torn open by \the [user]!"), SPAN_NOTICE("You remove the outer plating."))
 			return
 
 	//Reinforced dismantling.
@@ -366,9 +374,8 @@
 		return
 
 	else if(!istype(W,/obj/item/rfd/construction) && !istype(W, /obj/item/reagent_containers))
-		//At this point we know that they probably wanna hit it.
 		if(user.a_intent != I_HURT || !W.force)
-			return attack_hand(user)
+			return
 
 		var/damage_to_deal = W.force
 		var/weaken = 0
@@ -389,4 +396,5 @@
 			take_damage(damage_to_deal)
 		else
 			visible_message(SPAN_WARNING("[user] strikes \the [src] with \the [W], but it bounces off!"))
+			playsound(src, hitsound, 25, 1)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)

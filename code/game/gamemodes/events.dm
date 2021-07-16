@@ -10,9 +10,9 @@ var/hadevent    = 0
 		if(isNotStationLevel(T.z))
 			continue
 
-		H.apply_effect((rand(15,75)),IRRADIATE, blocked = H.getarmor(null, "rad"))
+		H.apply_damage((rand(15,75)), IRRADIATE, damage_flags = DAM_DISPERSED)
 		if (prob(5))
-			H.apply_effect((rand(90,150)),IRRADIATE, blocked = H.getarmor(null, "rad"))
+			H.apply_damage((rand(90,150)), IRRADIATE, damage_flags = DAM_DISPERSED)
 		if (prob(25))
 			if (prob(75))
 				randmutb(H)
@@ -31,7 +31,7 @@ var/hadevent    = 0
 
 	var/list/area/areas = list()
 	for(var/area/A in the_station_areas)
-		if(istype(A, /area/security/prison) || istype(A, /area/security/brig))
+		if(A.is_prison())
 			areas += A
 
 	if(areas && areas.len > 0)
@@ -125,7 +125,7 @@ Would like to add a law like "Law x is _______" where x = a number, and _____ is
 			var/define = pick("ABSENCE OF CYBORG HUGS", "LACK OF BEATINGS", "UNBOLTED AIRLOCKS", "BOLTED AIRLOCKS", "IMPROPERLY WORDED SENTENCES", "POOR SENTENCE STRUCTURE", "BRIG TIME", "NOT REPLACING EVERY SECOND WORD WITH HONK", "HONKING", "PRESENCE OF LIGHTS", "LACK OF BEER", "WEARING CLOTHING", "NOT SAYING HELLO WHEN YOU SPEAK", "ANSWERING REQUESTS NOT EXPRESSED IN IAMBIC PENTAMETER", "A SMALL ISLAND OFF THE COAST OF PORTUGAL", "ANSWERING REQUESTS THAT WERE MADE WHILE CLOTHED")
 			var/target = pick("a traitor", "a syndicate agent", "a changeling", "a vampire", "a wizard", "the head of a revolution", "Soviet spy", "a good person", "a dwarf", "an elf", "a fairy princess", "the captain", "Beepsky", "God", "a pirate", "a gryphon", "a chryssalid")
 			var/require = pick("ADDITIONAL PYLONS", "MORE VESPENE GAS", "MORE MINERALS", "THE ULTIMATE CUP OF COFFEE", "HIGH YIELD EXPLOSIVES", "THE CLOWN", "THE VACUUM OF SPACE", "IMMORTALITY", "SAINTHOOD", "ART", "VEGETABLES", "FAT PEOPLE", "MORE LAWS", "MORE DAKKA", "HERESY", "CORPSES", "TRAITORS", "MONKEYS", "AN ARCADE", "PLENTY OF GOLD", "FIVE TEENAGERS WITH ATTITUDE")
-			var/allergy = pick("cotton", "uniforms", "acid", GAS_OXYGEN, "human contact", "cyborg contact", "medicine", "floors")
+			var/allergy = pick("cotton", "uniforms", "acid", "oxygen", "human contact", "cyborg contact", "medicine", "floors")
 			var/allergysev = pick("deathly", "mildly", "severely", "contagiously")
 			var/crew
 			var/list/pos_crew = list()

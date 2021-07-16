@@ -7,6 +7,7 @@
 	w_class = ITEMSIZE_SMALL
 	icon = 'icons/obj/assemblies/electronic_setups.dmi'
 	icon_state = "setup_small"
+	flags = NOBLUDGEON
 	var/max_components = IC_COMPONENTS_BASE
 	var/max_complexity = IC_COMPLEXITY_BASE
 	var/opened = 0
@@ -263,7 +264,7 @@
 		update_icon()
 		return TRUE
 
-	else if(istype(I, /obj/item/device/integrated_electronics/wirer) || istype(I, /obj/item/device/integrated_electronics/debugger) || I.isscrewdriver())
+	else if(istype(I, /obj/item/device/integrated_electronics/wirer) || istype(I, /obj/item/device/integrated_electronics/debugger) || I.ismultitool() || I.isscrewdriver())
 		if(opened)
 			interact(user)
 		else

@@ -22,6 +22,8 @@
 	var/cold_protection = 0 //flags which determine which body parts are protected from cold. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm
 	var/max_heat_protection_temperature //Set this variable to determine up to which temperature (IN KELVIN) the item protects against heat damage. Keep at null to disable protection. Only protects areas set by heat_protection flags
 	var/min_cold_protection_temperature //Set this variable to determine down to which temperature (IN KELVIN) the item protects against cold damage. 0 is NOT an acceptable number due to if(varname) tests!! Keep at null to disable protection. Only protects areas set by cold_protection flags
+	var/max_pressure_protection // Set this variable if the item protects its wearer against high pressures below an upper bound. Keep at null to disable protection.
+	var/min_pressure_protection // Set this variable if the item protects its wearer against low pressures above a lower bound. Keep at null to disable protection. 0 represents protection against hard vacuum.
 
 	var/datum/action/item_action/action
 	var/action_button_name //It is also the text which gets displayed on the action button. If not set it defaults to 'Use [name]'. If it's not set, there'll be no button.
@@ -39,9 +41,9 @@
 	var/permeability_coefficient = 1 // for chemicals/diseases
 	var/siemens_coefficient = 1 // for electrical admittance/conductance (electrocution checks and shit)
 	var/slowdown = 0 // How much clothing is slowing you down. Negative values speeds you up
+	var/slowdown_accessory = 0 // Updated on accessory add/remove. This is how much the current accessories slow you down.
 	var/canremove = 1 //Mostly for Ninja code at this point but basically will not allow the item to be removed if set to 0. /N
 	var/can_embed = 1//If zero, this item/weapon cannot become embedded in people when you hit them with it
-	var/list/armor //= list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 0, rad = 0)	If null, object has 0 armor.
 	var/list/allowed = null //suit storage stuff.
 	var/obj/item/device/uplink/hidden/hidden_uplink // All items can have an uplink hidden inside, just remember to add the triggers.
 	var/zoomdevicename //name used for message when binoculars/scope is used
@@ -56,6 +58,9 @@
 	var/pickup_sound = /decl/sound_category/generic_pickup_sound
 	///Sound uses when dropping the item, or when its thrown.
 	var/drop_sound = /decl/sound_category/generic_drop_sound // drop sound - this is the default
+
+	var/list/armor
+	var/armor_degradation_speed //How fast armor will degrade, multiplier to blocked damage to get armor damage value.
 
 	//Item_state definition moved to /obj
 	//var/item_state = null // Used to specify the item state for the on-mob overlays.
@@ -89,11 +94,23 @@
 
 
 	var/charge_failure_message = " cannot be recharged."
+	var/held_maptext
 
 	var/cleaving = FALSE
 	var/reach = 1 // Length of tiles it can reach, 1 is adjacent.
 	var/lock_picking_level = 0 //used to determine whether something can pick a lock, and how well.
 	// Its vital that if you make new power tools or new recipies that you include this
+
+/obj/item/Initialize()
+	. = ..()
+	if(islist(armor))
+		for(var/type in armor)
+			if(armor[type])
+				AddComponent(/datum/component/armor, armor)
+				break
+	if(flags & HELDMAPTEXT)
+		set_initial_maptext()
+		check_maptext()
 
 /obj/item/Destroy()
 	if(ismob(loc))
@@ -104,12 +121,17 @@
 		src.loc = null
 	return ..()
 
+/obj/item/update_icon()
+	. = ..()
+	if(build_from_parts)
+		cut_overlays()
+		add_overlay(overlay_image(icon,"[icon_state]_[worn_overlay]", flags=RESET_COLOR)) //add the overlay w/o coloration of the original sprite
 
 /obj/item/device
 	icon = 'icons/obj/device.dmi'
 	item_icons = list(
-		slot_l_hand_str = 'icons/mob/items/lefthand_device.dmi',
-		slot_r_hand_str = 'icons/mob/items/righthand_device.dmi',
+		slot_l_hand_str = 'icons/mob/items/device/lefthand_device.dmi',
+		slot_r_hand_str = 'icons/mob/items/device/righthand_device.dmi',
 		)
 	pickup_sound = 'sound/items/pickup/device.ogg'
 	drop_sound = 'sound/items/drop/device.ogg'
@@ -176,8 +198,12 @@
 	return ..(user, distance, "", "It is a [size] item.")
 
 /obj/item/attack_hand(mob/user)
-	if (!user) return
-	if (ishuman(user))
+	if(!user)
+		return
+	if(ishuman(user))
+		if(iszombie(user))
+			to_chat(user, SPAN_WARNING("You uselessly claw at \the [src], your rotting brain incapable of picking it up or operating it."))
+			return
 		var/mob/living/carbon/human/H = user
 		var/obj/item/organ/external/temp = H.organs_by_name[BP_R_HAND]
 		if (user.hand)
@@ -224,9 +250,9 @@
 
 // Due to storage type consolidation this should get used more now.
 // I have cleaned it up a little, but it could probably use more.  -Sayu
-/obj/item/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/storage))
-		var/obj/item/storage/S = W
+/obj/item/attackby(obj/item/I, mob/user)
+	if(istype(I,/obj/item/storage))
+		var/obj/item/storage/S = I
 		if(S.use_to_pickup)
 			if(S.collection_mode && !is_type_in_list(src, S.pickup_blacklist)) //Mode is set to collect all items on a tile and we clicked on a valid one.
 				if(isturf(loc))
@@ -235,21 +261,21 @@
 					var/failure = FALSE
 					var/original_loc = user ? user.loc : null
 
-					for(var/obj/item/I in loc)
+					for(var/obj/item/item in loc)
 						if (user && user.loc != original_loc)
 							break
 
-						if(rejections[I.type]) // To limit bag spamming: any given type only complains once
+						if(rejections[item.type]) // To limit bag spamming: any given type only complains once
 							continue
 
-						if(!S.can_be_inserted(I))	// Note can_be_inserted still makes noise when the answer is no
-							rejections[I.type] = TRUE	// therefore full bags are still a little spammy
+						if(!S.can_be_inserted(item))	// Note can_be_inserted still makes noise when the answer is no
+							rejections[item.type] = TRUE	// therefore full bags are still a little spammy
 							failure = TRUE
 							CHECK_TICK
 							continue
 
 						success = TRUE
-						S.handle_item_insertion_deferred(I, user)	//The 1 stops the "You put the [src] into [S]" insertion message from being displayed.
+						S.handle_item_insertion_deferred(item, user)	//The 1 stops the "You put the [src] into [S]" insertion message from being displayed.
 						CHECK_TICK	// Because people insist on picking up huge-ass piles of stuff.
 
 					S.handle_storage_deferred(user)
@@ -285,21 +311,24 @@
 				return 0
 
 /obj/item/throw_impact(atom/hit_atom)
-	..()
 	if(isliving(hit_atom)) //Living mobs handle hit sounds differently.
-		var/volume = get_volume_by_throwforce_and_or_w_class()
-		if(throwforce > 0)
-			if(mob_throw_hit_sound)
-				playsound(hit_atom, mob_throw_hit_sound, volume, TRUE, -1)
-			else if(hitsound)
-				playsound(hit_atom, hitsound, volume, TRUE, -1)
-			else
-				playsound(hit_atom, 'sound/weapons/genhit.ogg', volume, TRUE, -1)
+		var/mob/living/L = hit_atom
+		if(L.in_throw_mode)
+			playsound(hit_atom, pickup_sound, PICKUP_SOUND_VOLUME, TRUE)
 		else
-			playsound(hit_atom, 'sound/weapons/throwtap.ogg', 1, volume, -1)
+			var/volume = get_volume_by_throwforce_and_or_w_class()
+			if(throwforce > 0)
+				if(mob_throw_hit_sound)
+					playsound(hit_atom, mob_throw_hit_sound, volume, TRUE, -1)
+				else if(hitsound)
+					playsound(hit_atom, hitsound, volume, TRUE, -1)
+				else
+					playsound(hit_atom, 'sound/weapons/genhit.ogg', volume, TRUE, -1)
+			else
+				playsound(hit_atom, 'sound/weapons/throwtap.ogg', 1, volume, -1)
 	else
 		playsound(src, drop_sound, THROW_SOUND_VOLUME)
-
+	return ..()
 
 //Apparently called whenever an item is dropped on the floor, thrown, or placed into a container.
 //It is called after loc is set, so if placed in a container its loc will be that container.
@@ -310,15 +339,17 @@
 // Called whenever an object is moved around inside the mob's contents.
 // Linker proc: mob/proc/prepare_for_slotmove, which is referenced in proc/handle_item_insertion and obj/item/attack_hand.
 // This shit exists so that dropped() could almost exclusively be called when an item is dropped.
-/obj/item/proc/on_slotmove(var/mob/user)
-	if (zoom)
+/obj/item/proc/on_slotmove(var/mob/user, slot)
+	if(zoom)
 		zoom(user)
 
 // called just as an item is picked up (loc is not yet changed)
 /obj/item/proc/pickup(mob/user)
 	pixel_x = 0
 	pixel_y = 0
-	return
+	if(flags & HELDMAPTEXT)
+		addtimer(CALLBACK(src, .proc/check_maptext), 1) // invoke async does not work here
+	do_pickup_animation(user)
 
 // called when this item is removed from a storage item, which is passed on as S. The loc variable is already set to the new destination before this is called.
 /obj/item/proc/on_exit_storage(obj/item/storage/S as obj)
@@ -364,7 +395,8 @@ var/list/global/slot_flags_enumeration = list(
 	"[slot_r_ear]" = SLOT_EARS|SLOT_TWOEARS,
 	"[slot_w_uniform]" = SLOT_ICLOTHING,
 	"[slot_wear_id]" = SLOT_ID,
-	"[slot_tie]" = SLOT_TIE
+	"[slot_tie]" = SLOT_TIE,
+	"[slot_wrists]" = SLOT_WRISTS
 	)
 
 //the mob M is attempting to equip this item into the slot passed through as 'slot'. Return 1 if it can do this and 0 if it can't.
@@ -410,6 +442,16 @@ var/list/global/slot_flags_enumeration = list(
 				return 0
 		if(slot_wear_id)
 			return 1
+		if(slot_l_hand)
+			var/obj/item/organ/external/O
+			O = H.organs_by_name[BP_L_HAND]
+			if(!O || !O.is_usable() || O.is_malfunctioning())
+				return FALSE
+		if(slot_r_hand)
+			var/obj/item/organ/external/O
+			O = H.organs_by_name[BP_R_HAND]
+			if(!O || !O.is_usable() || O.is_malfunctioning())
+				return FALSE
 		if(slot_l_store, slot_r_store)
 			if(!H.w_uniform && (slot_w_uniform in mob_equip))
 				if(!disable_warning)
@@ -430,13 +472,13 @@ var/list/global/slot_flags_enumeration = list(
 				if(!disable_warning)
 					to_chat(usr, "<span class='warning'>You somehow have a suit with no defined allowed items for suit storage, stop that.</span>")
 				return 0
-			if( !(istype(src, /obj/item/device/pda) || src.ispen() || is_type_in_list(src, H.wear_suit.allowed)) )
+			if( !(istype(src, /obj/item/modular_computer) || src.ispen() || is_type_in_list(src, H.wear_suit.allowed)) )
 				return 0
 		if(slot_handcuffed)
 			if(!istype(src, /obj/item/handcuffs))
 				return 0
 		if(slot_legcuffed)
-			if(!istype(src, /obj/item/legcuffs))
+			if(!istype(src, /obj/item/handcuffs))
 				return 0
 		if(slot_in_backpack) //used entirely for equipping spawned mobs or at round start
 			var/allow = 0
@@ -478,42 +520,8 @@ var/list/global/slot_flags_enumeration = list(
 
 // override for give shenanigans
 /obj/item/proc/on_give(var/mob/giver, var/mob/receiver)
-	return
-
-/mob/living/carbon/verb/verb_pickup(obj/item/I in range(1))
-	set category = "Object"
-	set name = "Pick up"
-
-	if(!(usr)) //BS12 EDIT
-		return
-	if (!(I in view(1, src)))
-		return
-	if (istype(I, /obj/item/storage/internal))
-		return
-	if(!usr.canmove || usr.stat || usr.restrained() || !Adjacent(usr))
-		return
-	if((!istype(usr, /mob/living/carbon)) || (istype(usr, /mob/living/carbon/brain)))//Is humanoid, and is not a brain
-		to_chat(usr, "<span class='warning'>You can't pick things up!</span>")
-		return
-	if( usr.stat || usr.restrained() )//Is not asleep/dead and is not restrained
-		to_chat(usr, "<span class='warning'>You can't pick things up!</span>")
-		return
-	if(I.anchored) //Object isn't anchored
-		to_chat(usr, "<span class='warning'>You can't pick that up!</span>")
-		return
-	if(!usr.hand && usr.r_hand) //Right hand is not full
-		to_chat(usr, "<span class='warning'>Your right hand is full.</span>")
-		return
-	if(usr.hand && usr.l_hand) //Left hand is not full
-		to_chat(usr, "<span class='warning'>Your left hand is full.</span>")
-		return
-	if(!istype(I.loc, /turf)) //Object is on a turf
-		to_chat(usr, "<span class='warning'>You can't pick that up!</span>")
-		return
-	//All checks are done, time to pick it up!
-	usr.UnarmedAttack(I)
-	return
-
+	if(flags & HELDMAPTEXT)
+		check_maptext()
 
 //This proc is executed when someone clicks the on-screen UI button. To make the UI button show, set the 'icon_action_button' to the icon_state of the image of the button in screen1_action.dmi
 //The default action is attack_self().
@@ -522,12 +530,11 @@ var/list/global/slot_flags_enumeration = list(
 	attack_self(usr)
 
 //RETURN VALUES
-//handle_shield should return a positive value to indicate that the attack is blocked and should be prevented.
-//If a negative value is returned, it should be treated as a special return value for bullet_act() and handled appropriately.
-//For non-projectile attacks this usually means the attack is blocked.
+//handle_shield
+//Return a negative value corresponding to the degree an attack is blocked. PROJECTILE_STOPPED stops the attack entirely, and is the default for projectile and non-projectile attacks
 //Otherwise should return 0 to indicate that the attack is not affected in any way.
 /obj/item/proc/handle_shield(mob/user, var/on_back, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
-	return 0
+	return FALSE
 
 /obj/item/proc/can_shield_back()
 	return
@@ -538,35 +545,18 @@ var/list/global/slot_flags_enumeration = list(
 		L = L.loc
 	return loc
 
-/obj/item/proc/eyestab(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
-
-	var/mob/living/carbon/human/H = M
-	if(istype(H))
-		for(var/obj/item/protection in list(H.head, H.wear_mask, H.glasses))
-			if(protection && (protection.body_parts_covered & EYES))
-				// you can't stab someone in the eyes wearing a mask!
-				to_chat(user, "<span class='warning'>You're going to need to remove the eye covering first.</span>")
-				return
-
-	if(!M.has_eyes())
-		to_chat(user, "<span class='warning'>You cannot locate any eyes on [M]!</span>")
+/obj/item/proc/eyestab(mob/living/carbon/M, mob/living/carbon/user)
+	if(M.eyes_protected(src, TRUE))
 		return
 
+	var/mob/living/carbon/human/H = M
 	admin_attack_log(user, M, "attacked [key_name(M)] with [src]", "was attacked by [key_name(user)] using \a [src]", "used \a [src] to eyestab")
 
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	playsound(loc, hitsound, 70, TRUE)
 	user.do_attack_animation(M)
 
-	src.add_fingerprint(user)
-	//if((CLUMSY in user.mutations) && prob(50))
-	//	M = user
-		/*
-		to_chat(M, "<span class='warning'>You stab yourself in the eye.</span>")
-		M.sdisabilities |= BLIND
-		M.weakened += 4
-		M.adjustBruteLoss(10)
-		*/
-
+	add_fingerprint(user)
 	if(istype(H))
 		var/obj/item/organ/internal/eyes/eyes = H.get_eyes()
 
@@ -581,28 +571,32 @@ var/list/global/slot_flags_enumeration = list(
 				"<span class='danger'>You stab yourself in the [eyes.singular_name] with [src]!</span>" \
 			)
 
-		eyes.damage += rand(3,4)
+		eyes.take_damage(rand(3,4))
 		if(eyes.damage >= eyes.min_bruised_damage)
-			if(M.stat != 2)
+			if(H.stat != DEAD)
 				if(eyes.robotic <= 1) //robot eyes bleeding might be a bit silly
-					to_chat(M, "<span class='danger'>Your eyes start to bleed profusely!</span>")
+					to_chat(H, "<span class='danger'>Your eyes start to bleed profusely!</span>")
 			if(prob(50))
-				if(M.stat != 2)
-					to_chat(M, "<span class='warning'>You drop what you're holding and clutch at your eyes!</span>")
-					M.drop_item()
-				M.eye_blurry += 10
-				M.Paralyse(1)
-				M.Weaken(4)
+				if(H.stat != DEAD)
+					to_chat(H, "<span class='warning'>You drop what you're holding and clutch at your eyes!</span>")
+					H.drop_item()
+				H.eye_blurry += 10
+				H.Paralyse(1)
+				H.Weaken(4)
 			if (eyes.damage >= eyes.min_broken_damage)
-				if(M.stat != 2)
-					to_chat(M, "<span class='warning'>You go blind!</span>")
+				if(H.stat != DEAD)
+					to_chat(H, "<span class='warning'>You go blind!</span>")
 		var/obj/item/organ/external/affecting = H.get_organ(BP_HEAD)
-		if(affecting.take_damage(7))
-			M:UpdateDamageIcon()
+		if(affecting.take_damage(7, 0, damage_flags(), src))
+			H.UpdateDamageIcon()
 	else
 		M.take_organ_damage(7)
 	M.eye_blurry += rand(3,4)
-	return
+
+/obj/item/proc/protects_eyestab(var/obj/stab_item, var/stabbed = FALSE) // if stabbed is set to true if we're being stabbed and not just checking
+	if((item_flags & THICKMATERIAL) && (body_parts_covered & EYES))
+		return TRUE
+	return FALSE
 
 /obj/item/clean_blood()
 	. = ..()
@@ -665,7 +659,8 @@ var/list/global/slot_flags_enumeration = list(
 
 /obj/item/proc/showoff(mob/user)
 	for (var/mob/M in view(user))
-		M.show_message("<b>[user]</b> holds up [src]. <a HREF=?src=\ref[M];lookitem=\ref[src]>Take a closer look.</a>",1)
+		if(!user.is_invisible_to(M))
+			M.show_message("<b>[user]</b> holds up [icon2html(src, viewers(get_turf(src)))] [src]. <a HREF=?src=\ref[M];lookitem=\ref[src]>Take a closer look.</a>",1)
 
 /mob/living/carbon/verb/showoff()
 	set name = "Show Held Item"
@@ -741,6 +736,10 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 		if(!cannotzoom)
 			M.visible_message("[zoomdevicename ? "<b>[M]</b> looks up from \the [src.name]" : "<b>[M]</b> lowers \the [src.name]"].")
 
+	if(ishuman(M))
+		var/mob/living/carbon/human/H = M
+		H.handle_vision()
+
 /obj/item/proc/pwr_drain()
 	return 0 // Process Kill
 
@@ -766,9 +765,9 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 		if (slot_wear_id)
 			M.update_inv_wear_id()
 		if (slot_l_ear)
-			M.update_inv_ears()
+			M.update_inv_l_ear()
 		if (slot_r_ear)
-			M.update_inv_ears()
+			M.update_inv_r_ear()
 		if (slot_glasses)
 			M.update_inv_glasses()
 		if (slot_gloves)
@@ -787,6 +786,8 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 			M.update_inv_pockets()
 		if (slot_s_store)
 			M.update_inv_s_store()
+		if (slot_wrists)
+			M.update_inv_wrists()
 
 // Attacks mobs that are adjacent to the target and user.
 /obj/item/proc/cleave(var/mob/living/user, var/mob/living/target)
@@ -815,6 +816,8 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 /obj/item/proc/attack_can_reach(var/atom/us, var/atom/them, var/range)
 	if(us.Adjacent(them))
 		return TRUE // Already adjacent.
+	else if(range <= 1)
+		return FALSE
 	if(AStar(get_turf(us), get_turf(them), /turf/proc/AdjacentTurfsRanged, /turf/proc/Distance, max_nodes=25, max_node_depth=range))
 		return TRUE
 	return FALSE
@@ -839,3 +842,110 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 
 /obj/item/proc/glasses_examine_atom(var/atom/A, var/user)
 	return
+
+/obj/item/verb/verb_pickup()
+	set name = "Pick Up"
+	set category = "Object"
+	set src in view(1)
+
+	if(use_check_and_message(usr))
+		return
+	if(!iscarbon(usr) || istype(usr, /mob/living/carbon/brain))
+		to_chat(usr, SPAN_WARNING("You can't pick things up!"))
+		return
+	if(anchored)
+		to_chat(usr, SPAN_WARNING("You can't pick that up!"))
+		return
+	if(!usr.hand && usr.r_hand)
+		to_chat(usr, SPAN_WARNING("Your right hand is full."))
+		return
+	if(usr.hand && usr.l_hand)
+		to_chat(usr, SPAN_WARNING("Your left hand is full."))
+		return
+	if(!isturf(loc))
+		to_chat(usr, SPAN_WARNING("You can't pick that up!"))
+		return
+	usr.UnarmedAttack(src)
+
+/obj/item/proc/catch_fire()
+	return
+
+/obj/item/proc/extinguish_fire()
+	return
+
+/obj/item/proc/get_print_info(var/no_clear = TRUE)
+	if(no_clear)
+		. = ""
+	. += "Damage: [force]<br>"
+	. += "Damage Type: [damtype]<br>"
+	. += "Sharp: [sharp ? "yes" : "no"]<br>"
+	. += "Dismemberment: [edge ? "likely to dismember" : "unlikely to dismember"]<br>"
+	. += "Penetration: [armor_penetration]<br>"
+	. += "Throw Force: [throwforce]<br>"
+
+/obj/item/proc/use_resource(var/mob/user, var/use_amount)
+	return
+
+// this gets called when the item gets chucked by the vending machine
+/obj/item/proc/vendor_action(var/obj/machinery/vending/V)
+	return
+
+/obj/item/proc/set_initial_maptext()
+	return
+
+/obj/item/proc/check_maptext(var/new_maptext)
+	if(new_maptext)
+		held_maptext = new_maptext
+	if(ismob(loc) || (loc && ismob(loc.loc)))
+		maptext = held_maptext
+	else
+		maptext = ""
+
+/obj/item/throw_at()
+	..()
+	if(flags & HELDMAPTEXT)
+		check_maptext()
+
+/obj/item/dropped(var/mob/user)
+	..()
+	if(flags & HELDMAPTEXT)
+		check_maptext()
+
+// used to check whether the item is capable of popping things like balloons, inflatable barriers, or cutting police tape.
+/obj/item/proc/can_puncture()
+	if(sharp || edge)
+		return TRUE
+	if(isFlameSource())
+		return TRUE
+	return FALSE
+
+/obj/item/proc/get_pressure_weakness(pressure, zone)
+	. = 1
+	if(pressure > ONE_ATMOSPHERE)
+		if(max_pressure_protection != null)
+			if(max_pressure_protection < pressure)
+				return min(1, round((pressure - max_pressure_protection) / max_pressure_protection, 0.01))
+			else
+				return 0
+	if(pressure < ONE_ATMOSPHERE)
+		if(min_pressure_protection != null)
+			if(min_pressure_protection > pressure)
+				return min(1, round((min_pressure_protection - pressure) / min_pressure_protection, 0.01))
+			else
+				return 0
+
+/obj/item/proc/in_slide_projector(var/mob/user)
+	if(istype(loc, /obj/item/storage/slide_projector))
+		var/obj/item/storage/slide_projector/SP = loc
+		if(SP.current_slide == src && (SP.projection in view(world.view, user)))
+			return TRUE
+	return FALSE
+
+/obj/item/proc/get_belt_overlay() //Returns the icon used for overlaying the object on a belt
+	return mutable_appearance('icons/obj/clothing/belt_overlays.dmi', icon_state)
+
+/obj/item/proc/get_ear_examine_text(var/mob/user, var/ear_text = "left")
+	return "on [user.get_pronoun("his")] [ear_text] ear"
+
+/obj/item/proc/get_mask_examine_text(var/mob/user)
+	return "on [user.get_pronoun("his")] face"

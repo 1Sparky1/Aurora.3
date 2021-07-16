@@ -30,7 +30,7 @@
 	. = ..()
 	update_icon()
 	add_language(LANGUAGE_TCB)
-	set_default_language(LANGUAGE_TCB)
+	set_default_language(all_languages[LANGUAGE_TCB])
 
 	botcard = new /obj/item/card/id(src)
 	botcard.access = botcard_access.Copy()
@@ -153,6 +153,9 @@
 		..()
 
 /mob/living/bot/attack_ai(mob/user)
+	if(within_jamming_range(src, FALSE))
+		to_chat(user, SPAN_WARNING("Something in the area of \the [src] is blocking the remote signal!"))
+		return FALSE
 	if(pAI)
 		to_chat(user, SPAN_WARNING("\The [src] contains a pAI and cannot be remotely controlled."))
 		return
@@ -160,8 +163,6 @@
 
 /mob/living/bot/say(var/message)
 	var/verb = "beeps"
-
-	message = sanitize(message)
 
 	..(message, null, verb)
 

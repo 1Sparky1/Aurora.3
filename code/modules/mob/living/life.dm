@@ -113,36 +113,34 @@
 
 //this handles hud updates. Calls update_vision() and handle_hud_icons()
 /mob/living/proc/handle_regular_hud_updates()
-	if(!client || QDELETED(src))	return 0
+	if(!can_update_hud())
+		return FALSE
 
 	handle_hud_icons()
 	handle_vision()
 
-	return 1
+	return TRUE
+
+/mob/living/proc/can_update_hud()
+	if(!client || QDELETED(src))
+		return FALSE
+	return TRUE
 
 /mob/living/proc/handle_vision()
-	client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal, global_hud.meson, global_hud.science)
 	update_sight()
 
 	if(stat == DEAD)
 		return
 
-	if(blind)
-		if(eye_blind)
-			blind.invisibility = 0
-		else
-			blind.invisibility = 101
-			if(disabilities & NEARSIGHTED)
-				client.screen += global_hud.vimpaired
-			if(eye_blurry)
-				client.screen += global_hud.blurry
+	if(eye_blind)
+		overlay_fullscreen("blind", /obj/screen/fullscreen/blind)
+	else
+		clear_fullscreen("blind")
+		set_fullscreen(disabilities & NEARSIGHTED, "impaired", /obj/screen/fullscreen/impaired, 1)
+		set_fullscreen(eye_blurry, "blurry", /obj/screen/fullscreen/blurry)
 
-			if(druggy)
-				client.screen += global_hud.druggy
-			if(druggy > 5)
-				add_client_color(/datum/client_color/oversaturated)
-			else
-				remove_client_color(/datum/client_color/oversaturated)
+	set_fullscreen(stat == UNCONSCIOUS, "blackout", /obj/screen/fullscreen/blackout)
+
 	if(machine)
 		var/viewflags = machine.check_eye(src)
 		if(viewflags < 0)
@@ -163,26 +161,32 @@
 		setEarDamage(-1, max(ear_deaf, 1))
 
 /mob/living/proc/update_sight()
+	set_sight(0)
+	set_see_in_dark(0)
 	if(stat == DEAD || eyeobj)
 		update_dead_sight()
 	else
-		sight &= ~(SEE_TURFS|SEE_MOBS|SEE_OBJS)
-		if (is_ventcrawling)
-			sight |= SEE_TURFS|BLIND
+		update_living_sight()
 
-		if (!stop_sight_update) //If true, it won't reset the mob vision flags to the initial ones
-			see_in_dark = initial(see_in_dark)
-			see_invisible = initial(see_invisible)
-		var/list/vision = get_accumulated_vision_handlers()
-		sight|= vision[1]
-		see_invisible = (max(vision[2], see_invisible))
+	var/list/vision = get_accumulated_vision_handlers()
+	set_sight(sight | vision[1])
+	set_see_invisible(max(vision[2], see_invisible))
+
+/mob/living/proc/update_living_sight()
+	var/set_sight_flags = is_ventcrawling ? (SEE_TURFS) : sight & ~(SEE_TURFS|SEE_MOBS|SEE_OBJS)
+	if((stat & UNCONSCIOUS) || is_ventcrawling)
+		set_sight_flags |= BLIND
+	else
+		set_sight_flags &= ~BLIND
+
+	set_sight(set_sight_flags)
+	set_see_in_dark(initial(see_in_dark))
+	set_see_invisible(initial(see_invisible))
 
 /mob/living/proc/update_dead_sight()
-	sight |= SEE_TURFS
-	sight |= SEE_MOBS
-	sight |= SEE_OBJS
-	see_in_dark = 8
-	see_invisible = SEE_INVISIBLE_LEVEL_TWO
+	set_sight(sight|SEE_TURFS|SEE_MOBS|SEE_OBJS)
+	set_see_in_dark(8)
+	set_see_invisible(SEE_INVISIBLE_LEVEL_TWO)
 
 /mob/living/proc/handle_hud_icons()
 	handle_hud_icons_health()

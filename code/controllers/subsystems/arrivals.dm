@@ -66,8 +66,6 @@
 		return 1
 	if(istype(A,/obj/item/phylactery))
 		return 1
-	if(istype(A,/obj/effect/decal/wizard_mark))
-		return 1
 
 	for(var/i=1, i<=A.contents.len, i++)
 		var/atom/B = A.contents[i]
@@ -91,7 +89,7 @@
 
 	var/datum/signal/status_signal = new
 	status_signal.source = src
-	status_signal.transmission_method = 1
+	status_signal.transmission_method = TRANSMISSION_RADIO
 	status_signal.data["command"] = command
 
 	frequency.post_signal(src, status_signal, RADIO_ARRIVALS)

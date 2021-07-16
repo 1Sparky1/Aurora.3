@@ -1,6 +1,7 @@
 /obj/item/modular_computer/laptop
 	anchored = TRUE
 	name = "laptop computer"
+	lexical_name = "laptop"
 	desc = "A portable computer."
 	desc_info = "You can alt-click the laptop while it's set down on surface to open it up and work with it. Left clicking while it is open will allow you to operate it."
 	hardware_flag = PROGRAM_LAPTOP
@@ -15,7 +16,7 @@
 	base_active_power_usage = 200
 	message_output_range = 1
 	max_hardware_size = 2
-	light_strength = 3
+	light_range = 3
 	max_damage = 50
 	broken_damage = 25
 	var/icon_state_closed = "laptop-closed"

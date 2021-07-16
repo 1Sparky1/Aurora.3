@@ -9,21 +9,12 @@
 /mob/verb/say_verb(message as text)
 	set name = "Say"
 	set category = "IC"
+
 	if(say_disabled)	//This is here to try to identify lag problems
 		to_chat(usr, "<span class='warning'>Speech is currently admin-disabled.</span>")
 		return
-	//Let's try to make users fix their errors - we try to detect single, out-of-place letters and 'unintended' words
-	/*
-	var/first_letter = copytext(message,1,2)
-	if((copytext(message,2,3) == " " && first_letter != "I" && first_letter != "A" && first_letter != ";") || cmptext(copytext(message,1,5), "say ") || cmptext(copytext(message,1,4), "me ") || cmptext(copytext(message,1,6), "looc ") || cmptext(copytext(message,1,5), "ooc ") || cmptext(copytext(message,2,6), "say "))
-		var/response = alert(usr, "Do you really want to say this using the *say* verb?\n\n[message]\n", "Confirm your message", "Yes", "Edit message", "No")
-		if(response == "Edit message")
-			message = input(usr, "Please edit your message carefully:", "Edit message", message)
-			if(!message)
-				return
-		else if(response == "No")
-			return
-	*/
+
+	message = sanitize(message)
 
 	set_typing_indicator(0)
 
@@ -68,38 +59,38 @@
 
 	message = process_chat_markup(message, list("~", "_"))
 
-	say_dead_direct("[pick("complains","moans","whines","laments","blubbers")], <span class='message'>\"[message]\"</span>", src)
+	say_dead_direct("[pick("complains","moans","whines","laments","blubbers")], <span class='message linkify'>\"[message]\"</span>", src)
 
 /mob/proc/say_understands(var/mob/other,var/datum/language/speaking = null)
 
 	if (src.stat == 2)		//Dead
-		return 1
+		return TRUE
 
 	//Universal speak makes everything understandable, for obvious reasons.
 	else if(src.universal_speak || src.universal_understand)
-		return 1
+		return TRUE
 
 	//Languages are handled after.
 	if (!speaking)
 		if(!other)
-			return 1
+			return TRUE
 		if(other.universal_speak)
-			return 1
+			return TRUE
 		if(isAI(src) && ispAI(other))
-			return 1
+			return TRUE
 		if (istype(other, src.type) || istype(src, other.type))
-			return 1
-		return 0
+			return TRUE
+		return FALSE
 
 	if(speaking.flags & INNATE)
-		return 1
+		return TRUE
 
 	//Language check.
 	for(var/datum/language/L in src.languages)
 		if(speaking.name == L.name)
-			return 1
+			return TRUE
 
-	return 0
+	return FALSE
 
 /*
    ***Deprecated***
@@ -110,8 +101,10 @@
    for it but just ignore it.
 */
 
-/mob/proc/say_quote(var/message, var/datum/language/speaking = null)
+/mob/proc/say_quote(var/message, var/datum/language/speaking = null, var/singing = FALSE)
 	. = "says"
+	if(singing)
+		return "sings"
 	var/ending = copytext(message, length(message))
 	var/pre_ending = copytext(message, length(message) - 1, length(message))
 	if(ending == "!")
@@ -159,9 +152,12 @@
 		return all_languages["Noise"]
 
 	if(length(message) >= 2 && is_language_prefix(prefix))
-		var/language_prefix = lowertext(copytext(message, 2 ,3))
+		var/language_prefix = lowertext(copytext(message, 2, 4))
 		var/datum/language/L = language_keys[language_prefix]
-		if (can_speak(L))
+		if(!L || !can_speak(L))
+			language_prefix = lowertext(copytext(message, 2, 3))
+			L = language_keys[language_prefix]
+		if(can_speak(L))
 			return L
 
 	return null

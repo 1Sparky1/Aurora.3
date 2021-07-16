@@ -215,8 +215,8 @@
 			else
 				user.drop_from_inventory(ai,src)
 				ai_card = ai
-				to_chat(ai_mob, "<font color='blue'>You have been transferred to \the [holder]'s [src].</font>")
-				to_chat(user, "<font color='blue'>You load [ai_mob] into \the [holder]'s [src].</font>")
+				to_chat(ai_mob, "<span class='notice'>You have been transferred to \the [holder]'s [src].</span>")
+				to_chat(user, "<span class='notice'>You load [ai_mob] into \the [holder]'s [src].</span>")
 
 			integrated_ai = ai_mob
 
@@ -425,7 +425,7 @@
 /obj/item/rig_module/power_sink/accepts_item(var/obj/item/input_device, var/mob/living/user)
 	var/can_drain = input_device.drain_power(1)
 	if(can_drain > 0)
-		engage(input_device, user)
+		do_engage(input_device, user)
 		return TRUE
 	return FALSE
 

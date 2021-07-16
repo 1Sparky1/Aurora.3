@@ -23,19 +23,19 @@
 		return
 
 	if(is_open_container())
-		if(reagents && reagents.reagent_list.len)
+		if(LAZYLEN(reagents.reagent_volumes))
 			to_chat(user,"<span class='notice'>It contains [round(reagents.total_volume, accuracy)] units of non-aerosol mix.</span>")
 		else
 			to_chat(user,"<span class='notice'>It is empty.</span>")
 	else
-		if(reagents && reagents.reagent_list.len)
+		if(LAZYLEN(reagents.reagent_volumes))
 			to_chat(user,"<span class='notice'>The reagents are secured in the aerosol mix.</span>")
 		else
 			to_chat(user,"<span class='notice'>The cartridge seems spent.</span>")
 
 /obj/item/reagent_containers/personal_inhaler_cartridge/attack_self(mob/user as mob)
 	if(is_open_container())
-		if(reagents && reagents.reagent_list.len)
+		if(LAZYLEN(reagents.reagent_volumes))
 			to_chat(user,"<span class='notice'>With a quick twist of \the [src]'s lid, you secure the reagents inside.</span>")
 			flags &= ~OPENCONTAINER
 		else
@@ -121,7 +121,8 @@
 
 	if (((user.is_clumsy()) || (DUMB in user.mutations)) && prob(10))
 		to_chat(user,"<span class='danger'>Your hand slips from clumsiness!</span>")
-		eyestab(M,user)
+		if(M.eyes_protected(src, FALSE))
+			eyestab(M,user)
 		user.visible_message("<span class='notice'>[user] accidentally sticks \the [src] in [M]'s eye!</span>","<span class='notice'>You accidentally stick the [src] in [M]'s eye!</span>")
 		return
 
@@ -191,7 +192,7 @@
 	name = "large inhaler cartridge (hyperzine)"
 	Initialize()
 		. =..()
-		reagents.add_reagent(/datum/reagent/hyperzine, 30)
+		reagents.add_reagent(/decl/reagent/hyperzine, 30)
 		flags ^= OPENCONTAINER
 		update_icon()
 		return
@@ -200,7 +201,7 @@
 	name = "large inhaler cartridge (inaprovaline)"
 	Initialize()
 		. =..()
-		reagents.add_reagent(/datum/reagent/inaprovaline, 30)
+		reagents.add_reagent(/decl/reagent/inaprovaline, 30)
 		flags ^= OPENCONTAINER
 		update_icon()
 		return

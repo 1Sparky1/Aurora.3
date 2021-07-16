@@ -5,7 +5,7 @@
 	name = "shand"
 	seed_name = "S'Rendarr's hand"
 	display_name = "S'Rendarr's hand leaves"
-	chems = list(/datum/reagent/toxin/tobacco = list(1, 5), /datum/reagent/bicaridine = list(3, 5), /datum/reagent/mental/nicotine = list(1, 3))
+	chems = list(/decl/reagent/toxin/tobacco = list(1, 5), /decl/reagent/bicaridine = list(3, 5), /decl/reagent/mental/nicotine = list(1, 3))
 	kitchen_tag = "shand"
 
 /datum/seed/shand/setup_traits()
@@ -28,7 +28,7 @@
 	name = "mtear"
 	seed_name = "Messa's tear"
 	display_name = "Messa's tear leaves"
-	chems = list(/datum/reagent/nutriment/honey = list(1, 10), /datum/reagent/kelotane = list(3, 5))
+	chems = list(/decl/reagent/nutriment/honey = list(1, 10), /decl/reagent/kelotane = list(3, 5))
 	kitchen_tag = "mtear"
 
 /datum/seed/mtear/setup_traits()
@@ -51,7 +51,7 @@
 	name = "earthenroot"
 	seed_name = "earthen-root"
 	display_name = "earthen-roots"
-	chems = list(/datum/reagent/nutriment = list(0, 5), /datum/reagent/sugar = list(1, 5), /datum/reagent/drink/earthenrootjuice = list(4, 8))
+	chems = list(/decl/reagent/nutriment = list(0, 5), /decl/reagent/sugar = list(1, 5), /decl/reagent/drink/earthenrootjuice = list(4, 8))
 	kitchen_tag = "earthenroot"
 
 /datum/seed/earthenroot/setup_traits()
@@ -74,7 +74,7 @@
 	name = "nifberries"
 	seed_name = "dirt berries"
 	display_name = "dirt berries shrub"
-	chems = list(/datum/reagent/nutriment = list(0, 15), /datum/reagent/nutriment/triglyceride/oil = list(1, 5))
+	chems = list(/decl/reagent/nutriment = list(0, 15), /decl/reagent/nutriment/triglyceride/oil = list(1, 5))
 	kitchen_tag = "nifberries"
 
 /datum/seed/nifberries/setup_traits()
@@ -99,10 +99,10 @@
 /datum/seed/mushroom/nfrihi
 	name = "nfrihi"
 	seed_name = "blizzard ears"
-	seed_noun = "nodes"
+	seed_noun = SEED_NOUN_NODES
 	display_name = "blizzard ear stalks"
 	mutants = null
-	chems = list(/datum/reagent/nutriment/flour/nfrihi = list(10, 10))
+	chems = list(/decl/reagent/nutriment/flour/nfrihi = list(10, 10))
 	splat_type = /obj/effect/plant
 	kitchen_tag = "nfrihi"
 
@@ -127,9 +127,9 @@
 	name = "nmshaan"
 	seed_name = "sugar tree"
 	display_name = "sugar trees"
-	seed_noun = "seeds"
+	seed_noun = SEED_NOUN_SEEDS
 	mutants = null
-	chems = list(/datum/reagent/sugar = list(2, 10))
+	chems = list(/decl/reagent/sugar = list(2, 10))
 	kitchen_tag = "nmshaan"
 
 /datum/seed/nmshaan/setup_traits()
@@ -139,7 +139,7 @@
 	set_trait(TRAIT_PRODUCTION, 5)
 	set_trait(TRAIT_YIELD, 2)
 	set_trait(TRAIT_PRODUCT_ICON,"nmshaan")
-	set_trait(TRAIT_PRODUCT_COLOUR,"#c6c6c6")
+	set_trait(TRAIT_PRODUCT_COLOUR,"#fffdf7")
 	set_trait(TRAIT_PLANT_COLOUR,"#31331c")
 	set_trait(TRAIT_PLANT_ICON,"nmshaan")
 	set_trait(TRAIT_IDEAL_HEAT, 253)

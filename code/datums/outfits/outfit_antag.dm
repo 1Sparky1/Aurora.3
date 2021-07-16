@@ -71,7 +71,7 @@
 /datum/outfit/admin/syndicate/officer
 	name = "Syndicate Officer"
 
-	head = /obj/item/clothing/head/beret
+	head = /obj/item/clothing/head/beret/red
 	mask = /obj/item/clothing/mask/smokable/cigarette/cigar/havana
 	belt = /obj/item/gun/projectile/deagle
 	l_ear = /obj/item/device/radio/headset/syndicate
@@ -110,6 +110,7 @@
 	allow_backbag_choice = FALSE
 
 	uniform = /obj/item/clothing/under/syndicate/ninja
+	l_hand = /obj/item/hardsuit_token
 	back = null
 	belt = /obj/item/storage/belt/ninja
 	shoes = /obj/item/clothing/shoes/swat/ert
@@ -138,10 +139,6 @@
 	if(visualsOnly)
 		return
 
-	var/obj/item/rig/light/ninja/rig = new /obj/item/rig/light/ninja(src)
-	rig.dnaLock = H.dna
-	H.equip_to_slot_or_del(rig, slot_l_hand)
-
 	H.equip_to_slot_or_del(new /obj/item/device/special_uplink/ninja(H, H.mind), slot_l_store)
 
 /datum/outfit/admin/syndicate/mercenary
@@ -151,6 +148,7 @@
 	belt = /obj/item/storage/belt/military
 	gloves = /obj/item/clothing/gloves/swat
 	shoes = /obj/item/clothing/shoes/jackboots
+	pda = /obj/item/modular_computer/handheld/pda/syndicate
 
 	backpack_contents = list(
 		/obj/item/storage/box/engineer = 1,
@@ -164,6 +162,21 @@
 
 	if(!H.shoes)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/toeless(H), slot_shoes)
+
+/datum/outfit/admin/syndicate/mercenary/loner
+	name = "Loner"
+
+	head = /obj/item/clothing/head/helmet/space/psi_amp/lesser
+	l_ear = /obj/item/device/radio/headset/syndicate
+	r_pocket = /obj/item/device/special_uplink/burglar
+
+	backpack_contents = list(
+		/obj/item/storage/box/syndie_kit/space = 1,
+		/obj/item/gun/projectile/shotgun/foldable = 1,
+		/obj/item/device/multitool/hacktool = 1
+	)
+
+	id_access = "Lone Operative"
 
 /datum/outfit/admin/syndicate/raider
 	name = "Raider"
@@ -216,13 +229,13 @@
 		/obj/item/clothing/suit/apron/overalls/random,
 		/obj/item/clothing/suit/captunic/capjacket,
 		/obj/item/clothing/suit/ianshirt,
-		/obj/item/clothing/suit/storage/fib,
+		/obj/item/clothing/suit/storage/toggle/fib,
 		/obj/item/clothing/suit/storage/hooded/wintercoat/hoodie/random,
 		/obj/item/clothing/suit/storage/hooded/wintercoat,
 		/obj/item/clothing/suit/storage/hooded/wintercoat/red,
 		/obj/item/clothing/suit/storage/hooded/wintercoat/miner,
 		/obj/item/clothing/suit/storage/leathercoat,
-		/obj/item/clothing/suit/storage/vest/csi,
+		/obj/item/clothing/suit/storage/vest/ft,
 		/obj/item/clothing/suit/storage/toggle/dominia/bomber,
 		/obj/item/clothing/suit/storage/toggle/dominia/gold,
 		/obj/item/clothing/suit/storage/toggle/flannel,
@@ -264,7 +277,8 @@
 		/obj/item/clothing/head/bearpelt,
 		/obj/item/clothing/head/ushanka,
 		/obj/item/clothing/head/pirate,
-		/obj/item/clothing/head/bandana,
+		/obj/item/clothing/head/bandana/pirate,
+		/obj/item/clothing/head/bandana/red,
 		/obj/item/clothing/head/hgpiratecap,
 		/obj/item/clothing/head/beanie/random,
 		/obj/item/clothing/head/beaverhat,
@@ -284,9 +298,10 @@
 		/obj/item/clothing/head/helmet/material/makeshift/plasteel,
 		/obj/item/clothing/head/helmet/kettle,
 		/obj/item/clothing/head/helmet/tank/olive,
-		/obj/item/clothing/head/soft/grey,
-		/obj/item/clothing/head/soft/himeo,
-		/obj/item/clothing/head/soft/yellow,
+		/obj/item/clothing/head/softcap,
+		/obj/item/clothing/head/softcap/himeo,
+		/obj/item/clothing/head/softcap/red,
+		/obj/item/clothing/head/beret/red,
 		/obj/item/clothing/head/that,
 		/obj/item/clothing/head/turban,
 		/obj/item/clothing/head/turban/grey,
@@ -359,8 +374,9 @@
 	if(W)
 		W.handle_item_insertion(passport)
 
-/datum/outfit/admin/syndicate/raider/burglar
+/datum/outfit/admin/syndicate/burglar
 	name = "Burglar"
+	allow_backbag_choice = FALSE
 
 	uniform = list(
 		/obj/item/clothing/under/suit_jacket/really_black,
@@ -369,7 +385,8 @@
 		/obj/item/clothing/under/suit_jacket/burgundy
 		)
 
-	suit = /obj/item/clothing/suit/armor/bulletproof
+	belt = null
+	suit = /obj/item/clothing/suit/armor/carrier/ballistic
 
 	shoes = list(
 		/obj/item/clothing/shoes/laceup/all_species,
@@ -384,10 +401,10 @@
 	head = null
 
 	gloves = list(
-		/obj/item/clothing/gloves/watch,
-		/obj/item/clothing/gloves/watch/silver,
-		/obj/item/clothing/gloves/watch/gold,
-		/obj/item/clothing/gloves/watch/spy
+		/obj/item/clothing/wrists/watch,
+		/obj/item/clothing/wrists/watch/silver,
+		/obj/item/clothing/wrists/watch/gold,
+		/obj/item/clothing/wrists/watch/spy
 	)
 
 	l_ear = /obj/item/device/radio/headset/burglar
@@ -399,7 +416,7 @@
 
 	backpack_contents = list()
 
-/datum/outfit/admin/syndicate/raider/burglar/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
+/datum/outfit/admin/syndicate/burglar/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
 	. = ..()
 	if(visualsOnly)
 		return
@@ -449,13 +466,19 @@
 		else
 			H.put_in_any_hand_if_possible(holster)
 
+	var/obj/item/storage/wallet/W = H.wear_id
+	var/obj/item/card/id/syndicate/raider/passport = new(H.loc)
+	passport.name = "[H.real_name]'s Passport"
+	if(W)
+		W.handle_item_insertion(passport)
+
 // Non-syndicate antag outfits
 
 /datum/outfit/admin/highlander
 	name = "Highlander"
 
 	uniform = /obj/item/clothing/under/kilt
-	head = /obj/item/clothing/head/beret
+	head = /obj/item/clothing/head/beret/red
 	shoes = /obj/item/clothing/shoes/combat
 	l_ear = /obj/item/device/radio/headset/heads/captain
 	l_hand = /obj/item/material/sword
@@ -472,42 +495,6 @@
 	if(W)
 		W.name = "[H.real_name]'s ID"
 		W.registered_name = H.real_name
-
-/datum/outfit/admin/wizard
-	name = "Space Wizard"
-	allow_backbag_choice = FALSE
-
-	uniform = /obj/item/clothing/under/chameleon/wizard
-	back = /obj/item/storage/backpack/chameleon/wizard
-	suit = /obj/item/clothing/suit/chameleon/wizard
-	head = /obj/item/clothing/head/chameleon/wizard
-	shoes = /obj/item/clothing/shoes/chameleon/wizard
-	l_ear = /obj/item/device/radio/headset
-	r_pocket = /obj/item/teleportation_scroll
-	l_hand = /obj/item/spellbook
-
-	backpack_contents = list(
-		/obj/item/storage/box = 1
-	)
-
-/datum/outfit/admin/wizard/apprentice
-	name = "Space Wizard Apprentice"
-	l_hand = null
-	r_pocket = null
-
-/datum/outfit/admin/wizard/skeleton
-	name = "Skeleton Warrior"
-	allow_backbag_choice = FALSE
-
-	uniform = /obj/item/clothing/under/gladiator
-	back = /obj/item/material/twohanded/spear/bone
-	suit = /obj/item/clothing/suit/armor/bone
-	head = /obj/item/clothing/head/helmet/bone
-	l_ear = null
-	r_pocket = null
-	l_hand = null
-
-	backpack_contents = null
 
 /datum/outfit/admin/syndicate/cultist
 	name = "Cultist"
@@ -537,3 +524,151 @@
 	suit = /obj/item/clothing/suit/space/cult
 
 	suit_store = /obj/item/gun/energy/rifle/cult
+
+/datum/outfit/admin/syndicate/raider_techno
+	name = "Raider Techno"
+	allow_backbag_choice = FALSE
+
+	uniform = /obj/item/clothing/under/syndicate/ninja
+	suit = null
+	shoes = /obj/item/clothing/shoes/sandal
+	head = null
+
+	belt = /obj/item/storage/belt/fannypack/component
+	gloves = null
+	l_ear = /obj/item/device/radio/headset/bluespace
+	l_pocket = /obj/item/technomancer_catalog/apprentice
+	r_pocket = null
+	id = /obj/item/storage/wallet/random
+
+	accessory = /obj/item/clothing/accessory/storage/webbing
+	backpack_contents = list()
+
+/datum/outfit/admin/syndicate/raider_techno/equip(mob/living/carbon/human/H, visualsOnly = FALSE)
+	var/list/loadouts = list("Nature", "Techno", "Cobra", "Brawler", "Shimmer")
+	if(H.gender in list(FEMALE, PLURAL, NEUTER))
+		loadouts += list("Storm", "Sorceress")
+
+	switch(pick(loadouts))
+		if("Nature")
+			head = /obj/item/clothing/head/wizard/nature
+			suit = /obj/item/clothing/suit/wizrobe/nature
+			suit_accessory = /obj/item/clothing/accessory/poncho/nature
+			back = /obj/item/technomancer_core/safety
+		if("Techno")
+			head = /obj/item/clothing/head/wizard/techno
+			suit = /obj/item/clothing/suit/wizrobe/techno
+			uniform = /obj/item/clothing/under/techo
+			shoes = /obj/item/clothing/shoes/techno
+			back = /obj/item/technomancer_core/recycling
+		if("Cobra")
+			head = /obj/item/clothing/head/wizard/cobra
+			suit = /obj/item/clothing/suit/wizrobe/cobra
+			shoes = /obj/item/clothing/shoes/hitops/red
+			back = /obj/item/technomancer_core/overcharged
+		if("Brawler")
+			head = /obj/item/clothing/head/wizard/brawler
+			suit = /obj/item/clothing/suit/wizrobe/brawler
+			shoes = /obj/item/clothing/shoes/caligae
+			back = /obj/item/technomancer_core/bulky
+		if("Shimmer")
+			head = /obj/item/clothing/head/wizard/shimmer
+			suit = /obj/item/clothing/suit/wizrobe/shimmer
+			back = /obj/item/technomancer_core/rapid
+		if("Storm")
+			head = /obj/item/clothing/head/wizard/storm
+			suit = /obj/item/clothing/suit/wizrobe/storm
+			shoes = /obj/item/clothing/shoes/heels
+			back = /obj/item/technomancer_core/unstable
+		if("Sorceress")
+			head = /obj/item/clothing/head/wizard/sorceress
+			suit = /obj/item/clothing/suit/wizrobe/sorceress
+			back = /obj/item/technomancer_core/summoner
+	return ..()
+
+/datum/outfit/admin/syndicate/raider_techno/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
+	. = ..()
+	if(visualsOnly)
+		return
+
+	if(!H.shoes)
+		var/fallback_type = pick(/obj/item/clothing/shoes/sandal, /obj/item/clothing/shoes/jackboots/toeless, /obj/item/clothing/shoes/laceup/brown/all_species, /obj/item/clothing/shoes/laceup/all_species)
+		H.equip_to_slot_or_del(new fallback_type(H), slot_shoes)
+
+	var/obj/item/storage/wallet/W = H.wear_id
+	var/obj/item/card/id/syndicate/raider/passport = new(H.loc)
+	passport.name = "[H.real_name]'s Passport"
+	if(W)
+		W.handle_item_insertion(passport)
+
+	var/obj/item/technomancer_core/TC = H.back
+	if(TC)
+		technomancer_belongings.Add(TC)
+
+	var/obj/item/technomancer_catalog/catalog = H.l_store
+	if(catalog)
+		catalog.bind_to_owner(H)
+
+/datum/outfit/admin/golem
+	name = "Bluespace Golem"
+	allow_backbag_choice = FALSE
+
+	l_ear = /obj/item/device/radio/headset/bluespace
+
+/datum/outfit/admin/techomancer
+	name = "Technomancer"
+	allow_backbag_choice = FALSE
+
+	head = /obj/item/clothing/head/chameleon/technomancer
+	l_ear = /obj/item/device/radio/headset/bluespace
+	uniform = /obj/item/clothing/under/chameleon/technomancer
+	suit = /obj/item/clothing/suit/chameleon/technomancer
+	belt = /obj/item/device/flashlight
+	back = /obj/item/technomancer_core
+	shoes = /obj/item/clothing/shoes/chameleon/technomancer
+
+	r_pocket = /obj/item/disposable_teleporter/free
+	l_pocket = /obj/item/technomancer_catalog
+
+	id = /obj/item/card/id/bluespace
+	var/id_assignment = "Technomagus"
+
+/datum/outfit/admin/techomancer/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
+	. = ..()
+	if(visualsOnly)
+		return
+
+	var/obj/item/card/id/W = H.wear_id
+	if(W)
+		W.assignment = id_assignment
+		H.set_id_info(W)
+
+	var/obj/item/technomancer_core/TC = H.back
+	if(TC)
+		technomancer_belongings.Add(TC)
+
+	var/obj/item/technomancer_catalog/catalog = H.l_store
+	if(catalog)
+		catalog.bind_to_owner(H)
+
+/datum/outfit/admin/techomancer/apprentice
+	name = "Technomancer Apprentice"
+
+	head = /obj/item/clothing/head/chameleon/technomancer
+	uniform = /obj/item/clothing/under/chameleon/technomancer
+	suit = /obj/item/clothing/suit/chameleon/technomancer
+	shoes = /obj/item/clothing/shoes/chameleon/technomancer
+
+	l_pocket = /obj/item/technomancer_catalog/apprentice
+
+	id_assignment = "Techno-apprentice"
+
+/datum/outfit/admin/techomancer/apprentice/post_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	if(visualsOnly)
+		return
+	
+	to_chat(H, "<b>You are the Technomancer's apprentice! Your goal is to assist them in their mission at the [station_name()].</b>")
+	to_chat(H, "<b>Your service has not gone unrewarded, however. Studying under them, you have learned how to use a Manipulation Core \
+	of your own.  You also have a catalog, to purchase your own functions and equipment as you see fit.</b>")
+	to_chat(H, "<b>It would be wise to speak to your master, and learn what their plans are for today. Your clothing is holographic, you should change its look before leaving.</b>")

@@ -1,15 +1,19 @@
 /mob/living/simple_animal/hostile/commanded/baby_harvester
 	name = "Ives"
 	desc = "A mysterious docile hivebot, this type seems to be of a kind rarely seen in the Orion Spur. Look at its little tail!"
+	named = TRUE
 
 	icon = 'icons/mob/npc/pets.dmi'
 	icon_state = "ives"
 	icon_living = "ives"
 	icon_dead = "ives_dead"
 
+	blood_overlay_icon = null
+
 	health = 70
 	maxHealth = 70
 
+	belongs_to_station = TRUE
 	stop_automated_movement_when_pulled = TRUE
 	density = TRUE
 
@@ -34,6 +38,7 @@
 
 	mob_size = 5
 
+	organ_names = list("core", "head", "tail")
 	response_help = "pets"
 	response_harm = "hits"
 	response_disarm = "pushes"

@@ -11,6 +11,7 @@
 	force = 5
 	origin_tech = list(TECH_COMBAT = 2, TECH_MAGNET = 2)
 	matter = list(DEFAULT_WALL_MATERIAL = 2000)
+	offhand_accuracy = 1
 	projectile_type = /obj/item/projectile/energy/blaster
 	max_shots = 6
 
@@ -35,10 +36,18 @@
 	self_recharge = TRUE
 	recharge_time = 1.5
 	dispersion = list(3,6,9,12)
+	firemodes = list()
+
+/obj/item/gun/energy/blaster/pilot_special
+	name = "pilot's sidearm"
+	desc = "A robust, low in maintenance blaster pistol. Customized for peak performance and perfect for self-defense purposes."
+	max_shots = 8
+	accuracy = 2 // Likely to get nothing else, so they gotta know how to make it count.
+	offhand_accuracy = 2
 
 /obj/item/gun/energy/blaster/revolver
 	name = "blaster revolver"
-	desc = "A robust eight-shot blaster.."
+	desc = "A robust eight-shot blaster."
 	icon = 'icons/obj/guns/blaster_revolver.dmi'
 	icon_state = "blaster_revolver"
 	item_state = "blaster_revolver"
@@ -60,10 +69,6 @@
 	user.visible_message(SPAN_WARNING("\The [user] spins the cylinder of \the [src]!"), SPAN_WARNING("You spin the cylinder of \the [src]!"), SPAN_NOTICE("You hear something metallic spin and click."))
 	playsound(src.loc, 'sound/weapons/revolver_spin.ogg', 100, 1)
 
-/obj/item/gun/energy/blaster/revolver/pilot
-	name = "pilot's sidearm"
-	desc = "A robust, low in maintenance, eight-shot blaster. Perfect for self-defense purposes."
-
 /obj/item/gun/energy/blaster/carbine
 	name = "blaster carbine"
 	desc = "A short-barreled blaster carbine meant for easy handling and comfort when in combat."
@@ -72,6 +77,7 @@
 	item_state = "blaster_carbine"
 	max_shots = 12
 	origin_tech = list(TECH_COMBAT = 3, TECH_MAGNET = 2)
+	offhand_accuracy = 0
 	projectile_type = /obj/item/projectile/energy/blaster
 	slot_flags = SLOT_BELT
 	w_class = ITEMSIZE_NORMAL
@@ -84,11 +90,15 @@
 	item_state = "blaster_rifle"
 	max_shots = 20
 	origin_tech = list(TECH_COMBAT = 4, TECH_MAGNET = 3)
+	offhand_accuracy = 0
 	projectile_type = /obj/item/projectile/energy/blaster/heavy
 
+	force = 10
 	slot_flags = SLOT_BACK
 	w_class = ITEMSIZE_LARGE
-
+	can_bayonet = TRUE
+	knife_x_offset = 23
+	knife_y_offset = 13
 	fire_delay = 25
 	w_class = ITEMSIZE_LARGE
 	accuracy = -3
@@ -98,14 +108,6 @@
 	accuracy_wielded = 1
 
 	is_wieldable = TRUE
-
-/obj/item/gun/energy/blaster/rifle/update_icon()
-	..()
-	if(wielded)
-		item_state = "blaster_rifle-wielded"
-	else
-		item_state = initial(item_state)
-	update_held_icon()
 
 /obj/item/gun/energy/blaster/rifle/verb/scope()
 	set category = "Object"

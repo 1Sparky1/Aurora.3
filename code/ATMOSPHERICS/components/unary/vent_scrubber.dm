@@ -21,7 +21,7 @@
 
 	var/hibernate = 0 //Do we even process?
 	var/scrubbing = 1 //0 = siphoning, 1 = scrubbing
-	var/list/scrubbing_gas = list(GAS_CO2)
+	var/list/scrubbing_gas
 
 	var/panic = 0 //is this scrubber panicked?
 
@@ -37,7 +37,15 @@
 	use_power = 1
 	icon_state = "map_scrubber_on"
 
-/obj/machinery/atmospherics/unary/vent_scrubber/Initialize()
+/obj/machinery/atmospherics/unary/vent_scrubber/Initialize(mapload)
+	if(mapload)
+		var/turf/T = loc
+		var/image/I = image(icon, T, icon_state, EFFECTS_ABOVE_LIGHTING_LAYER, dir, pixel_x, pixel_y)
+		I.plane = 0
+		I.color = color
+		I.alpha = 125
+		LAZYADD(T.blueprints, I)
+
 	. = ..()
 	air_contents.volume = ATMOS_DEFAULT_VOLUME_FILTER
 
@@ -51,6 +59,24 @@
 	radio_filter_out = frequency==initial(frequency)?(RADIO_TO_AIRALARM):null
 	if (frequency)
 		set_frequency(frequency)
+
+	if (!scrubbing_gas)
+		reset_scrubbing()
+
+/obj/machinery/atmospherics/unary/vent_scrubber/proc/reset_scrubbing()
+	if (initial(scrubbing_gas))
+		scrubbing_gas = initial(scrubbing_gas)
+	else
+		scrubbing_gas = list()
+		for (var/g in gas_data.gases)
+			if (g != GAS_OXYGEN && g != GAS_NITROGEN)
+				add_to_scrubbing(g)
+
+/obj/machinery/atmospherics/unary/vent_scrubber/proc/add_to_scrubbing(new_gas)
+	scrubbing_gas |= new_gas
+
+/obj/machinery/atmospherics/unary/vent_scrubber/proc/remove_from_scrubbing(old_gas)
+	scrubbing_gas -= old_gas
 
 /obj/machinery/atmospherics/unary/vent_scrubber/atmos_init()
 	..()
@@ -104,7 +130,7 @@
 		return 0
 
 	var/datum/signal/signal = new
-	signal.transmission_method = 1 //radio signal
+	signal.transmission_method = TRANSMISSION_RADIO
 	signal.source = src
 	signal.data = list(
 		"area" = area_uid,
@@ -119,6 +145,7 @@
 		"filter_co2" = (GAS_CO2 in scrubbing_gas),
 		"filter_phoron" = (GAS_PHORON in scrubbing_gas),
 		"filter_n2o" = (GAS_N2O in scrubbing_gas),
+		"filter_h2" = (GAS_HYDROGEN in scrubbing_gas),
 		"sigtype" = "status"
 	)
 
@@ -192,7 +219,7 @@
 	if(signal.data["power_toggle"] != null)
 		use_power = !use_power
 
-	if(signal.data["panic_siphon"]) //must be before if("scrubbing" thing
+	if(signal.data["panic_siphon"]) //must be before if("scrubbing") thing
 		panic = text2num(signal.data["panic_siphon"])
 		if(panic)
 			use_power = 1
@@ -242,6 +269,11 @@
 		toggle += GAS_N2O
 	else if(signal.data["toggle_n2o_scrub"])
 		toggle += GAS_N2O
+
+	if(!isnull(signal.data["h2_scrub"]) && text2num(signal.data["h2_scrub"]) != (GAS_HYDROGEN in scrubbing_gas))
+		toggle += GAS_HYDROGEN
+	else if(signal.data["toggle_h2_scrub"])
+		toggle += GAS_HYDROGEN
 
 	scrubbing_gas ^= toggle
 
@@ -310,6 +342,28 @@
 		else
 			to_chat(user, SPAN_WARNING("You need more welding fuel to complete this task."))
 		return 1
+
+	if(istype(W, /obj/item/melee/arm_blade))
+		if(!welded)
+			to_chat(user, SPAN_WARNING("\The [W] can only be used to tear open welded scrubbers!"))
+			return
+		user.visible_message(SPAN_WARNING("\The [user] starts using \the [W] to hack open \the [src]!"), SPAN_NOTICE("You start hacking open \the [src] with \the [W]..."))
+		user.do_attack_animation(src, W)
+		playsound(loc, 'sound/weapons/smash.ogg', 60, TRUE)
+		var/cut_amount = 3
+		for(var/i = 0; i <= cut_amount; i++)
+			if(!W || !do_after(user, 30, src))
+				return
+			user.do_attack_animation(src, W)
+			user.visible_message(SPAN_WARNING("\The [user] smashes \the [W] into \the [src]!"), SPAN_NOTICE("You smash \the [W] into \the [src]."))
+			playsound(loc, 'sound/weapons/smash.ogg', 60, TRUE)
+			if(i == cut_amount)
+				welded = FALSE
+				spark(get_turf(src), 3, alldirs)
+				playsound(loc, 'sound/items/welder_pry.ogg', 50, TRUE)
+				update_icon()
+		return
+
 	return ..()
 
 /obj/machinery/atmospherics/unary/vent_scrubber/examine(mob/user)
@@ -319,5 +373,3 @@
 		to_chat(user, "You are too far away to read the gauge.")
 	if(welded)
 		to_chat(user, "It seems welded shut.")
-
-

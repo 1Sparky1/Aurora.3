@@ -16,6 +16,12 @@
 #define SPAN_SUBTLE(X) "<span class='subtle'>[X]</span>"
 #define SPAN_SOGHUN(X) "<span class='soghun'>[X]</span>"
 
+#define FONT_SIZE_SMALL 1
+#define FONT_SIZE_NORMAL 2
+#define FONT_SIZE_LARGE 3
+#define FONT_SIZE_HUGE 4
+#define FONT_SIZE_GIANT 5
+
 #define FONT_SMALL(X) "<font size='1'>[X]</font>"
 #define FONT_NORMAL(X) "<font size='2'>[X]</font>"
 #define FONT_LARGE(X) "<font size='3'>[X]</font>"
@@ -59,6 +65,8 @@
 
 #define ispAI(A) istype(A, /mob/living/silicon/pai)
 
+#define isbot(A) istype(A, /mob/living/bot)
+
 #define isrobot(A) istype(A, /mob/living/silicon/robot)
 
 #define issilicon(A) istype(A, /mob/living/silicon)
@@ -79,18 +87,26 @@
 
 #define isprojectile(A) istype(A, /obj/item/projectile)
 
-#define to_chat(target, message)                            target << message
-#define to_world(message)                                   world << message
-#define sound_to(target, sound)                             target << sound
+/// General I/O helpers
+#define to_target(target, payload)                          target << (payload)
+#define from_target(target, receiver)                       target >> (receiver)
 #define to_file(file_entry, file_content)                   file_entry << file_content
-#define show_browser(target, browser_content, browser_name) target << browse(browser_content, browser_name)
-#define send_rsc(target, rsc_content, rsc_name)             target << browse_rsc(rsc_content, rsc_name)
-#define send_output(target, msg, control)                   target << output(msg, control)
-#define send_link(target, url)                              target << link(url)
+
+#define legacy_chat(target, message)                        to_target(target, message)
+#define to_world(message)                                   to_chat(world, message)
+#define sound_to(target, sound)                             to_target(target, sound)
+#define to_save(handle, value)                              to_target(handle, value) //semantics postport: what did they mean by this
+#define show_browser(target, browser_content, browser_name) to_target(target, browse(browser_content, browser_name))
+#define send_rsc(target, content, title)                    to_target(target, browse_rsc(content, title))
+#define send_output(target, msg, control)                   to_target(target, output(msg, control))
+#define send_link(target, url)                              to_target(target, link(url))
 
 #define CanInteract(user, state) (CanUseTopic(user, state) == STATUS_INTERACTIVE)
 
 #define isopenturf(target) istype(target, /turf/simulated/open)
 #define isweakref(target) istype(target, /datum/weakref)
 #define isopenspace(A) istype(A, /turf/simulated/open)
+#define isatom(D) istype(D, /atom)
 #define isdatum(target) istype(target, /datum)
+#define isitem(D) istype(D, /obj/item)
+#define islist(D) istype(D, /list)

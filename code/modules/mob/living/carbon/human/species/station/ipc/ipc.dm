@@ -2,11 +2,13 @@
 	name = SPECIES_IPC
 	short_name = "ipc"
 	name_plural = "Baselines"
+	category_name = "Integrated Positronic Chassis"
 	bodytype = BODYTYPE_IPC
 	age_min = 1
-	age_max = 30
+	age_max = 60
 	economic_modifier = 3
 	default_genders = list(NEUTER)
+	selectable_pronouns = list(NEUTER, PLURAL)
 
 	blurb = "IPCs are, quite simply, \"Integrated Positronic Chassis.\" In this scenario, 'positronic' implies that the chassis possesses a positronic processing core (or positronic brain), meaning that an IPC must be positronic to be considered an IPC. The Baseline model is more of a category - the long of the short is that they represent all unbound synthetic units. Baseline models cover anything that is not an Industrial chassis or a Shell chassis. They can be custom made or assembly made. The most common feature of the Baseline model is a simple design, skeletal or semi-humanoid, and ordinary atmospheric diffusion cooling systems."
 
@@ -74,6 +76,7 @@
 	appearance_flags = HAS_SKIN_COLOR | HAS_HAIR_COLOR | HAS_UNDERWEAR | HAS_SOCKS
 	spawn_flags = CAN_JOIN | IS_WHITELISTED | NO_AGE_MINIMUM
 
+	blood_type = "oil"
 	blood_color = COLOR_IPC_BLOOD
 	flesh_color = "#575757"
 	reagent_tag = IS_MACHINE
@@ -81,11 +84,11 @@
 	has_organ = list(
 		BP_BRAIN   = /obj/item/organ/internal/mmi_holder/posibrain,
 		BP_CELL    = /obj/item/organ/internal/cell,
-		BP_OPTICS  = /obj/item/organ/internal/eyes/optical_sensor,
+		BP_EYES  = /obj/item/organ/internal/eyes/optical_sensor,
 		BP_IPCTAG = /obj/item/organ/internal/ipc_tag
 	)
 
-	vision_organ = BP_OPTICS
+	vision_organ = BP_EYES
 
 	has_limbs = list(
 		BP_CHEST =  list("path" = /obj/item/organ/external/chest/ipc),
@@ -116,30 +119,23 @@
 	bodyfall_sound = /decl/sound_category/bodyfall_machine_sound
 
 	allowed_accents = list(ACCENT_CETI, ACCENT_GIBSON, ACCENT_SOL, ACCENT_COC, ACCENT_ERIDANI, ACCENT_ERIDANIDREG, ACCENT_ELYRA, ACCENT_KONYAN, ACCENT_JUPITER, ACCENT_MARTIAN, ACCENT_LUNA,
-							ACCENT_HIMEO, ACCENT_VENUS, ACCENT_VENUSJIN, ACCENT_PHONG, ACCENT_TTS, ACCENT_EUROPA, ACCENT_EARTH)
+							ACCENT_HIMEO, ACCENT_VENUS, ACCENT_VENUSJIN, ACCENT_PHONG, ACCENT_SILVERSUN_EXPATRIATE, ACCENT_TTS, ACCENT_EUROPA, ACCENT_EARTH, ACCENT_PLUTO, ACCENT_ASSUNZIONE)
+	allowed_religions = list(RELIGION_NONE, RELIGION_OTHER, RELIGION_CHRISTIANITY, RELIGION_ISLAM, RELIGION_JUDAISM, RELIGION_HINDU, RELIGION_BUDDHISM, RELIGION_TRINARY, RELIGION_SCARAB, RELIGION_TAOISM, RELIGION_LUCEISM)
+
+	alterable_internal_organs = list()
 
 	// Special snowflake machine vars.
 	var/sprint_temperature_factor = 1.15
 	var/sprint_charge_factor = 0.65
 
-datum/species/machine/handle_post_spawn(var/mob/living/carbon/human/H)
+/datum/species/machine/handle_post_spawn(var/mob/living/carbon/human/H)
 	. = ..()
 	check_tag(H, H.client)
 
-/datum/species/machine/handle_sprint_cost(var/mob/living/carbon/human/H, var/cost)
-	if (H.stat == CONSCIOUS)
+/datum/species/machine/handle_sprint_cost(var/mob/living/carbon/human/H, var/cost, var/pre_move)
+	if(!pre_move && H.stat == CONSCIOUS)
 		H.bodytemperature += cost * sprint_temperature_factor
-		H.adjustNutritionLoss(cost * sprint_charge_factor)
-		if(H.nutrition <= 0 && H.max_nutrition > 0)
-			H.Weaken(15)
-			H.m_intent = "walk"
-			H.hud_used.move_intent.update_move_icon(H)
-			to_chat(H, SPAN_DANGER("ERROR: Power reserves depleted, emergency shutdown engaged. Backup power will come online in approximately 30 seconds, initiate charging as primary directive."))
-			playsound(H.loc, 'sound/machines/buzz-two.ogg', 100, 0)
-		else
-			return 1
-
-	return 0
+	return TRUE
 
 /datum/species/machine/handle_death(var/mob/living/carbon/human/H)
 	..()
@@ -295,14 +291,53 @@ datum/species/machine/handle_post_spawn(var/mob/living/carbon/human/H)
 		if ("waiting IPC screen")
 			return "#FFFFFF"
 
+		if ("nanotrasen IPC screen")
+			return LIGHT_COLOR_BLUE
+
+		if ("hephaestus IPC screen")
+			return LIGHT_COLOR_ORANGE
+
+		if ("idris IPC screen")
+			return LIGHT_COLOR_CYAN
+
+		if ("zavodskoi IPC screen")
+			return LIGHT_COLOR_RED
+
+		if ("zeng-hu IPC screen")
+			return "#FFFFFF"
+
+		if ("scc IPC screen")
+			return LIGHT_COLOR_BLUE
+
+		if ("republic of biesel IPC screen")
+			return "#FFFFFF"
+
+		if ("sol alliance IPC screen")
+			return "#FFFFFF"
+
+		if ("coalition of colonies IPC screen")
+			return LIGHT_COLOR_BLUE
+
+		if ("republic of elyra IPC screen")
+			return LIGHT_COLOR_YELLOW
+
+		if ("eridani IPC screen")
+			return "#FFFFFF"
+
+		if ("burzsia IPC screen")
+			return LIGHT_COLOR_ORANGE
+
+		if ("trinary perfection IPC screen")
+			return LIGHT_COLOR_RED
+
 /datum/species/machine/before_equip(var/mob/living/carbon/human/H)
 	. = ..()
 	check_tag(H, H.client)
 
+/datum/species/machine/has_psi_potential()
+	return FALSE
+
 /datum/species/machine/handle_death_check(var/mob/living/carbon/human/H)
 	if(H.get_total_health() <= config.health_threshold_dead)
 		return TRUE
-	return FALSE
-
-/datum/species/machine/has_psi_potential()
 	return FALSE

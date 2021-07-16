@@ -99,6 +99,10 @@
 								organs -= child
 					if ("cyborg")
 						if (rlimb_data[name])
+							O.force_skintone = FALSE
+							for(var/thing in O.children)
+								var/obj/item/organ/external/child = thing
+								child.force_skintone = FALSE
 							O.robotize(rlimb_data[name])
 						else
 							O.robotize()
@@ -110,6 +114,8 @@
 							I.mechassist()
 						if ("mechanical")
 							I.robotize()
+						if ("removed")
+							qdel(I)
 
 	if (apply_markings)
 		for(var/N in organs_by_name)
@@ -154,7 +160,7 @@
 
 	return O
 
-/mob/living/carbon/human/proc/awaken_psi_basic(var/source)
+/mob/living/carbon/human/proc/awaken_psi_basic(var/source, var/allow_latency = TRUE)
 	var/static/list/psi_operancy_messages = list(
 		"There's something in your skull!",
 		"Something is eating your thoughts!",
@@ -170,11 +176,9 @@
 	var/list/faculties = list(PSI_COERCION, PSI_REDACTION, PSI_ENERGISTICS, PSI_PSYCHOKINESIS)
 	for(var/i = 1 to new_latencies)
 		custom_pain(SPAN_DANGER("<font size = 3>[pick(psi_operancy_messages)]</font>"), 25)
-		set_psi_rank(pick_n_take(faculties), 1)
+		set_psi_rank(pick_n_take(faculties), allow_latency ? PSI_RANK_LATENT : PSI_RANK_OPERANT) // if set to latent, it spikes anywhere from OPERANT to PARAMOUNT
 		sleep(30)
-		psi.update()
-	sleep(45)
-	psi.check_latency_trigger(100, source, TRUE)
+	addtimer(CALLBACK(psi, /datum/psi_complexus/.proc/check_latency_trigger, 100, source, TRUE), 4.5 SECONDS)
 
 /mob/living/carbon/human/get_resist_power()
 	return species.resist_mod
@@ -188,6 +192,8 @@
 
 /mob/living/carbon/human/proc/has_hearing_aid()
 	if(istype(l_ear, /obj/item/device/hearing_aid) || istype(r_ear, /obj/item/device/hearing_aid))
+		return TRUE
+	if(has_functioning_augment(BP_AUG_COCHLEAR))
 		return TRUE
 	return FALSE
 
@@ -214,3 +220,91 @@
 		. = 80 * (1 - bodytemperature / species.cold_level_3)
 		. = max(20, .)
 	return round(.)
+
+// Martial Art Helpers
+/mob/living/carbon/human/proc/check_martial_deflection_chance()
+	var/deflection_chance = 0
+	if(!length(known_martial_arts))
+		return deflection_chance
+	for(var/art in known_martial_arts)
+		var/datum/martial_art/M = art
+		deflection_chance = max(deflection_chance, M.deflection_chance)
+	return deflection_chance
+
+/mob/living/carbon/human/proc/check_weapon_affinity(var/obj/O, var/parry_chance)
+	if(!length(known_martial_arts))
+		return FALSE
+	var/parry_bonus = 0
+	for(var/art in known_martial_arts)
+		var/datum/martial_art/M = art
+		for(var/type in M.weapon_affinity)
+			if(istype(O, type))
+				if(parry_chance)
+					parry_bonus = max(parry_bonus, M.parry_multiplier)
+					continue
+				return TRUE
+	if(parry_chance)
+		return parry_bonus
+	return FALSE
+
+/mob/living/carbon/human/proc/check_no_guns()
+	if(!length(known_martial_arts))
+		return FALSE
+	for(var/art in known_martial_arts)
+		var/datum/martial_art/M = art
+		if(M.no_guns)
+			return M.no_guns_message
+	return FALSE
+
+/mob/living/carbon/human/get_standard_pixel_x()
+	return species.icon_x_offset
+
+/mob/living/carbon/human/get_standard_pixel_y()
+	return species.icon_y_offset
+
+/mob/living/carbon/human/proc/protected_from_sound()
+	return (l_ear?.item_flags & SOUNDPROTECTION) || (r_ear?.item_flags & SOUNDPROTECTION) || (head?.item_flags & SOUNDPROTECTION)
+
+/mob/living/carbon/human/get_antag_datum(var/antag_role)
+	if(!mind)
+		return
+	var/datum/D = mind.antag_datums[antag_role]
+	if(D)
+		return D
+
+/mob/living/carbon/human/set_respawn_time()
+	if(species?.respawn_type)
+		set_death_time(species.respawn_type, world.time)
+	else
+		set_death_time(CREW, world.time)
+
+/mob/living/carbon/human/get_contained_external_atoms()
+	. = ..() - organs
+
+/mob/living/carbon/human/proc/pressure_resistant()
+	if(COLD_RESISTANCE in mutations)
+		return TRUE
+	var/datum/changeling/changeling = get_antag_datum(MODE_CHANGELING)
+	if(changeling?.space_adapted)
+		return TRUE
+	return FALSE
+
+/mob/living/carbon/human/get_cell()
+	var/obj/item/organ/internal/cell/C = internal_organs_by_name[BP_CELL]
+	if(C)
+		return C.cell
+
+/mob/living/carbon/human/proc/has_functioning_augment(var/aug_tag)
+	var/obj/item/organ/internal/augment/aug = internal_organs_by_name[aug_tag]
+	if(aug && !aug.is_broken())
+		return TRUE
+	return FALSE
+
+/mob/living/carbon/human/eyes_protected(var/obj/stab_item, var/stabbed = FALSE) // if stabbed is set to true if we're being stabbed and not just checking
+	. = ..()
+	if(.)
+		return
+	for(var/obj/item/protection in list(head, wear_mask, glasses))
+		if(protection.protects_eyestab(stab_item, stabbed))
+			return TRUE
+	return FALSE

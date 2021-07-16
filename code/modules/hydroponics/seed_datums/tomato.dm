@@ -5,8 +5,8 @@
 	name = "tomato"
 	seed_name = "tomato"
 	display_name = "tomato plant"
-	mutants = list("bluetomato","bloodtomato") // no killer :(
-	chems = list(/datum/reagent/nutriment = list(1,10), /datum/reagent/drink/tomatojuice = list(10,10))
+	mutants = list("bluetomato","bloodtomato") // no killer :[
+	chems = list(/decl/reagent/nutriment = list(1,10), /decl/reagent/drink/tomatojuice = list(10,10))
 	kitchen_tag = "tomato"
 
 /datum/seed/tomato/setup_traits()
@@ -32,7 +32,7 @@
 	seed_name = "blood tomato"
 	display_name = "blood tomato plant"
 	mutants = list("killer")
-	chems = list(/datum/reagent/nutriment = list(1,10), /datum/reagent/blood = list(1,5))
+	chems = list(/decl/reagent/nutriment = list(1,10), /decl/reagent/blood = list(1,5))
 	splat_type = /obj/effect/decal/cleanable/blood/splatter
 
 /datum/seed/tomato/blood/setup_traits()
@@ -49,7 +49,7 @@
 	display_name = "killer tomato plant"
 	mutants = null
 	can_self_harvest = 1
-	has_mob_product = /mob/living/simple_animal/tomato
+	product_type = /mob/living/simple_animal/tomato
 
 /datum/seed/tomato/killer/setup_traits()
 	..()
@@ -64,7 +64,7 @@
 	seed_name = "blue tomato"
 	display_name = "blue tomato plant"
 	mutants = list("bluespacetomato")
-	chems = list(/datum/reagent/nutriment = list(1,20), /datum/reagent/lube = list(1,5))
+	chems = list(/decl/reagent/nutriment = list(1,20), /decl/reagent/lube = list(1,5))
 
 /datum/seed/tomato/blue/setup_traits()
 	..()
@@ -79,7 +79,7 @@
 	seed_name = "bluespace tomato"
 	display_name = "bluespace tomato plant"
 	mutants = null
-	chems = list(/datum/reagent/nutriment = list(1,20), /datum/reagent/alcohol/ethanol/singulo = list(10,5))
+	chems = list(/decl/reagent/nutriment = list(1,20), /decl/reagent/alcohol/singulo = list(10,5))
 
 /datum/seed/tomato/blue/teleport/setup_traits()
 	..()

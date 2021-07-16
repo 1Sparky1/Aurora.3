@@ -20,7 +20,7 @@
 		list(mode_name="semiauto",       can_autofire=0, burst=1),
 		list(mode_name="3-round bursts", can_autofire=0, burst=3, burst_accuracy=list(1,0,0), dispersion=list(0, 10, 15)),
 		list(mode_name="short bursts",   can_autofire=0, burst=5, burst_accuracy=list(1,0,,-1,-1), dispersion=list(5, 10, 15, 20)),
-		list(mode_name="full auto",		can_autofire=1, burst=1, fire_delay=1, one_hand_penalty=12, burst_accuracy = list(0,-1,-1,-2,-2,-2,-3,-3), dispersion = list(1.0, 1.0, 1.0, 1.0, 1.2))
+		list(mode_name="full auto",		can_autofire=1, burst=1, fire_delay=1, one_hand_fa_penalty=12, burst_accuracy = list(0,-1,-1,-2,-2,-2,-3,-3), dispersion = list(5, 10, 15, 20, 25))
 		)
 
 //Submachine guns and personal defence weapons, go.
@@ -121,7 +121,7 @@
 		list(mode_name="semiauto",       burst=1, fire_delay=10),
 		list(mode_name="3-round bursts", burst=3, burst_accuracy=list(1,0,0),       dispersion=list(0, 5, 10)),
 		list(mode_name="short bursts",   burst=5, burst_accuracy=list(1,0,0,-1,-1), dispersion=list(5, 5, 15)),
-		list(mode_name="full auto",		can_autofire=1, burst=1, fire_delay=1, one_hand_penalty=12, burst_accuracy = list(0,-1,-1,-2,-2,-2,-3,-3), dispersion = list(1.0, 1.0, 1.0, 1.0, 1.2)),
+		list(mode_name="full auto",		can_autofire=1, burst=1, fire_delay=1, one_hand_fa_penalty=12, burst_accuracy = list(0,-1,-1,-2,-2,-2,-3,-3), dispersion = list(5, 10, 15, 20, 25)),
 		)
 
 	//slower to regain aim, more inaccurate if not wielding
@@ -135,7 +135,8 @@
 /obj/item/gun/projectile/automatic/rifle/sts35
 	name = "assault rifle"
 	desc = "A durable, rugged looking automatic weapon of a make popular on the frontier worlds. Uses 7.62mm rounds. It is unmarked."
-	desc_fluff = "The STS35 is a durable, reliable and cheap to buy fully automatic assault rifle with many licensed manufacturers across the galaxy. It comes in different versions and calibres, this one uses 7.62 rounds. The manufacturer markings have been filed off."
+	desc_fluff = "The STS35 is a durable, reliable and cheap to buy fully automatic assault rifle with many licensed manufacturers across \
+	the galaxy. It comes in different versions and calibres, this one uses 7.62 rounds. The manufacturer markings have been filed off."
 	can_bayonet = TRUE
 	knife_x_offset = 23
 	knife_y_offset = 13
@@ -143,11 +144,30 @@
 /obj/item/gun/projectile/automatic/rifle/sts35/update_icon()
 	..()
 	icon_state = (ammo_magazine)? "arifle" : "arifle-empty"
-	if(wielded)
-		item_state = (ammo_magazine)? "arifle-wielded" : "arifle-wielded-empty"
-	else
-		item_state = (ammo_magazine)? "arifle" : "arifle-empty"
-	update_held_icon()
+
+/obj/item/gun/projectile/automatic/rifle/carbine
+	name = "ballistic carbine"
+	desc = "A durable, rugged looking semi-automatic weapon of a make popular on the frontier worlds. Uses 5.56mm rounds and does not accept large \
+	capacity magazines. It is unmarked."
+	desc_fluff = "The ST24 is often considered the little brother of its larger and fully automatic counterpart, the STS35. It is a \
+	reliable and cheap to buy carbine with many licensed manufacturers across the galaxy. It comes in different versions and calibres, \
+	some even boasting select fire functionality. This one uses 5.56 rounds and is semi-automatic. The manufacturer markings have been filed off."
+	icon = 'icons/obj/guns/bcarbine.dmi'
+	icon_state = "bcarbine"
+	item_state = "bcarbine"
+	caliber = "a556"
+	can_bayonet = TRUE
+	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 1, TECH_ILLEGAL = 3)
+	magazine_type = /obj/item/ammo_magazine/a556/carbine
+	allowed_magazines = list(/obj/item/ammo_magazine/a556/carbine)
+	knife_x_offset = 23
+	knife_y_offset = 13
+
+	firemodes = list(mode_name="semiauto", burst=1, fire_delay=12)
+
+/obj/item/gun/projectile/automatic/rifle/carbine/update_icon()
+	..()
+	icon_state = (ammo_magazine)? "bcarbine" : "bcarbine-empty"
 
 /obj/item/gun/projectile/automatic/rifle/sol
 	name = "battle rifle"
@@ -167,12 +187,6 @@
 		icon_state = "battlerifle"
 	else
 		icon_state = "battlerifle-empty"
-	if(wielded)
-		item_state = "battlerifle-wielded"
-	else
-		item_state = "battlerifle"
-	update_held_icon()
-	return
 
 /datum/firemode/z8
 	var/use_launcher = 0
@@ -192,7 +206,7 @@
 	slot_flags = SLOT_BACK
 	load_method = MAGAZINE
 	magazine_type = /obj/item/ammo_magazine/a556
-	allowed_magazines = list(/obj/item/ammo_magazine/a556)
+	allowed_magazines = list(/obj/item/ammo_magazine/a556, /obj/item/ammo_magazine/a556/carbine)
 	auto_eject = 1
 	auto_eject_sound = 'sound/weapons/smg_empty_alarm.ogg'
 
@@ -237,15 +251,9 @@
 /obj/item/gun/projectile/automatic/rifle/z8/update_icon()
 	..()
 	if(ammo_magazine)
-		icon_state = "carbine-[round(ammo_magazine.stored_ammo.len,2)]"
-	else
 		icon_state = "carbine"
-	if(wielded)
-		item_state = "carbine-wielded"
 	else
-		item_state = "carbine"
-	update_held_icon()
-	return
+		icon_state = "carbine-empty"
 
 /obj/item/gun/projectile/automatic/rifle/z8/examine(mob/user)
 	..()
@@ -276,7 +284,7 @@
 	firemodes = list(
 		list(mode_name="short bursts",	burst=5, burst_accuracy = list(1,0,0,-1,-1), dispersion = list(3, 6, 9)),
 		list(mode_name="long bursts",	burst=8, burst_accuracy = list(1,0,0,-1,-1,-1,-2,-2), dispersion = list(8)),
-		list(mode_name="full auto", can_autofire=1, burst=1, fire_delay=1, one_hand_penalty=12, burst_accuracy = list(0,-1,-1,-2,-2,-2,-3,-3), dispersion = list(1.0, 1.0, 1.0, 1.0, 1.2))
+		list(mode_name="full auto", can_autofire=1, burst=1, fire_delay=1, one_hand_fa_penalty=12, burst_accuracy = list(0,-1,-1,-2,-2,-2,-3,-3), dispersion = list(5, 10, 15, 20, 25))
 		)
 
 	var/cover_open = 0
@@ -296,11 +304,14 @@
 		playsound(user, 'sound/weapons/sawclose.ogg', 60, 1)
 	update_icon()
 
-/obj/item/gun/projectile/automatic/rifle/l6_saw/attack_self(mob/user as mob)
+/obj/item/gun/projectile/automatic/rifle/l6_saw/unique_action(mob/user)
+	toggle_cover(user)
+
+/obj/item/gun/projectile/automatic/rifle/l6_saw/toggle_firing_mode(mob/user)
 	if(cover_open)
-		toggle_cover(user) //close the cover
-	else
-		return ..() //once closed, behave like normal
+		to_chat(user, SPAN_WARNING("The cover must be closed!"))
+		return
+	..()
 
 /obj/item/gun/projectile/automatic/rifle/l6_saw/attack_hand(mob/user as mob)
 	if(!cover_open && user.get_inactive_hand() == src)
@@ -310,10 +321,7 @@
 
 /obj/item/gun/projectile/automatic/rifle/l6_saw/update_icon()
 	icon_state = "l6[cover_open ? "open" : "closed"][ammo_magazine ? round(ammo_magazine.stored_ammo.len*2, 25) : "-empty"]"
-	if(wielded)
-		item_state = "l6closedmag-wielded"
-	else
-		item_state = initial(item_state)
+	..()
 
 /obj/item/gun/projectile/automatic/rifle/l6_saw/load_ammo(var/obj/item/A, mob/user)
 	if(!cover_open)
@@ -355,17 +363,9 @@
 	knife_x_offset = 23
 	knife_y_offset = 14
 
-/obj/item/gun/projectile/automatic/rifle/adhomian/update_icon()
-	..()
-	if(wielded)
-		item_state = "tsarrayut-wielded"
-	else
-		item_state = "tsarrayut"
-	update_held_icon()
-
 /obj/item/gun/projectile/automatic/tommygun
-	name = "vintage submachine gun"
-	desc = "A classic submachine gun. Uses .45 rounds."
+	name = "submachine gun"
+	desc = "An adhomian made submachine gun. Uses .45 rounds."
 	icon = 'icons/obj/guns/tommygun.dmi'
 	icon_state = "tommygun"
 	item_state = "tommygun"

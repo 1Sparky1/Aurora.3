@@ -86,7 +86,6 @@
 			var/datum/seed/chosen_seed = SSplants.seeds[seed]
 			if(chosen_seed)
 				chosen_seed.spawn_seed(src)
-		CHECK_TICK
 
 	for(var/obj/item/reagent_containers/food/snacks/grown/g in contents)
 		item_quants[g.name]++
@@ -223,15 +222,17 @@
 
 /obj/machinery/smartfridge/drying_rack/machinery_process()
 	..()
-	if (length(contents))
+	if(length(contents))
 		dry()
 
 /obj/machinery/smartfridge/drying_rack/proc/dry()
 	for(var/obj/item/reagent_containers/food/snacks/S in contents)
 		if(S.dry) continue
-		if(S.on_dry(loc))
-			if(!(S in contents))
-				item_quants[S.name]--
+		var/old_name = S.name
+		if(S.on_dry(src)) //Drying rack keeps the item but changes the name. This prevents pre-dried item lingering in the UI as vendable
+			item_quants[S.name]++
+			item_quants[old_name]--
+	SSvueui.check_uis_for_change(src)
 	return
 
 /obj/machinery/smartfridge/machinery_process()
@@ -367,6 +368,8 @@
 	return TRUE
 
 /obj/machinery/smartfridge/attack_ai(mob/user as mob)
+	if(!ai_can_interact(user))
+		return
 	attack_hand(user)
 
 /obj/machinery/smartfridge/attack_hand(mob/user as mob)
@@ -433,7 +436,10 @@
 			var/i = amount
 			for(var/obj/O in contents)
 				if(O.name == K)
-					O.forceMove(loc)
+					if(Adjacent(usr))
+						usr.put_in_hands(O)
+					else
+						O.forceMove(loc)
 					i--
 					if(i <= 0)
 						break

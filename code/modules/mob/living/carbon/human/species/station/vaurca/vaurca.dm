@@ -2,10 +2,12 @@
 	name = SPECIES_VAURCA_WORKER
 	short_name = "vau"
 	name_plural = "Type A"
+	category_name = "Vaurca"
 	bodytype = BODYTYPE_VAURCA
 	age_min = 1
 	age_max = 20
 	default_genders = list(NEUTER)
+	selectable_pronouns = null
 	economic_modifier = 2
 	language = LANGUAGE_VAURCA
 	primitive_form = SPECIES_MONKEY_VAURCA
@@ -13,6 +15,7 @@
 	icobase = 'icons/mob/human_races/vaurca/r_vaurca.dmi'
 	deform = 'icons/mob/human_races/vaurca/r_vaurca.dmi'
 	preview_icon = 'icons/mob/human_races/vaurca/vaurca_preview.dmi'
+	bandages_icon = 'icons/mob/bandage.dmi'
 	name_language = LANGUAGE_VAURCA
 	unarmed_types = list(
 		/datum/unarmed_attack/stomp,
@@ -33,6 +36,7 @@
 	oxy_mod = 0.6
 	radiation_mod = 0.2 //almost total radiation protection
 	bleed_mod = 2.2
+	injection_mod = 2
 
 	grab_mod = 1.1
 	resist_mod = 1.75
@@ -66,7 +70,7 @@
 	heat_level_1 = 330 //Default 360
 	heat_level_2 = 380 //Default 400
 	heat_level_3 = 600 //Default 1000
-	flags = NO_SLIP | NO_CHUBBY | NO_ARTERIES
+	flags = NO_SLIP | NO_CHUBBY | NO_ARTERIES | PHORON_IMMUNE
 	spawn_flags = CAN_JOIN | IS_WHITELISTED | NO_AGE_MINIMUM
 	appearance_flags = HAS_SKIN_COLOR | HAS_HAIR_COLOR
 	blood_color = COLOR_VAURCA_BLOOD // dark yellow
@@ -102,7 +106,7 @@
 		BP_KIDNEYS             = /obj/item/organ/internal/kidneys/vaurca,
 		BP_STOMACH             = /obj/item/organ/internal/stomach,
 		BP_BRAIN               = /obj/item/organ/internal/brain/vaurca,
-		BP_EYES                = /obj/item/organ/internal/eyes/vaurca
+		BP_EYES                = /obj/item/organ/internal/eyes/night/vaurca
 	)
 
 	has_limbs = list(
@@ -130,6 +134,8 @@
 	default_accent = ACCENT_TTS
 	allowed_accents = list(ACCENT_TTS, ACCENT_ZORA, ACCENT_KLAX, ACCENT_CTHUR)
 
+	alterable_internal_organs = list(BP_EYES)
+
 /datum/species/bug/before_equip(var/mob/living/carbon/human/H)
 	. = ..()
 	H.gender = NEUTER
@@ -144,15 +150,12 @@
 	if(H.equip_to_slot_or_del(S,slot_shoes))
 		S.autodrobe_no_remove = 1
 
-/datum/species/bug/equip_later_gear(var/mob/living/carbon/human/H)
-	if(istype(H.get_equipped_item(slot_back), /obj/item/storage/backpack))
-		H.equip_to_slot_or_del(new /obj/item/reagent_containers/inhaler/phoron_special(H.back), slot_in_backpack)
-	else
-		H.equip_to_slot_or_del(new /obj/item/reagent_containers/inhaler/phoron_special(H), slot_r_hand)
-
 /datum/species/bug/handle_post_spawn(var/mob/living/carbon/human/H)
 	H.gender = NEUTER
 	return ..()
 
 /datum/species/bug/has_psi_potential()
 	return FALSE
+	
+/datum/species/bug/is_naturally_insulated()
+	return TRUE

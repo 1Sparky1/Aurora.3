@@ -24,14 +24,16 @@ BLIND     // can't see anything
 	var/prescription = 0
 	var/see_invisible = -1
 	var/toggleable = 0
+	var/toggle_changes_appearance = TRUE
 	var/off_state = "degoggles"
 	var/active = 1
 	var/activation_sound = 'sound/items/goggles_charge.ogg'
 	var/obj/screen/overlay = null
 	var/obj/item/clothing/glasses/hud/hud = null	// Hud glasses, if any
 	var/activated_color = null
+	var/normal_layer = TRUE
+	var/shatter_material = /obj/item/material/shard
 	sprite_sheets = list(
-		BODYTYPE_VOX = 'icons/mob/species/vox/eyes.dmi',
 		BODYTYPE_VAURCA_WARFORM = 'icons/mob/species/warriorform/eyes.dmi'
 		)
 	species_restricted = list("exclude",BODYTYPE_VAURCA_BREEDER)
@@ -42,19 +44,37 @@ BLIND     // can't see anything
 /obj/item/clothing/glasses/proc/Look(var/atom/A, mob/user, var/proximity)
 	return 0 // return 1 to cancel attack_hand/RangedAttack()
 
+/obj/item/clothing/glasses/verb/change_layer()
+	set category = "Object"
+	set name = "Change Glasses Layer"
+	set src in usr
+
+	normal_layer = !normal_layer
+	to_chat(usr, SPAN_NOTICE("\The [src] will now layer [normal_layer ? "under" : "over"] your hair."))
+
+/obj/item/clothing/glasses/protects_eyestab(var/obj/stab_item, var/stabbed = FALSE)
+	if(stabbed && (body_parts_covered & EYES) && !(item_flags & THICKMATERIAL) && shatter_material && prob(stab_item.force * 5))
+		var/mob/M = loc
+		M.visible_message(SPAN_WARNING("\The [src] [M] is wearing gets shattered!"))
+		playsound(loc, /decl/sound_category/glass_break_sound, 70, TRUE)
+		new shatter_material(M.loc)
+		qdel(src)
+		return FALSE
+	return ..()
+
 /obj/item/clothing/glasses/update_clothing_icon()
 	if (ismob(src.loc))
 		var/mob/M = src.loc
 		M.update_inv_glasses()
 
-
 /obj/item/clothing/glasses/attack_self(mob/user)
 	if(toggleable)
 		if(active)
 			active = 0
-			icon_state = off_state
-			item_state = off_state
-			user.update_inv_glasses()
+			if(toggle_changes_appearance)
+				icon_state = off_state
+				item_state = off_state
+				user.update_inv_glasses()
 			flash_protection = FLASH_PROTECTION_NONE
 			tint = TINT_NONE
 			to_chat(usr, "You deactivate the optical matrix on the [src].")
@@ -62,9 +82,10 @@ BLIND     // can't see anything
 				set_light(0)
 		else
 			active = 1
-			icon_state = initial(icon_state)
-			item_state = initial(icon_state)
-			user.update_inv_glasses()
+			if(toggle_changes_appearance)
+				icon_state = initial(icon_state)
+				item_state = initial(icon_state)
+				user.update_inv_glasses()
 			if(activation_sound)
 				sound_to(usr, activation_sound)
 			flash_protection = initial(flash_protection)
@@ -103,7 +124,7 @@ BLIND     // can't see anything
 /obj/item/clothing/glasses/meson/prescription
 	name = "prescription mesons"
 	desc = "Optical Meson Scanner with prescription lenses."
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/meson/aviator
 	name = "engineering aviators"
@@ -112,7 +133,7 @@ BLIND     // can't see anything
 	off_state = "aviator_eng_off"
 	action_button_name = "Toggle HUD"
 	activation_sound = 'sound/effects/pop.ogg'
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/meson/aviator/verb/toggle()
 	set category = "Object"
@@ -129,7 +150,7 @@ BLIND     // can't see anything
 	action_button_name = "Toggle Mode"
 	toggleable = 1
 	activation_sound = 'sound/effects/pop.ogg'
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/hud/health/aviator/verb/toggle()
 	set category = "Object"
@@ -175,7 +196,7 @@ BLIND     // can't see anything
 	action_button_name = "Toggle Mode"
 	toggleable = 1
 	activation_sound = 'sound/effects/pop.ogg'
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/night/aviator/verb/toggle()
 	set category = "Object"
@@ -189,7 +210,7 @@ BLIND     // can't see anything
 	desc = "A simple pair of safety glasses. Thinner than their goggle counterparts, for those who can't decide between safety and style."
 	icon_state = "plaingoggles"
 	item_state = "plaingoggles"
-	item_flags = AIRTIGHT
+	item_flags = AIRTIGHT|THICKMATERIAL
 	unacidable = 1
 
 /obj/item/clothing/glasses/safety/goggles
@@ -199,6 +220,8 @@ BLIND     // can't see anything
 	item_state = "goggles_standard"
 	off_state = "goggles_standard"
 	action_button_name = "Flip Goggles"
+	var/flip_down = "down to protect your eyes."
+	var/flip_up = "up out of your face."
 	var/up = 0
 
 /obj/item/clothing/glasses/safety/goggles/attack_self()
@@ -216,16 +239,39 @@ BLIND     // can't see anything
 		flags_inv |= HIDEEYES
 		body_parts_covered |= EYES
 		icon_state = initial(item_state)
-		to_chat(usr, SPAN_NOTICE("You flip \the [src] down to protect your eyes."))
+		to_chat(usr, SPAN_NOTICE("You flip \the [src] [flip_down]"))
 	else
 		src.up = !src.up
 		flags_inv &= ~HIDEEYES
 		body_parts_covered &= ~EYES
 		icon_state = "[initial(icon_state)]_up"
-		to_chat(usr, SPAN_NOTICE("You push \the [src] up out of your face."))
+		to_chat(usr, SPAN_NOTICE("You push \the [src] [flip_up]"))
 	update_clothing_icon()
 	update_icon()
 	usr.update_action_buttons()
+
+/obj/item/clothing/glasses/safety/goggles/wasteland
+	name = "wasteland goggles"
+	desc = "A pair of old goggles common in the Wasteland. A few denizens unfortunate enough to not \
+	keep this protection on them after the nukes dropped no longer have the ability to see."
+	icon = 'icons/obj/unathi_items.dmi'
+	icon_state = "wasteland_goggles"
+	item_state = "wasteland_goggles"
+	off_state = "wasteland_goggles"
+	contained_sprite = TRUE
+	flip_down = "up to protect your eyes."
+	flip_up = "and let it hang around your neck."
+
+/obj/item/clothing/glasses/safety/goggles/wasteland/toggle()
+	..()
+	icon_state = initial(icon_state)
+	if(up)
+		item_state = "[initial(item_state)]_up"
+	else
+		item_state = initial(icon_state)
+	update_worn_icon()
+	update_clothing_icon()
+	update_icon()
 
 /obj/item/clothing/glasses/eyepatch
 	name = "eyepatch"
@@ -242,9 +288,11 @@ BLIND     // can't see anything
 	set category = "Object"
 	set src in usr
 
-	if (usr.stat || usr.restrained())
+	if(use_check_and_message(usr))
 		return
+	handle_flipping(usr)
 
+/obj/item/clothing/glasses/eyepatch/proc/handle_flipping(var/mob/user)
 	src.flipped = !src.flipped
 	if(src.flipped)
 		src.icon_state = "[icon_state]_r"
@@ -253,6 +301,12 @@ BLIND     // can't see anything
 	to_chat(usr, "You change \the [src] to cover the [src.flipped ? "left" : "right"] eye.")
 	update_clothing_icon()
 	update_icon()
+
+/obj/item/clothing/glasses/eyepatch/white
+	name = "eyepatch"
+	desc = "A simple eyepatch made out of a strip of cloth."
+	icon_state = "eyepatch_white"
+	item_state = "eyepatch_white"
 
 /obj/item/clothing/glasses/monocle
 	name = "monocle"
@@ -279,7 +333,7 @@ BLIND     // can't see anything
 	off_state = "aviator_off"
 	action_button_name = "Toggle Mode"
 	activation_sound = 'sound/effects/pop.ogg'
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/material/aviator/verb/toggle()
 	set category = "Object"
@@ -293,7 +347,7 @@ BLIND     // can't see anything
 	desc = "Made by Nerd. Co."
 	icon_state = "glasses"
 	item_state = "glasses"
-	prescription = 1
+	prescription = 7
 	body_parts_covered = 0
 
 /obj/item/clothing/glasses/regular/attackby(obj/item/W as obj, mob/user as mob)
@@ -371,11 +425,11 @@ BLIND     // can't see anything
 	desc = "A pair of designer sunglasses. They should put HUDs in these."
 	icon_state = "aviator"
 	item_state = "aviator"
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/sunglasses/prescription
 	name = "prescription sunglasses"
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/sunglasses/prescription/Initialize()
 	. = ..()
@@ -403,11 +457,11 @@ BLIND     // can't see anything
 	desc = "A pair of designer sunglasses. They should put HUDs in these."
 	icon_state = "aviator"
 	item_state = "aviator"
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/fakesunglasses/prescription
 	name = "stylish prescription sunglasses"
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/fakesunglasses/prescription/Initialize()
 	. = ..()
@@ -424,6 +478,7 @@ BLIND     // can't see anything
 	item_state = "welding-g"
 	action_button_name = "Flip Welding Goggles"
 	var/up = 0
+	item_flags = THICKMATERIAL
 	flash_protection = FLASH_PROTECTION_MAJOR
 	tint = TINT_HEAVY
 
@@ -441,6 +496,7 @@ BLIND     // can't see anything
 			flags_inv |= HIDEEYES
 			body_parts_covered |= EYES
 			icon_state = initial(icon_state)
+			item_state = initial(icon_state)
 			flash_protection = initial(flash_protection)
 			tint = initial(tint)
 			to_chat(usr, "You flip \the [src] down to protect your eyes.")
@@ -449,6 +505,7 @@ BLIND     // can't see anything
 			flags_inv &= ~HIDEEYES
 			body_parts_covered &= ~EYES
 			icon_state = "[initial(icon_state)]up"
+			item_state = "[initial(item_state)]up"
 			flash_protection = FLASH_PROTECTION_NONE
 			tint = TINT_NONE
 			to_chat(usr, "You push \the [src] up out of your face.")
@@ -462,20 +519,44 @@ BLIND     // can't see anything
 	item_state = "rwelding-g"
 	tint = TINT_MODERATE
 
+/obj/item/clothing/glasses/welding/emergency
+	name = "emergency welding goggles"
+	desc = "A cheaper version of standard welding goggles, approved for emergency use by the Nanotrasen Safety Board."
+	icon = 'icons/clothing/eyes/welding_goggles.dmi'
+	icon_state = "ewelding-g"
+	item_state = "ewelding-g"
+	contained_sprite = TRUE
+	tint = TINT_BLIND // yes, this is on purpose
+
 /obj/item/clothing/glasses/sunglasses/blindfold
 	name = "blindfold"
 	desc = "Covers the eyes, preventing sight."
 	icon_state = "blindfold"
 	item_state = "blindfold"
 	tint = TINT_BLIND
+	shatter_material = FALSE
 	drop_sound = 'sound/items/drop/gloves.ogg'
 	pickup_sound = 'sound/items/pickup/gloves.ogg'
+
+/obj/item/clothing/glasses/sunglasses/blindfold/white
+	name = "white blindfold"
+	desc = "A white blindfold that covers the eyes, preventing sight."
+	icon_state = "blindfoldwhite"
+	item_state = "blindfoldwhite"
+
+/obj/item/clothing/glasses/sunglasses/blindfold/white/seethrough
+	desc = "A white blindfold that covers the eyes, this one seems to be made of thinner material."
+	tint = TINT_MODERATE
+	flash_protection = FLASH_PROTECTION_MODERATE
 
 /obj/item/clothing/glasses/sunglasses/blinders
 	name = "vaurcae blinders"
 	desc = "Specially designed Vaurca blindfold, designed to let in just enough light to see."
+	icon = 'icons/obj/vaurca_items.dmi'
 	icon_state = "blinders"
-	item_state = "blindfold"
+	item_state = "blinders"
+	contained_sprite = TRUE
+	shatter_material = FALSE
 	drop_sound = 'sound/items/drop/gloves.ogg'
 	pickup_sound = 'sound/items/pickup/gloves.ogg'
 
@@ -505,18 +586,19 @@ BLIND     // can't see anything
 	desc = "Flash-resistant goggles with inbuilt combat and security information."
 	icon_state = "swatgoggles"
 	item_state = "swatgoggles"
-	item_flags = AIRTIGHT
+	item_flags = AIRTIGHT|THICKMATERIAL
 
 /obj/item/clothing/glasses/sunglasses/sechud/head
 	name = "advanced aviators"
 	desc = "Snazzy, advanced aviators with inbuilt combat and security information."
 	icon_state = "hosglasses"
 	item_state = "hosglasses"
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/sunglasses/sechud/aviator
 	name = "HUD aviators"
 	desc = "Modified aviator glasses that can be switched between HUD and flash protection modes. Comes with bonus prescription overlay."
+	flash_protection = FLASH_PROTECTION_NONE
 	icon_state = "aviator_sec"
 	off_state = "aviator_sec_off"
 	item_state_slots = list(slot_r_hand_str = "sunglasses", slot_l_hand_str = "sunglasses")
@@ -524,7 +606,7 @@ BLIND     // can't see anything
 	var/on = TRUE
 	toggleable = TRUE
 	activation_sound = 'sound/effects/pop.ogg'
-	prescription = 1
+	prescription = 7
 
 	var/hud_holder
 
@@ -543,12 +625,12 @@ BLIND     // can't see anything
 		on = !on
 		if(on)
 			flash_protection = FLASH_PROTECTION_NONE
-			active = 1
+			active = TRUE
 			src.hud = hud_holder
 			to_chat(user, "You switch \the [src] to HUD mode.")
 		else
-			flash_protection = initial(flash_protection)
-			active = 0
+			flash_protection = FLASH_PROTECTION_MODERATE
+			active = TRUE
 			src.hud = null
 			to_chat(user, "You switch \the [src] to flash protection mode.")
 		update_icon()
@@ -639,7 +721,7 @@ BLIND     // can't see anything
 	item_state_slots = list(slot_r_hand_str = "sunglasses", slot_l_hand_str = "sunglasses")
 	action_button_name = "Toggle HUD"
 	activation_sound = 'sound/effects/pop.ogg'
-	prescription = 1
+	prescription = 7
 
 /obj/item/clothing/glasses/thermal/aviator/verb/toggle()
 	set category = "Object"
@@ -655,25 +737,41 @@ BLIND     // can't see anything
 	item_state = "hudpatch"
 	off_state = "hudpatch"
 	action_button_name = "Toggle iPatch"
-	prescription = 1 //To emulate not having one eyeball
-	toggleable = 1
+	prescription = 7 //To emulate not having one eyeball
+	toggleable = TRUE
+	toggle_changes_appearance = FALSE
 	var/eye_color = COLOR_WHITE
 	var/image/mob_overlay
 
-/obj/item/clothing/glasses/eyepatch/hud/Initialize()
-	.  = ..()
+/obj/item/clothing/glasses/eyepatch/hud/handle_flipping(mob/user)
+	..()
+	handle_mob_overlay()
+
+/obj/item/clothing/glasses/eyepatch/hud/proc/handle_mob_overlay()
+	if(mob_overlay && ishuman(loc))
+		var/mob/living/carbon/human/H = loc
+		if(H.glasses == src)
+			H.cut_overlay(mob_overlay, TRUE)
 	mob_overlay = image('icons/obj/clothing/glasses.dmi', "[icon_state]_eye")
 	mob_overlay.appearance_flags = RESET_COLOR
 	mob_overlay.color = eye_color
-	mob_overlay.layer = LIGHTING_LAYER+1
+	mob_overlay.layer = LIGHTING_LAYER + 1
+	if(active && ishuman(loc))
+		var/mob/living/carbon/human/H = loc
+		if(H.glasses == src)
+			H.add_overlay(mob_overlay, TRUE)
 	update_icon()
 
+/obj/item/clothing/glasses/eyepatch/hud/Initialize()
+	. = ..()
+	handle_mob_overlay()
+
 /obj/item/clothing/glasses/eyepatch/hud/equipped(mob/user, slot)
-	if (slot == slot_glasses)
+	if(active && slot == slot_glasses)
 		user.add_overlay(mob_overlay, TRUE)
 	else
 		user.cut_overlay(mob_overlay, TRUE)
-	. =..()
+	return ..()
 
 /obj/item/clothing/glasses/eyepatch/hud/Destroy()
 	if (ishuman(loc))
@@ -683,7 +781,7 @@ BLIND     // can't see anything
 
 /obj/item/clothing/glasses/eyepatch/hud/attack_self()
 	..()
-	update_icon()
+	handle_mob_overlay()
 
 /obj/item/clothing/glasses/eyepatch/hud/update_icon()
 	cut_overlays()
@@ -691,7 +789,7 @@ BLIND     // can't see anything
 		var/image/eye = image('icons/obj/clothing/glasses.dmi', "[icon_state]_ovr")
 		eye.appearance_flags = RESET_COLOR
 		eye.color = eye_color
-		add_overlay (eye)
+		add_overlay(eye)
 
 /obj/item/clothing/glasses/eyepatch/hud/forceMove(atom/newloc)
 	if (!ishuman(loc))

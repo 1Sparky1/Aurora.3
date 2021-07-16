@@ -11,7 +11,7 @@
  *		Prescription glasses and drinking glass boxes,
  *		Condiment bottle and silly cup boxes,
  *		Donkpocket and monkeycube boxes,
- *		ID and security PDA cart boxes,
+ *		ID boxes,
  *		Handcuff, mousetrap, and pillbottle boxes,
  *		Snap-pops,
  *		Replacement light boxes.
@@ -75,7 +75,7 @@
 				L.visible_message("<span class='danger'>[L] tears open the [src], spilling its contents everywhere!</span>", "<span class='danger'>You tear open the [src], spilling its contents everywhere!</span>")
 				spill()
 			else
-				animate_shake()
+				shake_animation()
 				var/toplay = pick(list('sound/effects/creatures/nibble1.ogg','sound/effects/creatures/nibble2.ogg'))
 				playsound(loc, toplay, 30, 1)
 			damage(damage)
@@ -111,12 +111,12 @@
 			var/obj/item/foldable = new src.foldable()
 			qdel(src)
 			user.put_in_hands(foldable) //try to put it inhands if possible
-		if(ispath(src.trash))
-			if(contents.len &&  user.a_intent == I_HURT)  // only crumple with things inside on harmintent.
+		if(ispath(src.trash) && user.a_intent == I_HURT)
+			if(!contents.len)
+				to_chat(user, SPAN_NOTICE("You crumple up \the [src]."))
+			else
 				user.visible_message(SPAN_DANGER("You crush \the [src], spilling its contents everywhere!"), SPAN_DANGER("[user] crushes \the [src], spilling its contents everywhere!"))
 				spill()
-			else
-				to_chat(user, SPAN_NOTICE("You crumple up \the [src].")) //make trash
 			playsound(src.loc, 'sound/items/pickup/wrapper.ogg', 30, 1)
 			var/obj/item/trash = new src.trash()
 			qdel(src)
@@ -127,18 +127,36 @@
 	desc = "A faithful box that will remain with you, no matter where you go, and probably save you."
 	icon_state = "e_box"
 	autodrobe_no_remove = 1
-	starts_with = list(/obj/item/clothing/mask/breath = 1,
-					   /obj/item/tank/emergency_oxygen = 1,
-					   /obj/item/device/flashlight/flare/glowstick/red = 1
-						)
+	max_storage_space = 14
+	can_hold = list(
+				/obj/item/clothing/mask,
+				/obj/item/tank/emergency_oxygen,
+				/obj/item/device/flashlight/flare/glowstick,
+				/obj/item/stack/medical,
+				/obj/item/reagent_containers/hypospray/autoinjector,
+				/obj/item/reagent_containers/inhaler,
+				/obj/item/device/oxycandle,
+				/obj/item/extinguisher/mini,
+				/obj/item/device/radio,
+				/obj/item/device/flashlight,
+				/obj/item/reagent_containers/food/drinks/flask,
+				/obj/item/storage/box/fancy/cigarettes,
+				/obj/item/flame/lighter,
+				/obj/item/disk/nuclear
+				)
+	starts_with = list(
+					/obj/item/clothing/mask/breath = 1,
+					/obj/item/tank/emergency_oxygen = 1,
+					/obj/item/device/oxycandle = 1,
+					/obj/item/device/flashlight/flare/glowstick/red = 1,
+					/obj/item/stack/medical/bruise_pack = 1,
+					/obj/item/reagent_containers/hypospray/autoinjector/inaprovaline = 1
+					)
 
 /obj/item/storage/box/survival/fill()
 	..()
 	for(var/obj/item/thing in contents)
 		thing.autodrobe_no_remove = 1
-
-/obj/item/storage/box/vox
-	starts_with = list(/obj/item/clothing/mask/breath = 1, /obj/item/tank/emergency_nitrogen = 1)
 
 /obj/item/storage/box/engineer
 	autodrobe_no_remove = 1
@@ -264,6 +282,14 @@
 	pickup_sound = 'sound/items/pickup/ammobox.ogg'
 	starts_with = list(/obj/item/ammo_casing/shotgun/incendiary = 8)
 
+/obj/item/storage/box/trackingslugs
+	name = "box of tracking slugs"
+	desc = "It has a picture of a shotgun shell and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
+	icon_state = "trackingshot_box"
+	drop_sound = 'sound/items/drop/ammobox.ogg'
+	pickup_sound = 'sound/items/pickup/ammobox.ogg'
+	starts_with = list(/obj/item/ammo_casing/shotgun/tracking = 4)
+
 /obj/item/storage/box/sniperammo
 	name = "box of 14.5mm shells"
 	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
@@ -289,6 +315,11 @@
 	desc = "A box of NT brand Firearm authentication pins; Needed to operate most weapons."
 	starts_with = list(/obj/item/device/firing_pin = 7)
 
+/obj/item/storage/box/securitypins
+	name = "box of wireless-control firing pins"
+	desc = "A box of NT brand Firearm authentication pins; Needed to operate most weapons.  These firing pins are wireless-control enabled."
+	starts_with = list(/obj/item/device/firing_pin/wireless = 7)
+
 /obj/item/storage/box/testpins
 	name = "box of firing pins"
 	desc = "A box of NT brand Testing Authentication pins; allows guns to fire in designated firing ranges."
@@ -310,6 +341,15 @@
 	name = "box of assorted firing pins"
 	desc = "A box of varied assortment of firing pins. Appears to have R&D stickers on all sides of the box. Also seems to have a smiley face sticker on the top of it."
 	starts_with = list(/obj/item/device/firing_pin = 2, /obj/item/device/firing_pin/access = 2, /obj/item/device/firing_pin/implant/loyalty = 2, /obj/item/device/firing_pin/clown = 1, /obj/item/device/firing_pin/dna = 1)
+
+/obj/item/storage/box/tethers
+	name = "box of tethering devices"
+	desc = "A box containing eight electro-tethers, used primarily to keep track of partners during expeditions."
+	starts_with = list(/obj/item/tethering_device = 8)
+
+/obj/item/storage/box/tethers/fill()
+	..()
+	make_exact_fit()
 
 /obj/item/storage/box/teargas
 	name = "box of pepperspray grenades"
@@ -411,10 +451,11 @@
 	starts_with = list(/obj/item/reagent_containers/food/snacks/donkpocket = 6)
 
 /obj/item/storage/box/sinpockets
-	name = "box of sin-pockets"
-	desc = "<B>Instructions:</B> <I>Crush bottom of package to initiate chemical heating. Wait for 20 seconds before consumption. Product will cool if not eaten within seven minutes.</I>"
+	name = "box of donk-pockets"
+	desc = "<B>Instructions:</B> <I>Heat in microwave. Product will cool if not eaten within seven minutes.</I>"
 	icon_state = "donk_kit"
 	starts_with = list(/obj/item/reagent_containers/food/snacks/donkpocket/sinpocket = 6)
+	desc_antag = "Crush bottom of package to initiate chemical heating. Wait for 20 seconds before consumption. Product will cool if not eaten within seven minutes."
 
 /obj/item/storage/box/monkeycubes
 	name = "monkey cube box"
@@ -451,12 +492,6 @@
 	icon_state = "id"
 	starts_with = list(/obj/item/card/id = 7)
 
-/obj/item/storage/box/seccarts
-	name = "box of spare R.O.B.U.S.T. Cartridges"
-	desc = "A box full of R.O.B.U.S.T. Cartridges, used by Security."
-	icon_state = "pda"
-	starts_with = list(/obj/item/cartridge/security = 7)
-
 /obj/item/storage/box/handcuffs
 	name = "box of spare handcuffs"
 	desc = "A box full of handcuffs."
@@ -471,7 +506,7 @@
 
 /obj/item/storage/box/mousetraps
 	name = "box of Pest-B-Gon mousetraps"
-	desc = "<B><FONT color='red'>WARNING:</FONT></B> <I>Keep out of reach of children</I>."
+	desc = "<B><span class='warning'>WARNING:</span></B> <I>Keep out of reach of children</I>."
 	icon_state = "mousetraps"
 	starts_with = list(/obj/item/device/assembly/mousetrap = 6)
 
@@ -497,6 +532,11 @@
 /obj/item/storage/box/snappops/syndi
 	desc_antag = "These snap pops have an extra compound added that will deploy a tiny smokescreen when snapped."
 	starts_with = list(/obj/item/toy/snappop/syndi = 8)
+
+/obj/item/storage/box/partypopper
+	name = "party popper box"
+	desc = "Six cones of confetti conflagarating fun!"
+	starts_with = list(/obj/item/toy/partypopper = 6)
 
 /obj/item/storage/box/autoinjectors
 	name = "box of empty injectors"
@@ -791,9 +831,19 @@
 	starts_with = list(/obj/item/clothing/accessory/badge/hadii_card = 6)
 
 /obj/item/storage/box/hadii_manifesto
-	name = "hadiist manifesto card box"
+	name = "hadiist manifesto box"
 	desc = "A box full of hadiist manifesto books."
 	starts_with = list(/obj/item/book/manual/pra_manifesto = 6)
+
+/obj/item/storage/box/dpra_manifesto
+	name = "al'mariist manifesto box"
+	desc = "A box full of al'mariist manifesto books."
+	starts_with = list(/obj/item/book/manual/dpra_manifesto = 6)
+
+/obj/item/storage/box/nka_manifesto
+	name = "royalist manifesto card box"
+	desc = "A box full of royalist manifesto books."
+	starts_with = list(/obj/item/book/manual/nka_manifesto = 6)
 
 /obj/item/storage/box/dominia_honor
 	name = "dominian honor codex box"
@@ -852,3 +902,22 @@
 	var/obj/item/closet_teleporter/CT_2 = new /obj/item/closet_teleporter(src)
 	CT_1.linked_teleporter = CT_2
 	CT_2.linked_teleporter = CT_1
+
+/obj/item/storage/box/googly
+	name = "googly eye box"
+	desc = "A box containing googly eyes."
+	starts_with = list(/obj/item/sticker/googly_eye = 8)
+
+/obj/item/storage/box/goldstar
+	name = "gold star box"
+	desc = "A box containing gold star stickers."
+	starts_with = list(/obj/item/sticker/goldstar = 8)
+
+/obj/item/storage/box/folders
+	name = "box of folders"
+	desc = "A box full of folders."
+	starts_with = list(/obj/item/folder = 5)
+
+/obj/item/storage/box/folders/blue
+	starts_with = list(/obj/item/folder/sec = 5)
+

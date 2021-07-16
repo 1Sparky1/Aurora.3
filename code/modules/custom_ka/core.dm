@@ -73,14 +73,6 @@
 /obj/item/gun/custom_ka/can_wield()
 	return 1
 
-/obj/item/gun/custom_ka/toggle_wield()
-	..()
-	if(wielded)
-		item_state = "[initial(item_state)]_w"
-	else
-		item_state = initial(item_state)
-	update_held_icon()
-
 /obj/item/gun/custom_ka/pickup(mob/user)
 	..()
 	if(can_wield())
@@ -247,7 +239,7 @@
 		var/obj/item/projectile/kinetic/shot_projectile = new installed_barrel.projectile_type(get_turf(src))
 		shot_projectile.damage = damage_increase
 		shot_projectile.range = range_increase
-		shot_projectile.aoe = aoe_increase
+		shot_projectile.aoe = max(1, aoe_increase)
 		shot_projectile.base_damage = damage_increase
 		return shot_projectile
 	if(ispath(installed_barrel.projectile_type, /obj/item/projectile/beam))
@@ -312,12 +304,6 @@
 	else
 		name = initial(name)
 
-	if(wielded)
-		item_state = "[initial(item_state)]_w"
-	else
-		item_state = initial(item_state)
-	update_held_icon()
-
 /obj/item/gun/custom_ka/proc/update_stats()
 	//pls don't bully me for this code
 	damage_increase = initial(damage_increase)
@@ -374,7 +360,7 @@
 	firedelay_increase = max(firedelay_increase,0.125 SECONDS)
 
 	aoe_increase += round(damage_increase/30)
-	aoe_increase = max(0,aoe_increase)
+	aoe_increase = max(1, aoe_increase)
 
 	//Gun stats
 	recoil = recoil_increase*0.25
@@ -386,7 +372,7 @@
 	accuracy = round(recoil_increase*0.25)
 	accuracy_wielded = accuracy * 0.5
 
-/obj/item/gun/custom_ka/attack_self(mob/user as mob)
+/obj/item/gun/custom_ka/unique_action(mob/user)
 	. = ..()
 
 	if(!wielded)

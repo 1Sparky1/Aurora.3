@@ -34,6 +34,7 @@ var/global/list/default_medbay_channels = list(
 	var/frequency = PUB_FREQ //common chat
 	var/traitor_frequency = 0 //tune to frequency to unlock traitor supplies
 	var/canhear_range = 3 // the range which mobs can hear this radio from
+	var/mob/living/announcer/announcer = null // used in autosay, held by the radio for re-use
 	var/datum/wires/radio/wires = null
 	var/b_stat = 0
 	var/broadcasting = FALSE
@@ -52,7 +53,6 @@ var/global/list/default_medbay_channels = list(
 	var/clicksound = /decl/sound_category/button_sound //played sound on usage
 	var/clickvol = 10 //volume
 
-
 	var/obj/item/cell/cell = /obj/item/cell/device
 	var/last_radio_sound = -INFINITY
 
@@ -66,9 +66,9 @@ var/global/list/default_medbay_channels = list(
 		radio_connection = SSradio.add_object(src, frequency, RADIO_CHAT)
 
 /obj/item/device/radio/Destroy()
-	qdel(wires)
 	listening_objects -= src
-	wires = null
+	QDEL_NULL(announcer)
+	QDEL_NULL(wires)
 	if(SSradio)
 		SSradio.remove_object(src, frequency)
 		for (var/ch_name in channels)
@@ -205,7 +205,7 @@ var/global/list/default_medbay_channels = list(
 /obj/item/device/radio/CouldUseTopic(var/mob/user)
 	..()
 	if(clicksound && iscarbon(user))
-		playsound(src, clicksound, clickvol)
+		playsound(loc, clicksound, clickvol)
 
 /obj/item/device/radio/Topic(href, href_list)
 	if(..())
@@ -268,19 +268,21 @@ var/global/list/default_medbay_channels = list(
 	else
 		connection = radio_connection
 		channel = null
+
 	if (!istype(connection))
 		return
+
 	if (!connection)
 		return
 
-	var/mob/living/silicon/ai/A = new /mob/living/silicon/ai(src, null, null, 1)
-	A.SetName(from)
-	Broadcast_Message(connection, A,
-						0, "*garbled automated announcement*", src,
-						message, from, "Automated Announcement", from, "synthesized voice",
-						4, 0, list(0), connection.frequency, "states")
-	qdel(A)
-	return
+	if(!istype(announcer))
+		announcer = new()
+	announcer.PrepareBroadcast(from)
+	Broadcast_Message(connection, announcer,
+						FALSE, "*garbled automated announcement*", src,
+						message, from, "Automated Announcement", from, announcer.voice_name,
+						4, 0, list(0), connection.frequency, "states", announcer.default_language)
+	announcer.ResetAfterBroadcast()
 
 // Interprets the message mode when talking into a radio, possibly returning a connection datum
 /obj/item/device/radio/proc/handle_message_mode(mob/living/M as mob, message, message_mode)
@@ -304,7 +306,7 @@ var/global/list/default_medbay_channels = list(
 	// If we were to send to a channel we don't have, drop it.
 	return null
 
-/obj/item/device/radio/talk_into(mob/living/M, message, channel, var/verb = "says", var/datum/language/speaking = null)
+/obj/item/device/radio/talk_into(mob/living/M, message, channel, var/verb = "says", var/datum/language/speaking = null, var/ignore_restrained)
 	if(!on)
 		return 0 // the device has to be on
 	//  Fix for permacell radios, but kinda eh about actually fixing them.
@@ -313,11 +315,17 @@ var/global/list/default_medbay_channels = list(
 
 	if (iscarbon(M))
 		var/mob/living/carbon/C = M
-		if (CE_UNDEXTROUS in C.chem_effects)
-			to_chat(M, SPAN_WARNING("Your can't move your arms enough to activate the radio..."))
+		if ((CE_UNDEXTROUS in C.chem_effects) || C.stunned >= 10)
+			to_chat(M, SPAN_WARNING("You can't move your arms enough to activate the radio..."))
 			return
+		if(iszombie(M))
+			to_chat(M, SPAN_WARNING("Try as you might, you cannot will your decaying body into operating \the [src]."))
+			return FALSE
 
 	if(istype(M))
+		if(M.restrained() && !ignore_restrained)
+			to_chat(M, SPAN_WARNING("You can't speak into \the [src.name] while restrained."))
+			return FALSE
 		M.trigger_aiming(TARGET_CAN_RADIO)
 
 	//  Uncommenting this. To the above comment:
@@ -408,8 +416,7 @@ var/global/list/default_medbay_channels = list(
 			return
 		// First, we want to generate a new radio signal
 		var/datum/signal/signal = new
-		signal.transmission_method = 2 // 2 would be a subspace transmission.
-									   // transmission_method could probably be enumerated through #define. Would be neater.
+		signal.transmission_method = TRANSMISSION_SUBSPACE
 
 		// --- Finally, tag the actual signal with the appropriate values ---
 		signal.data = list(
@@ -453,7 +460,14 @@ var/global/list/default_medbay_channels = list(
 			R.receive_signal(signal)
 
 		// Receiving code can be located in Telecommunications.dm
-		return signal.data["done"] && (position.z in signal.data["level"])
+		var/position_z_in_level = FALSE // this particular band-aid is required to make antag radios say "talks into" and not "tries to talk into" when using a radio, due to how their signals are made
+		if(islist(signal.data["level"]))
+			if(position.z in signal.data["level"])
+				position_z_in_level = TRUE
+		else
+			if(position.z == signal.data["level"])
+				position_z_in_level = TRUE
+		return signal.data["done"] && position_z_in_level
 
 
   /* ###### Intercoms and station-bounced radios ###### */
@@ -466,7 +480,7 @@ var/global/list/default_medbay_channels = list(
 
 
 	var/datum/signal/signal = new
-	signal.transmission_method = 2
+	signal.transmission_method = TRANSMISSION_SUBSPACE
 
 
 	/* --- Try to send a normal subspace broadcast first */
@@ -523,7 +537,7 @@ var/global/list/default_medbay_channels = list(
 
 	if (broadcasting)
 		if(get_dist(src, M) <= canhear_range)
-			talk_into(M, msg,null,verb,speaking)
+			talk_into(M, msg,null,verb,speaking, ignore_restrained = TRUE)
 
 /obj/item/device/radio/proc/receive_range(freq, level)
 	// check if this radio can receive on the given frequency, and if so,
@@ -623,7 +637,7 @@ var/global/list/default_medbay_channels = list(
 /obj/item/device/radio/borg/list_channels(var/mob/user)
 	return list_secure_channels(user)
 
-/obj/item/device/radio/borg/talk_into()
+/obj/item/device/radio/borg/talk_into(mob/living/M, message, channel, verb, datum/language/speaking, var/ignore_restrained)
 	. = ..()
 	if (isrobot(src.loc))
 		var/mob/living/silicon/robot/R = src.loc
@@ -794,3 +808,7 @@ var/global/list/default_medbay_channels = list(
 /obj/item/device/radio/phone/medbay/Initialize()
 	. = ..()
 	internal_channels = default_medbay_channels.Copy()
+
+/obj/item/device/radio/all_channels/Initialize()
+	channels = ALL_RADIO_CHANNELS.Copy()
+	. = ..()

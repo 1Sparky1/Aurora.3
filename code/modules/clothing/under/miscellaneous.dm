@@ -45,14 +45,6 @@
 	item_state = "waiter"
 	worn_state = "waiter"
 
-/obj/item/clothing/under/sexyclown
-	name = "sexy-clown suit"
-	desc = "It makes you look HONKable!"
-	icon_state = "sexyclown"
-	item_state = "clown"
-	worn_state = "sexyclown"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-
 //This set of uniforms looks fairly fancy and is generally used for high-ranking NT personnel from what I've seen, so lets give them appropriate ranks.
 /obj/item/clothing/under/rank/centcom
 	desc = "Gold trim on space-black cloth, this uniform displays the rank of \"Captain.\""
@@ -83,6 +75,26 @@
 	desc = "A formal uniform used by Federal Investigations Bureau agents."
 	icon_state = "fib_uniform"
 	worn_state = "fib_uniform"
+
+/obj/item/clothing/under/rank/scc
+	name = "Stellar Corporate Conglomerate agent uniform"
+	desc = "A formal blue uniform worn by agents of the Stellar Corporate Conglomerate."
+	desc_fluff = "The Stellar Corporate Conglomerate, also known as Chainlink, is a joint alliance between the NanoTrasen Corporation, Hephaestus Industries, Idris Incorporated, Zeng-Hu Pharmaceuticals and Zavodskoi Interstellar to exercise an undisputed economic dominance over the Orion Spur."
+	icon = 'icons/clothing/under/uniforms/scc.dmi'
+	icon_state = "scc_agent"
+	item_state = "scc_agent"
+	worn_state = "scc_agent"
+	contained_sprite = TRUE
+
+	rolled_down = FALSE
+	rolled_sleeves = FALSE
+
+/obj/item/clothing/under/rank/scc/executive
+	name = "Stellar Corporate Conglomerate executive uniform"
+	desc = "A stylish purple uniform worn by executive agents of the Stellar Corporate Conglomerate."
+	icon_state = "scc_executive"
+	item_state = "scc_executive"
+	worn_state = "scc_executive"
 
 /obj/item/clothing/under/ert
 	name = "ERT tactical uniform"
@@ -127,7 +139,15 @@
 	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
-	armor = list(melee = 100, bullet = 100, laser = 100,energy = 100, bomb = 100, bio = 100, rad = 100)
+	armor = list(
+			melee = ARMOR_MELEE_VERY_HIGH,
+			bullet = ARMOR_BALLISTIC_AP,
+			laser = ARMOR_LASER_HEAVY,
+			energy = ARMOR_ENERGY_SHIELDED,
+			bomb = ARMOR_BOMB_SHIELDED,
+			bio = ARMOR_BIO_SHIELDED,
+			rad = ARMOR_RAD_SHIELDED
+			)
 	cold_protection = UPPER_TORSO | LOWER_TORSO | LEGS | FEET | ARMS | HANDS
 	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0
@@ -188,6 +208,14 @@
 	icon_state = "red_suit"
 	item_state = "r_suit"
 	worn_state = "red_suit"
+
+/obj/item/clothing/under/suit_jacket/nt_skirtsuit
+	name = "nanotrasen skirtsuit"
+	desc = "A black coat with an NT blue kerchief accompanied by a swept skirt with a tasteful blue stripe. Works for every occasion."
+	icon_state = "nt_skirtsuit"
+	item_state = "bl_suit"
+	worn_state = "nt_skirtsuit"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/kilt
 	name = "kilt"
@@ -252,14 +280,6 @@
 	item_state = "y_suit"
 	worn_state = "dress_yellow"
 
-/obj/item/clothing/under/dress/dress_cap
-	name = "captain's dress uniform"
-	desc = "Feminine fashion for the style concious captain."
-	icon_state = "dress_cap"
-	item_state = "b_suit"
-	worn_state = "dress_cap"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-
 /obj/item/clothing/under/dress/dress_hop
 	name = "head of personnel dress uniform"
 	desc = "Feminine fashion for the style concious HoP."
@@ -275,6 +295,7 @@
 	item_state = "bl_suit"
 	worn_state = "sundress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	no_overheat = TRUE
 
 /obj/item/clothing/under/sundress_white
 	name = "white sundress"
@@ -318,13 +339,6 @@
 	desc = "A very tight form-fitting padded suit that looks extremely comfortable to wear, made of strong woven spider-silk. This variant seems to be tailored to resemble a dress, revealing much more skin."
 	icon_state = "crdress"
 	worn_state = "crdress"
-
-/obj/item/clothing/under/captainformal
-	name = "captain's formal uniform"
-	desc = "A captain's formal-wear, for special occasions."
-	icon_state = "captain_formal"
-	item_state = "b_suit"
-	worn_state = "captain_formal"
 
 /obj/item/clothing/under/hosformalmale
 	name = "head of security's formal uniform"
@@ -491,21 +505,23 @@
 	item_state = "bl_suit"
 	worn_state = "taucetilegion"
 	siemens_coefficient = 0.7
+	armor = list(
+		melee = ARMOR_MELEE_MINOR)
 
 /obj/item/clothing/under/legion/sentinel
-	name = "Tau Ceti Foreign Legion sentinel uniform."
-	desc = "A blue uniform with purple trimming, indicating that the wearer is a sentinel of the TCFL."
+	name = "Tau Ceti Foreign Legion sentinel uniform"
+	desc = "A blue field uniform with purple trimming, indicating that the wearer is a sentinel of the TCFL."
 	worn_state = "taucetilegion_sentinel"
 
 /obj/item/clothing/under/legion/legate
-	name = "Legate uniform"
-	desc = "A stark red uniform worn by senior officers of the Tau Ceti Foreign Legion."
+	name = "Tau Ceti Foreign Legion legate uniform"
+	desc = "A stark red field uniform worn by senior officers of the Tau Ceti Foreign Legion."
 	icon_state = "taucetilegion_legate"
 	worn_state = "taucetilegion_legate"
 
 /obj/item/clothing/under/legion/pilot
 	name = "Tau Ceti Foreign Legion flightsuit"
-	desc = "The uniform worn by Tau Ceti Foreign Legion pilots."
+	desc = "A green flightsuit worn by Tau Ceti Foreign Legion pilots."
 	icon_state = "taucetilegion_pilot"
 	worn_state = "taucetilegion_pilot"
 
@@ -521,7 +537,9 @@
 	icon_state = "swatunder"
 	//item_state = "swatunder"
 	worn_state = "swatunder"
-	armor = list(melee = 10, bullet = 5, laser = 5,energy = 0, bomb = 0, bio = 0, rad = 0)
+	armor = list(
+		melee = ARMOR_MELEE_MINOR
+		)
 	siemens_coefficient = 0.7
 
 /obj/item/clothing/under/lance
@@ -531,7 +549,9 @@
 	item_state = "lance_fatigues"
 	worn_state = "lance_fatigues"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 10, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 0, rad = 0)
+	armor = list(
+		melee = ARMOR_MELEE_MINOR
+		)
 	siemens_coefficient = 0.7
 
 /obj/item/clothing/under/dress/lance_dress
@@ -541,7 +561,6 @@
 	item_state = "lance_dress_f"
 	worn_state = "lance_dress_f"
 
-
 /obj/item/clothing/under/dress/lance_dress/male
 	name = "lance dress uniform"
 	desc = "A dark black uniform indicative of a Ceres' Lance official with a badge atop the chest."
@@ -549,3 +568,10 @@
 	item_state = "lance_dress_m"
 	worn_state = "lance_dress_m"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/qipao
+	name = "qipao"
+	desc = "A traditional Solarian women's garment, typically made of (synthetic) silk."
+	icon_state = "qipao"
+	item_state = "qipao"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO

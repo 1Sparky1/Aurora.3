@@ -224,25 +224,10 @@
 	if(istype(W, /obj/item/device/mmi))
 		var/obj/item/device/mmi/M = W
 		if(check_completion())
-			if(!istype(loc, /turf))
+			if(!isturf(loc))
 				to_chat(user, SPAN_WARNING("You can't put \the [W] in, the frame has to be standing on the ground to be perfectly precise."))
 				return
-			if(!M.brainmob)
-				to_chat(user, SPAN_WARNING("\The [M] is empty!"))
-				return
-			if(!M.brainmob.key)
-				var/ghost_can_reenter = FALSE
-				if(M.brainmob.mind)
-					for(var/mob/abstract/observer/G in player_list)
-						if(G.can_reenter_corpse && G.mind == M.brainmob.mind)
-							ghost_can_reenter = TRUE
-							break
-				if(!ghost_can_reenter)
-					to_chat(user, SPAN_WARNING("\The [W] is completely unresponsive."))
-					return
-
-			if(M.brainmob.stat == DEAD)
-				to_chat(user, SPAN_WARNING("\The [M] is dead."))
+			if(!M.ready_for_use(user))
 				return
 
 			if(!head.law_manager)
@@ -255,7 +240,11 @@
 					return
 
 				var/mob/living/carbon/human/new_shell = new(get_turf(src), chest.linked_frame)
-				forceMove(new_shell) //so people won't mess around with the chassis until it is deleted
+				// replace the IPC's microbattery cell with the one that was in the robot chest
+				var/obj/item/organ/internal/cell/C = new_shell.internal_organs_by_name[BP_CELL]
+				C.replace_cell(chest.cell)
+				//so people won't mess around with the chassis until it is deleted
+				forceMove(new_shell)
 				M.brainmob.mind.transfer_to(new_shell)
 				qdel(M)
 				new_shell.add_language(LANGUAGE_EAL)
@@ -265,7 +254,9 @@
 					newname = L.get_random_name()
 				new_shell.real_name = newname
 				new_shell.name = new_shell.real_name
-				new_shell.change_appearance(APPEARANCE_ALL_HAIR | APPEARANCE_SKIN | APPEARANCE_EYE_COLOR, new_shell.loc, new_shell)
+				var/obj/item/organ/internal/mmi_holder/posibrain/P = new_shell.internal_organs_by_name[BP_BRAIN]
+				P.setup_brain()
+				new_shell.change_appearance(APPEARANCE_ALL_HAIR | APPEARANCE_SKIN | APPEARANCE_EYE_COLOR, new_shell)
 				qdel(src)
 				return
 
