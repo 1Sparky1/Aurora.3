@@ -9,7 +9,7 @@
 	alpha = 0
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	anchored = 1
-	layer = 4.1		//just above mobs
+	layer = ABOVE_HUMAN_LAYER
 	density = 0
 	var/strength = 0
 	var/ticks_recovering = 10
@@ -67,7 +67,6 @@
 	user.visible_message(SPAN_WARNING("[user] attacks \the [src] with \the [I]."), SPAN_WARNING("You attack \the [src] with \the [I]."))
 	Stress(result)
 	return TRUE
-
 
 /obj/effect/energy_field/attack_hand(mob/living/carbon/human/H)
 	check_overcharge(H)

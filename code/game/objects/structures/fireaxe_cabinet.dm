@@ -14,6 +14,22 @@
 	var/shattered
 	var/obj/item/material/twohanded/fireaxe/fireaxe
 
+/obj/structure/fireaxecabinet/north
+	dir = NORTH
+	pixel_y = 24
+
+/obj/structure/fireaxecabinet/east
+	dir = EAST
+	pixel_x = 19
+
+/obj/structure/fireaxecabinet/west
+	dir = WEST
+	pixel_x = -19
+
+/obj/structure/fireaxecabinet/south
+	dir = SOUTH
+	pixel_y = -20
+
 /obj/structure/fireaxecabinet/attack_generic(var/mob/user, var/damage, var/attack_verb, var/wallbreaker)
 	user.do_attack_animation(src)
 	playsound(user, 'sound/effects/glass_hit.ogg', 50, 1)
@@ -49,6 +65,16 @@
 	..()
 	fireaxe = new(src)
 	update_icon()
+
+/obj/structure/fireaxecabinet/Initialize(mapload)
+	. = ..()
+
+	if(!mapload)
+		set_pixel_offsets()
+
+/obj/structure/fireaxecabinet/set_pixel_offsets()
+	pixel_x = ((src.dir & (NORTH|SOUTH)) ? 0 : (src.dir == EAST ? 19 : -(19)))
+	pixel_y = ((src.dir & (NORTH|SOUTH)) ? (src.dir == NORTH ? 24 : -(20)) : 0)
 
 /obj/structure/fireaxecabinet/attack_ai(var/mob/user)
 	if(!ai_can_interact(user))
@@ -88,25 +114,25 @@
 		fireaxe = null
 	return ..()
 
-/obj/structure/fireaxecabinet/attackby(var/obj/item/O, var/mob/user)
-	if(O.ismultitool())
+/obj/structure/fireaxecabinet/attackby(obj/item/attacking_item, mob/user)
+	if(attacking_item.ismultitool())
 		toggle_lock(user)
 		return
 
-	if(istype(O, /obj/item/material/twohanded/fireaxe))
+	if(istype(attacking_item, /obj/item/material/twohanded/fireaxe))
 		if(open)
 			if(fireaxe)
 				to_chat(user, SPAN_ALERT("There is already \a [fireaxe] inside \the [src]."))
-			else if(user.unEquip(O))
-				O.forceMove(src)
-				fireaxe = O
+			else if(user.unEquip(attacking_item))
+				attacking_item.forceMove(src)
+				fireaxe = attacking_item
 				to_chat(user, SPAN_NOTICE("You place \the [fireaxe] into \the [src]."))
 				update_icon()
 			return
 
-	if(O.force)
+	if(attacking_item.force)
 		user.setClickCooldown(10)
-		attack_generic(user, O.force, "bashes")
+		attack_generic(user, attacking_item.force, "bashes")
 		return
 
 	return ..()

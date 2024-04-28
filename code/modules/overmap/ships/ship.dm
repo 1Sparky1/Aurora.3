@@ -109,6 +109,15 @@ var/const/OVERMAP_SPEED_CONSTANT = (1 SECOND)
 	. += "<br><center><b>Native Database Notes</b></center>"
 	. += "<br><small>[desc]</small>"
 
+/obj/effect/overmap/visitable/ship/get_tooltip_description()
+	var/description = "<ul>"
+	description += "<li><b>Manufacturer:</b> [designer]</li>"
+	description += "<li><b>Class Designation:</b> [sizeclass]</li>"
+	description += "<li><b>Designated Purpose:</b> [shiptype]</li>"
+	description += "<li><b>Weapons Estimation:</b> [weapons]</li>"
+	description += "</ul>"
+	return description
+
 //Projected acceleration based on information from engines
 /obj/effect/overmap/visitable/ship/proc/get_acceleration()
 	return round(get_total_thrust()/get_vessel_mass(), SHIP_MOVE_RESOLUTION)
@@ -125,7 +134,11 @@ var/const/OVERMAP_SPEED_CONSTANT = (1 SECOND)
 /obj/effect/overmap/visitable/ship/proc/get_speed()
 	return round(sqrt(speed[1] ** 2 + speed[2] ** 2), SHIP_MOVE_RESOLUTION)
 
-/obj/effect/overmap/visitable/ship/proc/get_heading()
+// returns a two-item list with the speed of the ship on x and y axes
+/obj/effect/overmap/visitable/ship/proc/get_speed_xy()
+	return list(round(speed[1], SHIP_MOVE_RESOLUTION), round(speed[2], SHIP_MOVE_RESOLUTION))
+
+/obj/effect/overmap/visitable/ship/get_heading()
 	var/res = 0
 	if(MOVING(speed[1]))
 		if(speed[1] > 0)
@@ -193,7 +206,7 @@ var/const/OVERMAP_SPEED_CONSTANT = (1 SECOND)
 				if(position[i] < 0)
 					deltas[i] = CEILING(position[i], 1)
 				else if(position[i] > 0)
-					deltas[i] = Floor(position[i])
+					deltas[i] = FLOOR(position[i], 1)
 				if(deltas[i] != 0)
 					position[i] -= deltas[i]
 					position[i] += (deltas[i] > 0) ? -1 : 1
@@ -221,9 +234,9 @@ var/const/OVERMAP_SPEED_CONSTANT = (1 SECOND)
 					M.client.pixel_y = pixel_y
 	..()
 
-/obj/effect/overmap/visitable/ship/proc/burn()
+/obj/effect/overmap/visitable/ship/proc/burn(var/power_modifier = 1)
 	for(var/datum/ship_engine/E in engines)
-		. += E.burn()
+		. += E.burn(power_modifier)
 
 /obj/effect/overmap/visitable/ship/proc/get_total_thrust()
 	for(var/datum/ship_engine/E in engines)
@@ -298,14 +311,14 @@ var/const/OVERMAP_SPEED_CONSTANT = (1 SECOND)
 	return FALSE
 
 /obj/effect/overmap/visitable/ship/proc/turn_ship(var/new_dir)
-	burn()
+	burn(0.25)
 	var/angle = new_dir == WEST ? 45 : -45
 	dir = turn(dir, angle)
 	update_icon()
 	last_turn = world.time
 
 /obj/effect/overmap/visitable/ship/proc/combat_turn(var/new_dir)
-	burn()
+	burn(1.0)
 	var/angle = -45
 	if(new_dir == WEST)
 		angle = 45
@@ -327,7 +340,7 @@ var/const/OVERMAP_SPEED_CONSTANT = (1 SECOND)
 		speed[2] = 0
 		update_icon()
 	dir = get_heading()
-	for(var/mob/living/L in living_mob_list)
+	for(var/mob/living/L in GLOB.living_mob_list)
 		if(L.z in map_z)
 			if(!gravity_generator?.on && !L.anchored)
 				to_chat(L, SPAN_DANGER("The ship rapidly turns beneath you!"))
@@ -336,14 +349,14 @@ var/const/OVERMAP_SPEED_CONSTANT = (1 SECOND)
 			else
 				to_chat(L, SPAN_WARNING("The ship turns beneath you, but the artificial gravity keeps you on your feet."))
 			shake_camera(L, 1 SECOND, 2)
-			L.playsound_simple(soundin = 'sound/machines/thruster.ogg', volume = 50)
+			L.playsound_local(soundin = 'sound/machines/thruster.ogg', vol = 50)
 	last_combat_turn = world.time
 
 /obj/effect/overmap/visitable/ship/proc/combat_roll(var/new_dir)
 	burn()
 	var/dir_to_move = turn(dir, new_dir == WEST ? 90 : -90)
 	forceMove(get_step(src, dir_to_move))
-	for(var/mob/living/L in living_mob_list)
+	for(var/mob/living/L in GLOB.living_mob_list)
 		if(L.z in map_z)
 			if(!gravity_generator?.on && !L.anchored)
 				to_chat(L, SPAN_DANGER("<font size=4>The ship rapidly inclines beneath you!</font>"))

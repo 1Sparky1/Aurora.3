@@ -44,7 +44,7 @@
 	if(!research)
 		if(!errored)
 			errored = 1
-			log_error("malf_process() called on AI without research datum. Report this.")
+			log_world("ERROR: malf_process() called on AI without research datum. Report this.")
 			message_admins("ERROR: malf_process() called on AI without research datum. If admin modified one of the AI's vars revert the change and don't modify variables directly, instead use ProcCall or admin panels.")
 			spawn(1200)
 				errored = 0
@@ -63,7 +63,7 @@
 
 	// Off-Station APCs should not count towards CPU generation.
 	for(var/obj/machinery/power/apc/A in hacked_apcs)
-		if(A.z in current_map.station_levels)
+		if(A.z in SSatlas.current_map.station_levels)
 			cpu_gain += 0.05
 			cpu_storage += 100
 

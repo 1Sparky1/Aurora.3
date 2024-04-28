@@ -38,7 +38,8 @@
 /area/adhomai_fallout_bunker)
 "bu" = (
 /obj/structure/sign/flag/pra{
-	pixel_y = -32
+	pixel_y = -32;
+	stand_icon = null
 	},
 /obj/effect/floor_decal/corner/red{
 	dir = 10
@@ -51,9 +52,7 @@
 /obj/structure/blocker/steel/fence{
 	dir = 4
 	},
-/turf/simulated/floor/exoplanet/snow{
-	temperature = 268.15
-	},
+/turf/simulated/floor/exoplanet/snow/cold,
 /area/adhomai_fallout_bunker)
 "bU" = (
 /turf/simulated/wall/r_wall,
@@ -132,7 +131,8 @@
 "fk" = (
 /obj/machinery/door/airlock{
 	req_access = list(209);
-	name = "Living Quarters"
+	name = "Living Quarters";
+	dir = 1
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -217,7 +217,7 @@
 /area/adhomai_fallout_bunker)
 "jo" = (
 /obj/structure/closet/cabinet,
-/obj/item/clothing/shoes/tajara/winter,
+/obj/item/clothing/shoes/winter/tajara,
 /obj/item/clothing/under/tajaran,
 /obj/item/clothing/suit/storage/hooded/wintercoat,
 /obj/item/clothing/mask/gas,
@@ -247,8 +247,7 @@
 /area/adhomai_fallout_bunker)
 "kd" = (
 /obj/effect/floor_decal/corner/red{
-	dir = 6;
-	icon_state = "corner_white"
+	dir = 6
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -266,21 +265,14 @@
 /area/adhomai_fallout_bunker)
 "kj" = (
 /obj/machinery/light/small,
-/turf/simulated/floor/exoplanet/snow{
-	temperature = 268.15
-	},
-/area/adhomai_fallout_bunker)
-"kG" = (
-/obj/effect/floor_decal/corner/grey/diagonal,
-/obj/structure/table/standard,
-/turf/simulated/floor/tiled/white{
-	temperature = 278.15
-	},
+/turf/simulated/floor/exoplanet/snow/cold,
 /area/adhomai_fallout_bunker)
 "kH" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
 /obj/structure/bed/stool/bar/padded/red,
-/obj/structure/sign/flag/pra/large/north,
+/obj/structure/sign/flag/pra/large/north{
+	pixel_y = 32
+	},
 /turf/simulated/floor/tiled/white{
 	temperature = 278.15
 	},
@@ -296,7 +288,8 @@
 "lO" = (
 /obj/machinery/door/airlock/highsecurity{
 	name = "Food Storage";
-	req_access = list(209)
+	req_access = list(209);
+	dir = 4
 	},
 /turf/simulated/floor/tiled/dark{
 	temperature = 278.15
@@ -308,7 +301,9 @@
 /obj/effect/floor_decal/corner/red{
 	dir = 5
 	},
-/obj/structure/sign/flag/pra/large/north,
+/obj/structure/sign/flag/pra/large/north{
+	pixel_y = 32
+	},
 /turf/simulated/floor/tiled/dark{
 	temperature = 278.15
 	},
@@ -345,7 +340,8 @@
 /area/adhomai_fallout_bunker)
 "nd" = (
 /obj/machinery/door/airlock/freezer{
-	name = "Restroom"
+	name = "Restroom";
+	dir = 4
 	},
 /turf/simulated/floor/tiled/freezer{
 	temperature = 278.15
@@ -405,7 +401,8 @@
 "nT" = (
 /obj/machinery/door/airlock/highsecurity{
 	name = "Bunker Observation";
-	req_access = list(209)
+	req_access = list(209);
+	dir = 1
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -424,8 +421,7 @@
 	dir = 4
 	},
 /obj/effect/floor_decal/corner/red{
-	dir = 5;
-	icon_state = "corner_white"
+	dir = 5
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -433,8 +429,7 @@
 /area/adhomai_fallout_bunker)
 "oI" = (
 /obj/effect/floor_decal/corner/red{
-	dir = 5;
-	icon_state = "corner_white"
+	dir = 5
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -513,7 +508,9 @@
 /obj/effect/floor_decal/corner/red{
 	dir = 10
 	},
-/obj/structure/sign/flag/pra/large/south,
+/obj/structure/sign/flag/pra/large/south{
+	pixel_y = -32
+	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
 	},
@@ -586,9 +583,7 @@
 /area/adhomai_fallout_bunker)
 "tb" = (
 /obj/structure/blocker/steel/fence,
-/turf/simulated/floor/exoplanet/snow{
-	temperature = 268.15
-	},
+/turf/simulated/floor/exoplanet/snow/cold,
 /area/adhomai_fallout_bunker)
 "ua" = (
 /obj/machinery/button/remote/blast_door{
@@ -598,14 +593,13 @@
 	name = "Bunker Entry";
 	id = "bunker_door"
 	},
-/turf/simulated/floor/exoplanet/snow{
-	temperature = 268.15
-	},
+/turf/simulated/floor/exoplanet/snow/cold,
 /area/adhomai_fallout_bunker)
 "uq" = (
 /obj/machinery/door/airlock/highsecurity{
 	name = "Bunker";
-	req_access = list(209)
+	req_access = list(209);
+	dir = 1
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/effect/floor_decal/industrial/warning/cee,
@@ -729,8 +723,7 @@
 	dir = 9
 	},
 /obj/effect/floor_decal/corner/red{
-	dir = 5;
-	icon_state = "corner_white"
+	dir = 5
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -806,11 +799,10 @@
 /area/adhomai_fallout_bunker)
 "At" = (
 /obj/structure/sign/flag/pra{
-	pixel_y = -32
+	pixel_y = -32;
+	stand_icon = null
 	},
-/turf/simulated/floor/exoplanet/snow{
-	temperature = 268.15
-	},
+/turf/simulated/floor/exoplanet/snow/cold,
 /area/adhomai_fallout_bunker)
 "AY" = (
 /obj/structure/table/rack,
@@ -849,32 +841,15 @@
 	temperature = 278.15
 	},
 /area/adhomai_fallout_bunker)
-"BQ" = (
-/obj/effect/floor_decal/corner/grey/diagonal,
-/obj/structure/bed/stool/bar/padded/red,
-/turf/simulated/floor/tiled/white{
-	temperature = 278.15
-	},
-/area/adhomai_fallout_bunker)
 "Cd" = (
 /obj/machinery/light/small{
 	brightness_color = "#FA8282";
 	dir = 4
 	},
 /obj/effect/floor_decal/corner/red{
-	dir = 6;
-	icon_state = "corner_white"
+	dir = 6
 	},
 /turf/simulated/floor/tiled/dark{
-	temperature = 278.15
-	},
-/area/adhomai_fallout_bunker)
-"Cj" = (
-/obj/effect/floor_decal/corner/red{
-	dir = 9;
-	icon_state = "corner_white"
-	},
-/turf/simulated/floor/tiled{
 	temperature = 278.15
 	},
 /area/adhomai_fallout_bunker)
@@ -899,7 +874,8 @@
 "Cu" = (
 /obj/machinery/door/airlock/medical{
 	req_access = list(209);
-	name = "Medbay"
+	name = "Medbay";
+	dir = 1
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -918,8 +894,7 @@
 "DG" = (
 /obj/structure/hadii_statue,
 /obj/effect/floor_decal/corner/red{
-	dir = 5;
-	icon_state = "corner_white"
+	dir = 5
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -935,15 +910,14 @@
 "EL" = (
 /obj/machinery/door/airlock/highsecurity{
 	name = "Bunker Entry";
-	req_access = list(209)
+	req_access = list(209);
+	dir = 1
 	},
 /obj/machinery/door/blast/regular/open{
 	dir = 4;
 	uid = "bunker_entry"
 	},
-/turf/simulated/floor/exoplanet/snow{
-	temperature = 268.15
-	},
+/turf/simulated/floor/exoplanet/snow/cold,
 /area/adhomai_fallout_bunker)
 "EM" = (
 /obj/machinery/atmospherics/pipe/simple/hidden,
@@ -1031,7 +1005,7 @@
 /area/adhomai_fallout_bunker)
 "Hl" = (
 /obj/structure/closet/cabinet,
-/obj/item/clothing/shoes/tajara/winter,
+/obj/item/clothing/shoes/winter/tajara,
 /obj/item/clothing/under/tajaran,
 /obj/item/clothing/suit/storage/hooded/wintercoat,
 /obj/item/clothing/mask/gas,
@@ -1065,26 +1039,6 @@
 	temperature = 278.15
 	},
 /area/adhomai_fallout_bunker)
-"Iw" = (
-/obj/machinery/atmospherics/pipe/simple/hidden{
-	dir = 4
-	},
-/obj/effect/floor_decal/corner/red{
-	dir = 5;
-	icon_state = "corner_white"
-	},
-/turf/simulated/floor/tiled{
-	temperature = 278.15
-	},
-/area/adhomai_fallout_bunker)
-"IA" = (
-/obj/effect/floor_decal/corner/red{
-	dir = 5
-	},
-/turf/simulated/floor/tiled{
-	temperature = 278.15
-	},
-/area/adhomai_fallout_bunker)
 "Jb" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
 /obj/structure/bed/stool/bar/padded/red,
@@ -1112,9 +1066,7 @@
 	},
 /area/adhomai_fallout_bunker)
 "Kn" = (
-/turf/simulated/floor/exoplanet/snow{
-	temperature = 268.15
-	},
+/turf/simulated/floor/exoplanet/snow/cold,
 /area/adhomai_fallout_bunker)
 "KG" = (
 /obj/structure/table/standard,
@@ -1126,8 +1078,7 @@
 /area/adhomai_fallout_bunker)
 "KP" = (
 /obj/effect/floor_decal/corner/red{
-	dir = 9;
-	icon_state = "corner_white"
+	dir = 9
 	},
 /turf/simulated/floor/tiled/dark{
 	temperature = 278.15
@@ -1168,9 +1119,7 @@
 	id = "bunker_door";
 	dir = 2
 	},
-/turf/simulated/floor/exoplanet/snow{
-	temperature = 268.15
-	},
+/turf/simulated/floor/exoplanet/snow/cold,
 /area/adhomai_fallout_bunker)
 "MM" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -1205,7 +1154,9 @@
 	dir = 1;
 	icon_state = "rwindow"
 	},
-/obj/structure/sign/flag/pra/large/north,
+/obj/structure/sign/flag/pra/large/north{
+	pixel_y = 32
+	},
 /obj/effect/floor_decal/corner/red/full{
 	dir = 8
 	},
@@ -1213,18 +1164,8 @@
 	temperature = 278.15
 	},
 /area/adhomai_fallout_bunker)
-"NN" = (
-/obj/effect/floor_decal/corner/red{
-	dir = 6
-	},
-/turf/simulated/floor/tiled{
-	temperature = 278.15
-	},
-/area/adhomai_fallout_bunker)
 "Oi" = (
-/turf/simulated/floor/exoplanet/snow{
-	temperature = 268.15
-	},
+/turf/simulated/floor/exoplanet/snow/cold,
 /area/exoplanet/adhomai)
 "OG" = (
 /obj/effect/floor_decal/corner/red{
@@ -1279,10 +1220,11 @@
 	},
 /area/adhomai_fallout_bunker)
 "Qk" = (
-/obj/structure/sign/flag/pra/large/north,
+/obj/structure/sign/flag/pra/large/north{
+	pixel_y = 32
+	},
 /obj/effect/floor_decal/corner/red{
-	dir = 5;
-	icon_state = "corner_white"
+	dir = 5
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -1290,7 +1232,7 @@
 /area/adhomai_fallout_bunker)
 "Qq" = (
 /obj/structure/closet/cabinet,
-/obj/item/clothing/shoes/tajara/winter,
+/obj/item/clothing/shoes/winter/tajara,
 /obj/item/clothing/under/tajaran,
 /obj/item/clothing/suit/storage/hooded/wintercoat,
 /obj/item/clothing/mask/gas,
@@ -1374,7 +1316,8 @@
 "Te" = (
 /obj/machinery/door/airlock{
 	req_access = list(209);
-	name = "Barracks"
+	name = "Barracks";
+	dir = 4
 	},
 /turf/simulated/floor/tiled/dark{
 	temperature = 278.15
@@ -1417,7 +1360,7 @@
 /area/adhomai_fallout_bunker)
 "Vx" = (
 /obj/structure/closet/cabinet,
-/obj/item/clothing/shoes/tajara/winter,
+/obj/item/clothing/shoes/winter/tajara,
 /obj/item/clothing/under/tajaran,
 /obj/item/clothing/suit/storage/hooded/wintercoat,
 /obj/item/clothing/mask/gas,
@@ -1466,8 +1409,7 @@
 	dir = 4
 	},
 /obj/effect/floor_decal/corner/red{
-	dir = 5;
-	icon_state = "corner_white"
+	dir = 5
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -1494,7 +1436,9 @@
 /obj/effect/floor_decal/corner/red{
 	dir = 10
 	},
-/obj/structure/sign/flag/pra/large/south,
+/obj/structure/sign/flag/pra/large/south{
+	pixel_y = -32
+	},
 /turf/simulated/floor/tiled/dark{
 	temperature = 278.15
 	},
@@ -1502,7 +1446,8 @@
 "XB" = (
 /obj/machinery/door/airlock{
 	req_access = list(209);
-	name = "Maintenance Equipment Storage"
+	name = "Maintenance Equipment Storage";
+	dir = 4
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -1511,7 +1456,8 @@
 "XX" = (
 /obj/machinery/door/airlock{
 	req_access = list(209);
-	name = "Radiation Suit Storage"
+	name = "Radiation Suit Storage";
+	dir = 4
 	},
 /turf/simulated/floor/tiled{
 	temperature = 278.15
@@ -1835,7 +1781,7 @@ bU
 bU
 bU
 bU
-IA
+oI
 af
 VB
 bU
@@ -1867,7 +1813,7 @@ hR
 ke
 MM
 Ym
-IA
+oI
 af
 qA
 bU
@@ -1895,11 +1841,11 @@ Ub
 Bj
 bU
 kH
-kG
 mZ
-BQ
+mZ
+pF
 Rg
-IA
+oI
 af
 Sj
 bU
@@ -1929,9 +1875,9 @@ bU
 pF
 Nv
 Ys
-BQ
+pF
 Rg
-IA
+oI
 af
 yG
 bU
@@ -1950,20 +1896,20 @@ nl
 wc
 rk
 sL
-NN
-NN
+kd
+kd
 wb
 nT
-Iw
+ol
 af
 nu
 bU
 UI
 Jb
-BQ
+pF
 Rg
 Rg
-IA
+oI
 af
 wn
 bU
@@ -1991,10 +1937,10 @@ af
 bu
 bU
 wj
-Cj
-Cj
-Cj
-Cj
+Ub
+Ub
+Ub
+Ub
 OG
 af
 sc
@@ -2022,7 +1968,7 @@ xa
 af
 aJ
 fk
-IA
+oI
 af
 af
 af
@@ -2056,12 +2002,12 @@ bu
 bU
 rG
 fJ
-NN
+kd
 fJ
-NN
+kd
 fJ
-NN
-NN
+kd
+kd
 KY
 bU
 Kn

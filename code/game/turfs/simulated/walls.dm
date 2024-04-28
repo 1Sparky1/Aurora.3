@@ -3,8 +3,8 @@
 	desc = "A huge chunk of metal used to seperate rooms."
 	desc_info = "You can deconstruct this by welding it, and then wrenching the girder.<br>\
 	You can build a wall by using metal sheets and making a girder, then adding more material."
-	icon = 'icons/turf/wall_masks.dmi'
-	icon_state = "generic"
+	icon = 'icons/turf/smooth/wall_preview.dmi'
+	icon_state = "wall"
 	opacity = TRUE
 	density = TRUE
 	blocks_air = TRUE
@@ -13,13 +13,16 @@
 	canSmoothWith = list(
 		/turf/simulated/wall,
 		/turf/simulated/wall/r_wall,
-		/obj/structure/window/full/reinforced,
-		/obj/structure/window/full/phoron/reinforced,
-		/obj/structure/window/full/reinforced/polarized,
+		/turf/simulated/wall/shuttle/scc_space_ship,
+		/turf/unsimulated/wall/steel, // Centcomm wall.
+		/turf/unsimulated/wall/darkshuttlewall, // Centcomm wall.
+		/turf/unsimulated/wall/riveted, // Centcomm wall.
 		/obj/structure/window_frame,
 		/obj/structure/window_frame/unanchored,
-		/obj/structure/window_frame/empty
-		)
+		/obj/structure/window_frame/empty,
+		/obj/machinery/door,
+		/obj/machinery/door/airlock
+	)
 
 	var/damage = 0
 	var/damage_overlay = 0
@@ -40,7 +43,9 @@
 	var/tmp/image/fake_wall_image
 	var/tmp/cached_adjacency
 
-	smooth = SMOOTH_TRUE | SMOOTH_NO_CLEAR_ICON
+	smoothing_flags = SMOOTH_MORE | SMOOTH_NO_CLEAR_ICON | SMOOTH_UNDERLAYS
+
+	pathing_pass_method = TURF_PATHING_PASS_NO //Literally a wall, until we implement bots that can wallwarp, we might aswell save the processing
 
 // Walls always hide the stuff below them.
 /turf/simulated/wall/levelupdate(mapload)
@@ -120,30 +125,30 @@
 			plant.update_icon()
 			plant.pixel_x = 0
 			plant.pixel_y = 0
-		plant.update_neighbors()
+		INVOKE_ASYNC(src, TYPE_PROC_REF(/obj/effect/plant, update_neighbors))
 
-/turf/simulated/wall/ChangeTurf(var/newtype)
+/turf/simulated/wall/ChangeTurf(N, tell_universe = TRUE, force_lighting_update = FALSE, ignore_override = FALSE, mapload = FALSE)
 	clear_plants()
 	clear_bulletholes()
-	..(newtype)
+	..()
 
 //Appearance
-/turf/simulated/wall/examine(mob/user)
-	. = ..(user)
+/turf/simulated/wall/get_examine_text(mob/user, distance, is_adjacent, infix, suffix)
+	. = ..()
 
 	if(!damage)
-		to_chat(user, SPAN_NOTICE("It looks fully intact."))
+		. += SPAN_NOTICE("It looks fully intact.")
 	else
 		var/dam = damage / material.integrity
 		if(dam <= 0.3)
-			to_chat(user, SPAN_WARNING("It looks slightly damaged."))
+			. += SPAN_WARNING("It looks slightly damaged.")
 		else if(dam <= 0.6)
-			to_chat(user, SPAN_WARNING("It looks moderately damaged."))
+			. += SPAN_WARNING("It looks moderately damaged.")
 		else
-			to_chat(user, SPAN_DANGER("It looks heavily damaged."))
+			. += SPAN_DANGER("It looks heavily damaged.")
 
 	if(locate(/obj/effect/overlay/wallrot) in src)
-		to_chat(user, SPAN_WARNING("There is fungus growing on [src]."))
+		. += SPAN_WARNING("There is fungus growing on [src].")
 
 //Damage
 
@@ -206,7 +211,7 @@
 		else
 			O.forceMove(src)
 
-	clear_plants()
+	INVOKE_ASYNC(src, PROC_REF(clear_plants))
 	clear_bulletholes()
 	material = SSmaterials.get_material_by_name("placeholder")
 	reinf_material = null

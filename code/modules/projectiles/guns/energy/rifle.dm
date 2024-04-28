@@ -8,7 +8,7 @@
 	fire_sound = 'sound/weapons/Taser.ogg'
 	slot_flags = SLOT_BACK
 	w_class = ITEMSIZE_LARGE
-	force = 10
+	force = 15
 	max_shots = 20
 	fire_delay = 6
 	burst_delay = 3
@@ -21,7 +21,7 @@
 	turret_is_lethal = 0
 	has_item_ratio = FALSE
 
-	fire_delay_wielded = 4
+	fire_delay_wielded = 5
 	accuracy_wielded = 2
 	sel_mode = 1
 
@@ -47,8 +47,7 @@
 	has_item_ratio = FALSE // the back and suit slots have ratio sprites but the in-hands dont
 	fire_sound = 'sound/weapons/laser1.ogg'
 	max_shots = 15
-	fire_delay = 5
-	burst_delay = 5
+	fire_delay = 6
 	origin_tech = list(TECH_COMBAT = 3, TECH_MAGNET = 2)
 	projectile_type = /obj/item/projectile/beam/midlaser
 	secondary_projectile_type = null
@@ -212,8 +211,8 @@
 	origin_tech = list(TECH_COMBAT = 2, TECH_MAGNET = 4)
 	w_class = ITEMSIZE_LARGE
 	accuracy = 1
-	force = 10
-	flags = CONDUCT
+	force = 15
+	obj_flags = OBJ_FLAG_CONDUCTABLE
 	slot_flags = SLOT_BACK
 	charge_cost = 300
 	max_shots = 4
@@ -222,7 +221,7 @@
 	firemodes = list()
 
 /obj/item/gun/energy/rifle/ionrifle/emp_act(severity)
-	..(max(severity, 2)) //so it doesn't EMP itself, I guess
+	. = ..()
 
 /obj/item/gun/energy/rifle/ionrifle/mounted
 	name = "mounted ion rifle"
@@ -234,9 +233,28 @@
 /obj/item/gun/energy/rifle/laser/qukala
 	name = "geop cannon"
 	desc = "An advanced weapon of Skrell design, this Geop Cannon uses a tiny warp accelerator to super heat particles."
-	desc_extended = ""
 	icon = 'icons/obj/item/gun/energy/rifle/qukala_heavy.dmi'
 	icon_state = "qukala_heavy"
 	item_state = "qukala_heavy"
 	max_shots = 10
+	self_recharge = TRUE
 	projectile_type = /obj/item/projectile/beam/midlaser/skrell/heavy
+
+/obj/item/gun/energy/rifle/hegemony
+	name = "hegemony energy rifle"
+	desc = "An upgraded variant of the standard laser rifle. It does not have a stun setting."
+	desc_extended = "The Zkrehk-Guild Heavy Beamgun, an energy-based rifle designed and manufactured on Moghes. A special crystal used in its design allows it to penetrate armor with pinpoint accuracy."
+	icon = 'icons/obj/guns/hegemony_rifle.dmi'
+	icon_state = "hegemonyrifle"
+	item_state = "hegemonyrifle"
+	has_item_ratio = FALSE
+	fire_sound = 'sound/weapons/laser1.ogg'
+	slot_flags = SLOT_BELT|SLOT_BACK
+	max_shots = 15
+	can_switch_modes = FALSE
+	can_turret = TRUE
+	turret_is_lethal = TRUE
+	projectile_type = /obj/item/projectile/beam/midlaser/hegemony
+	origin_tech = list(TECH_COMBAT = 6, TECH_MAGNET = 4)
+	is_wieldable = TRUE
+	modifystate = "hegemonyrifle"

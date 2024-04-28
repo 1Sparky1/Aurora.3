@@ -17,8 +17,8 @@
 /datum/ship_engine/ion/get_thrust()
 	return thruster.get_thrust()
 
-/datum/ship_engine/ion/burn()
-	return thruster.burn()
+/datum/ship_engine/ion/burn(var/power_modifier = 1)
+	return thruster.burn(power_modifier)
 
 /datum/ship_engine/ion/set_thrust_limit(new_limit)
 	thruster.thrust_limit = new_limit
@@ -35,7 +35,7 @@
 /datum/ship_engine/ion/can_burn()
 	return thruster.on && thruster.powered()
 
-/obj/machinery/ion_engine 
+/obj/machinery/ion_engine
 	name = "ion propulsion device"
 	desc = "An advanced ion propulsion device, using energy and a minute amount of gas to generate thrust."
 	icon = 'icons/obj/ship_engine.dmi'
@@ -43,6 +43,12 @@
 	power_channel = ENVIRON
 	idle_power_usage = 19600
 	anchored = TRUE
+	component_types = list(
+		/obj/item/circuitboard/engine/ion,
+		/obj/item/stack/cable_coil = 2,
+		/obj/item/stock_parts/matter_bin,
+		/obj/item/stock_parts/capacitor = 2
+	)
 
 	var/datum/ship_engine/ion/controller
 	var/thrust_limit = 1
@@ -66,22 +72,20 @@
 
 	. = jointext(.,"<br>")
 
-/obj/machinery/ion_engine/proc/burn()
+/obj/machinery/ion_engine/proc/burn(var/power_modifier = 1)
 	if(!on && !powered())
 		return 0
-	use_power_oneoff(burn_cost) 
-	. = thrust_limit * generated_thrust
+	use_power_oneoff(thrust_limit * burn_cost * power_modifier)
+	. = thrust_limit * generated_thrust * power_modifier
 
 /obj/machinery/ion_engine/proc/get_thrust()
 	return thrust_limit * generated_thrust * on
 
-/obj/item/circuitboard/engine/ion
-	name = T_BOARD("ion propulsion device")
-	board_type = "machine"
-	icon_state = "mcontroller"
-	build_path = /obj/machinery/ion_engine
-	origin_tech = list(TECH_POWER = 4, TECH_ENGINEERING = 3)
-	req_components = list(
-							/obj/item/stack/cable_coil = 2,
-							/obj/item/stock_parts/matter_bin = 1,
-							/obj/item/stock_parts/capacitor = 2)
+/obj/machinery/ion_engine/attackby(obj/item/attacking_item, mob/user)
+	. = ..()
+	if(default_deconstruction_screwdriver(user, attacking_item))
+		return TRUE
+	if(default_deconstruction_crowbar(user, attacking_item))
+		return TRUE
+	if(default_part_replacement(user, attacking_item))
+		return TRUE

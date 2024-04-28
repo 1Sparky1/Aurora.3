@@ -89,7 +89,6 @@
 "ci" = (
 /obj/structure/shuttle_part/raider{
 	icon_state = "19,3";
-	layer = 3.5;
 	outside_part = 0
 	},
 /obj/item/ammo_casing/gauss,
@@ -301,11 +300,12 @@
 	},
 /area/dungeon/crashed_ship)
 "gB" = (
-/obj/machinery/door/airlock/sac{
+/obj/machinery/door/airlock/external{
 	electrified_until = 0;
 	icon_state = "door_locked";
 	locked = 1;
-	welded = 1
+	welded = 1;
+	dir = 1
 	},
 /obj/structure/inflatable/wall,
 /obj/effect/decal/cleanable/dirt,
@@ -785,7 +785,8 @@
 /obj/machinery/door/airlock/hatch{
 	icon_state = "door_locked";
 	locked = 1;
-	welded = 1
+	welded = 1;
+	dir = 4
 	},
 /obj/structure/inflatable/wall,
 /obj/effect/decal/cleanable/dirt,
@@ -957,7 +958,6 @@
 	pixel_x = 1
 	},
 /obj/effect/decal/cleanable/dirt{
-	layer = 3.1
 	},
 /turf/simulated/floor/tiled/white,
 /area/dungeon/crashed_ship)
@@ -969,9 +969,7 @@
 /area/dungeon/crashed_ship)
 "tT" = (
 /obj/effect/floor_decal/corner/green/diagonal,
-/obj/structure/extinguisher_cabinet{
-	pixel_y = 30
-	},
+/obj/structure/extinguisher_cabinet/north,
 /obj/effect/decal/fake_object{
 	density = 1;
 	desc = "A no longer functional cryogenic freezer.";
@@ -981,7 +979,6 @@
 	pixel_x = 1
 	},
 /obj/effect/decal/cleanable/dirt{
-	layer = 3.1
 	},
 /turf/simulated/floor/tiled/white,
 /area/dungeon/crashed_ship)
@@ -1001,7 +998,9 @@
 	},
 /area/dungeon/crashed_ship)
 "un" = (
-/obj/machinery/door/airlock/hatch,
+/obj/machinery/door/airlock/hatch{
+	dir = 4
+	},
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/dungeon/crashed_ship)
@@ -1012,7 +1011,9 @@
 /turf/simulated/floor/carpet/rubber,
 /area/dungeon/crashed_ship)
 "uL" = (
-/obj/machinery/door/airlock/hatch,
+/obj/machinery/door/airlock/hatch{
+	dir = 4
+	},
 /obj/machinery/atmospherics/pipe/simple/visible/black{
 	dir = 4
 	},
@@ -1172,7 +1173,7 @@
 /obj/item/reagent_containers/food/snacks/meat/adhomai,
 /obj/item/reagent_containers/food/snacks/meat/adhomai,
 /obj/item/reagent_containers/food/snacks/meat/adhomai,
-/obj/structure/closet/secure_closet/freezer/fridge{
+/obj/structure/closet/secure_closet/refrigerator/standard{
 	desc = "It looks like it has not been used for some time.";
 	name = "dust-covered refrigerator"
 	},
@@ -1382,7 +1383,6 @@
 "Ci" = (
 /obj/structure/shuttle_part/raider{
 	icon_state = "6,3";
-	layer = 3.5;
 	outside_part = 0
 	},
 /obj/item/storage/firstaid/o2{
@@ -1437,7 +1437,6 @@
 "DK" = (
 /obj/structure/shuttle_part/raider{
 	icon_state = "15,3";
-	layer = 3.5;
 	outside_part = 0
 	},
 /obj/structure/table/steel,
@@ -1657,8 +1656,9 @@
 /turf/unsimulated/floor/asteroid/ash/rocky,
 /area/mine/unexplored)
 "Iw" = (
-/obj/machinery/door/airlock/sac{
-	electrified_until = 0
+/obj/machinery/door/airlock/external{
+	electrified_until = 0;
+	dir = 4
 	},
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/wood,

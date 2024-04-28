@@ -60,7 +60,8 @@
 		NETWORK_FIRST_DECK,
 		NETWORK_SECOND_DECK,
 		NETWORK_THIRD_DECK,
-		NETWORK_INTREPID
+		NETWORK_INTREPID,
+		NETWORK_NEWS
 	)
 
 	shuttle_docked_message = "Attention all hands: the shift change preparations are over. It will start in approximately %ETA%."
@@ -89,19 +90,20 @@
 	dust_end_message = "The ship has now passed through the belt of space dust."
 
 	radiation_detected_message = "High levels of radiation detected near the ship. Please evacuate into one of the shielded maintenance tunnels."
-	radiation_contact_message = "The ship has entered the radiation belt. Please remain in a sheltered area until the ship has cleared it."
-	radiation_end_message = "The ship has passed the radiation belt. Please report to the medbay if you experience any unusual symptoms. Maintenance will lose all-access again shortly."
+	radiation_contact_message = "The ship has entered the radiation belt. Please remain in a sheltered area until the ship has passed through it and engineering has given the all-clear."
+	radiation_end_message = "The ship has passed the radiation belt. Please await an all-clear from engineering staff before exiting maintenance as there may be residual radiation. Immediately make your way to the medbay if you experience any unusual symptoms. Maintenance will lose all-access again shortly."
 
 	rogue_drone_detected_messages = list("Combat drone swarms from a nearby facility have engaged the ship. If any are sighted in the area, approach with caution.",
 													"Malfunctioning combat drones have been detected close to the ship. If any are sighted in the area, approach with caution.")
 	rogue_drone_end_message = "The hostile drone swarm has left the ship's proximity."
 	rogue_drone_destroyed_message = "Sensors indicate the unidentified drone swarm has left the immediate proximity of the ship."
 
+	ports_of_call = TRUE
 
 	map_shuttles = list(
-		/datum/shuttle/autodock/ferry/lift/scc_ship/cargo,
 		/datum/shuttle/autodock/ferry/lift/scc_ship/morgue,
-		/datum/shuttle/autodock/ferry/lift/scc_ship/robotics,
+		/datum/shuttle/autodock/multi/lift/operations,
+		/datum/shuttle/autodock/multi/lift/robotics,
 		/datum/shuttle/autodock/ferry/escape_pod/pod/escape_pod1,
 		/datum/shuttle/autodock/ferry/escape_pod/pod/escape_pod2,
 		/datum/shuttle/autodock/ferry/escape_pod/pod/escape_pod3,
@@ -113,6 +115,7 @@
 		/datum/shuttle/autodock/multi/antag/merc_ship,
 		/datum/shuttle/autodock/multi/legion,
 		/datum/shuttle/autodock/multi/distress,
+		/datum/shuttle/autodock/multi/crescent,
 		/datum/shuttle/autodock/overmap/intrepid,
 		/datum/shuttle/autodock/overmap/mining,
 		/datum/shuttle/autodock/overmap/canary,
@@ -148,30 +151,16 @@
 	if (horizon) //If the overmap is disabled, it's possible for there to be no Horizon.
 		var/list/space_things = list()
 		welcome_text += "Current Coordinates:<br /><b>[horizon.x]:[horizon.y]</b><br /><br>"
-		welcome_text += "Next system targeted for jump:<br /><b>[SSatlas.current_sector.generate_system_name()]</b><br /><br>"
-		var/last_visit
-		var/current_day = time2text(world.realtime, "Day")
-		switch(current_day)
-			if("Monday")
-				last_visit = "1 day ago"
-			if("Tuesday")
-				last_visit = "2 days ago"
-			if("Wednesday")
-				last_visit = "3 days ago"
-			if("Thursday")
-				last_visit = "4 days ago"
-			if("Friday")
-				last_visit = "5 days ago"
-			if("Saturday")
-				last_visit = "6 days ago"
-			if("Sunday")
-				last_visit = "1 week ago"
-		welcome_text += "Last port visit: <br><b>[last_visit]</b><br><br>"
-		welcome_text += "Travel time to nearest port:<br /><b>[SSatlas.current_sector.get_port_travel_time()]</b><br /><br>"
+		welcome_text += "Available Ports of Call: <b>[english_list(SSatlas.current_sector.ports_of_call, "none")]</b><br>"
+		if(SSatlas.current_sector.next_port_visit)
+			welcome_text += "Next Port Visit: <b>in [SSatlas.current_sector.next_port_visit] days</b><br>"
+		else
+			welcome_text += "<b>There is no port visit scheduled.</b><br><br>"
+		welcome_text += "<b>It is advised to inform crew of the available ports of call and the date of the next port visit.</b><br><br>"
 		welcome_text += "Scan results show the following points of interest:<br />"
 
-		for(var/zlevel in map_sectors)
-			var/obj/effect/overmap/visitable/O = map_sectors[zlevel]
+		for(var/zlevel in GLOB.map_sectors)
+			var/obj/effect/overmap/visitable/O = GLOB.map_sectors[zlevel]
 			if(O.name == horizon.name)
 				continue
 			if(istype(O, /obj/effect/overmap/visitable/ship/landable)) //Don't show shuttles
@@ -191,5 +180,16 @@
 
 		welcome_text += "<hr>"
 
-	post_comm_message("SCCV Horizon Sensor Readings", welcome_text)
-	priority_announcement.Announce(message = "Long-range sensor readings have been printed out at all communication consoles.")
+	post_comm_message("SCCV Horizon Sensor Report", welcome_text)
+	var/report = "The long-range sensor readings have been printed out at all communication consoles."
+	priority_announcement.Announce(message = report)
+
+/datum/map/sccv_horizon/load_holodeck_programs()
+	// loads only if at least two engineers are present
+	// so as to not drain power on deadpop
+	// also only loads if no program is loaded already
+	var/list/roles = number_active_with_role()
+	if(roles && roles["Engineer"] && roles["Engineer"] >= 2)
+		for(var/obj/machinery/computer/holodeck_control/holo in GLOB.holodeck_controls)
+			if(!holo.active)
+				holo.load_random_program()

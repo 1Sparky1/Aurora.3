@@ -19,6 +19,44 @@
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
+"aad" = (
+/obj/machinery/suit_cycler/offship/sol/fsf,
+/obj/effect/floor_decal/industrial/outline/yellow,
+/turf/simulated/floor/tiled/dark,
+/area/ship/fsf_patrol_ship)
+"aae" = (
+/obj/effect/floor_decal/corner/paleblue/diagonal,
+/obj/machinery/door/airlock/security{
+	name = "Messhall";
+	req_access = list(203);
+	dir = 4
+	},
+/turf/simulated/floor/tiled/white,
+/area/ship/fsf_patrol_ship)
+"aaf" = (
+/obj/machinery/door/airlock/security{
+	name = "EVA";
+	req_access = list(203);
+	dir = 4
+	},
+/turf/simulated/floor/tiled/dark,
+/area/ship/fsf_patrol_ship)
+"aah" = (
+/obj/machinery/door/airlock/security{
+	name = "Engineering";
+	req_access = list(203);
+	dir = 1
+	},
+/turf/simulated/floor/tiled/dark,
+/area/ship/fsf_patrol_ship)
+"aai" = (
+/obj/machinery/door/airlock/security{
+	name = "Head";
+	req_access = list(203);
+	dir = 1
+	},
+/turf/simulated/floor/tiled/white,
+/area/ship/fsf_patrol_ship)
 "aaI" = (
 /obj/machinery/atmospherics/unary/engine,
 /obj/structure/window/reinforced,
@@ -38,7 +76,7 @@
 /obj/effect/floor_decal/industrial/outline/red,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -71,14 +109,14 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
 "akP" = (
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -163,8 +201,8 @@
 "aCu" = (
 /obj/effect/floor_decal/corner_wide/green/diagonal,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -172,7 +210,8 @@
 /obj/machinery/door/airlock/external{
 	frequency = 1380;
 	icon_state = "door_locked";
-	id_tag = "sfa_shuttle_out"
+	id_tag = "sfa_shuttle_out";
+	dir = 4
 	},
 /turf/simulated/floor,
 /area/shuttle/fsf_shuttle)
@@ -202,15 +241,12 @@
 "aJd" = (
 /obj/machinery/atmospherics/binary/pump/high_power{
 	dir = 1;
-	layer = 2.8
 	},
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
 "aLo" = (
-/obj/structure/extinguisher_cabinet{
-	pixel_x = -25
-	},
-/obj/effect/floor_decal/spline/plain{
+/obj/structure/extinguisher_cabinet/west,
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 8
 	},
 /turf/simulated/floor/tiled/dark,
@@ -218,7 +254,7 @@
 "aMB" = (
 /obj/structure/table/steel,
 /obj/item/storage/slide_projector,
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 1
 	},
 /turf/simulated/floor/carpet/rubber,
@@ -276,7 +312,8 @@
 "aVu" = (
 /obj/machinery/door/airlock/security{
 	name = "Weapons Systems";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -306,29 +343,29 @@
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
 "bfg" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 8
 	},
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 4
 	},
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/holofloor/tiled/ramp,
 /area/ship/fsf_patrol_ship)
 "bgD" = (
 /obj/structure/railing/mapped,
-/obj/effect/floor_decal/corner/blue/full,
+/obj/effect/floor_decal/corner/dark_blue/full,
 /obj/machinery/computer/ship/navigation{
 	dir = 1
 	},
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -337,8 +374,8 @@
 /obj/structure/bedsheetbin,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -367,7 +404,7 @@
 	dir = 1
 	},
 /obj/structure/railing/mapped,
-/obj/effect/floor_decal/corner/blue{
+/obj/effect/floor_decal/corner/dark_blue{
 	dir = 10
 	},
 /turf/simulated/floor/tiled/dark,
@@ -391,7 +428,7 @@
 /turf/space/transit/north,
 /area/space)
 "bOZ" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 4
 	},
 /turf/simulated/floor/holofloor/tiled/ramp,
@@ -434,7 +471,7 @@
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
 "cdD" = (
-/obj/effect/floor_decal/corner/blue{
+/obj/effect/floor_decal/corner/dark_blue{
 	dir = 10
 	},
 /obj/machinery/computer/ship/engines{
@@ -451,8 +488,8 @@
 	pixel_x = -32
 	},
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -491,7 +528,8 @@
 "dhp" = (
 /obj/machinery/door/airlock/security{
 	name = "Checkpoint";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 4
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -507,7 +545,8 @@
 /area/ship/fsf_patrol_ship)
 "dLJ" = (
 /obj/machinery/door/airlock/hatch{
-	name = "Telecomms/Aux CIC"
+	name = "Telecomms/Aux CIC";
+	dir = 4
 	},
 /obj/structure/plasticflaps/airtight,
 /turf/simulated/floor,
@@ -521,8 +560,8 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /obj/item/paper_bin,
 /obj/item/pen,
@@ -546,7 +585,6 @@
 /area/ship/fsf_patrol_ship)
 "dTw" = (
 /obj/machinery/atmospherics/portables_connector{
-	layer = 2.8
 	},
 /obj/machinery/portable_atmospherics/canister/carbon_dioxide,
 /turf/simulated/floor/shuttle/black,
@@ -560,7 +598,7 @@
 /obj/item/toy/desk/newtoncradle{
 	pixel_x = -10
 	},
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "dYf" = (
 /obj/effect/landmark/entry_point/starboard{
@@ -574,8 +612,8 @@
 	},
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -603,7 +641,7 @@
 /obj/effect/floor_decal/carpet/blue{
 	dir = 5
 	},
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "efK" = (
 /obj/effect/decal/cleanable/dirt,
@@ -615,8 +653,8 @@
 "eiX" = (
 /obj/structure/reagent_dispensers/fueltank,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -659,19 +697,12 @@
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
 "eOW" = (
-/obj/effect/floor_decal/industrial/outline/yellow,
-/obj/structure/table/rack,
-/obj/item/clothing/shoes/magboots,
-/obj/item/tank/jetpack/carbondioxide,
-/obj/item/clothing/suit/space/void/sol/fsf,
-/obj/item/clothing/head/helmet/space/void/sol/fsf,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
-/obj/item/device/gps,
-/obj/item/clothing/glasses/safety/goggles/tactical,
-/obj/item/clothing/mask/gas/half,
+/obj/effect/floor_decal/industrial/outline/yellow,
+/obj/machinery/suit_cycler/offship/sol/fsf,
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
 "eTq" = (
@@ -696,7 +727,7 @@
 /area/ship/fsf_patrol_ship)
 "far" = (
 /obj/structure/bed/stool,
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 10
 	},
 /turf/simulated/floor/carpet/rubber,
@@ -781,7 +812,7 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -818,13 +849,13 @@
 /obj/item/flag/sol,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /obj/effect/floor_decal/carpet/blue{
 	dir = 1
 	},
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "fFu" = (
 /obj/structure/table/steel,
@@ -863,7 +894,7 @@
 /turf/simulated/floor/shuttle/black,
 /area/shuttle/fsf_shuttle)
 "fRI" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 4
 	},
 /turf/simulated/floor/carpet/rubber,
@@ -908,7 +939,7 @@
 /obj/item/reagent_containers/blood/OMinus,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -1023,8 +1054,8 @@
 /obj/effect/floor_decal/corner/paleblue/diagonal,
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -1041,7 +1072,7 @@
 /obj/effect/floor_decal/carpet/blue{
 	dir = 6
 	},
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "gYW" = (
 /obj/machinery/ammunition_loader/francisca{
@@ -1052,7 +1083,6 @@
 "hdb" = (
 /obj/machinery/atmospherics/portables_connector{
 	dir = 8;
-	layer = 2.8
 	},
 /obj/machinery/portable_atmospherics/canister/carbon_dioxide,
 /obj/effect/decal/cleanable/dirt,
@@ -1066,7 +1096,8 @@
 "hiw" = (
 /obj/machinery/door/airlock/hatch{
 	name = "Maintenance";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 4
 	},
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
@@ -1076,8 +1107,8 @@
 	},
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -1089,7 +1120,7 @@
 /turf/simulated/floor/plating,
 /area/shuttle/fsf_shuttle)
 "hsz" = (
-/obj/structure/closet/secure_closet/freezer/kitchen{
+/obj/structure/closet/secure_closet/kitchen_cabinet/standard{
 	req_access = list(203)
 	},
 /obj/item/reagent_containers/food/snacks/meat,
@@ -1101,18 +1132,17 @@
 /obj/item/reagent_containers/food/snacks/meat,
 /obj/item/reagent_containers/food/snacks/meat,
 /obj/item/storage/box/produce{
-	layer = 2.99;
 	pixel_x = 3;
 	pixel_y = -11
 	},
 /obj/item/storage/box/fancy/egg_box,
 /obj/item/storage/box/fancy/egg_box,
-/obj/item/reagent_containers/food/drinks/milk,
-/obj/item/reagent_containers/food/drinks/milk,
+/obj/item/reagent_containers/food/drinks/carton/milk,
+/obj/item/reagent_containers/food/drinks/carton/milk,
 /obj/effect/floor_decal/corner/black/diagonal,
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/item/reagent_containers/food/condiment/enzyme{
 	pixel_x = -9;
@@ -1143,14 +1173,16 @@
 "huE" = (
 /obj/effect/floor_decal/corner_wide/green/diagonal,
 /obj/machinery/door/airlock/security{
-	name = "Infirmary"
+	name = "Infirmary";
+	dir = 4
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
 "hxl" = (
 /obj/machinery/door/airlock/security{
 	name = "Small Arms Locker";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 4
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -1158,9 +1190,7 @@
 /obj/structure/closet/toolcloset,
 /obj/item/clothing/gloves/yellow,
 /obj/item/clothing/gloves/yellow,
-/obj/structure/extinguisher_cabinet{
-	pixel_y = 30
-	},
+/obj/structure/extinguisher_cabinet/north,
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
 "hBs" = (
@@ -1176,7 +1206,7 @@
 "hVU" = (
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -1187,7 +1217,7 @@
 /obj/effect/floor_decal/carpet/blue{
 	dir = 9
 	},
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "hZe" = (
 /obj/structure/closet/secure_closet/guncabinet{
@@ -1226,7 +1256,6 @@
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
 	frequency = 1380;
 	id_tag = "sfa_patrol_ship_port";
-	layer = 3.3;
 	pixel_y = 28;
 	tag_airpump = "sfa_patrol_ship_pump";
 	tag_chamber_sensor = "sfa_patrol_ship_sensor";
@@ -1239,7 +1268,8 @@
 /obj/machinery/door/airlock/external{
 	frequency = 1380;
 	icon_state = "door_locked";
-	id_tag = "sfa_patrol_ship_out"
+	id_tag = "sfa_patrol_ship_out";
+	dir = 4
 	},
 /obj/effect/landmark/entry_point/port{
 	name = "port, airlock"
@@ -1247,7 +1277,7 @@
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
 "inf" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 5
 	},
 /turf/simulated/floor/carpet/rubber,
@@ -1257,7 +1287,7 @@
 /obj/effect/floor_decal/corner/black/diagonal,
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -1296,13 +1326,13 @@
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
 "iIT" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 4
 	},
 /obj/structure/railing/mapped{
 	dir = 4
 	},
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 8
 	},
 /obj/structure/table/rack,
@@ -1336,16 +1366,24 @@
 "iQt" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
 /obj/structure/table/rack,
-/obj/item/clothing/shoes/magboots,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /obj/item/tank/jetpack/carbondioxide,
-/obj/item/clothing/suit/space/void/sol/fsf,
-/obj/item/clothing/head/helmet/space/void/sol/fsf,
 /obj/item/device/gps,
-/obj/item/clothing/glasses/safety/goggles/tactical,
+/obj/item/clothing/mask/gas/half,
+/obj/item/device/gps,
+/obj/item/device/gps,
+/obj/item/device/gps,
+/obj/item/tank/jetpack/carbondioxide,
+/obj/item/tank/jetpack/carbondioxide,
+/obj/item/tank/jetpack/carbondioxide,
+/obj/item/tank/jetpack/carbondioxide,
+/obj/item/device/gps,
+/obj/item/clothing/mask/gas/half,
+/obj/item/clothing/mask/gas/half,
+/obj/item/clothing/mask/gas/half,
 /obj/item/clothing/mask/gas/half,
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -1358,8 +1396,8 @@
 /obj/item/clothing/gloves/latex,
 /obj/item/clothing/mask/surgical/w,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -1406,8 +1444,8 @@
 	},
 /obj/item/gun/energy/plasmacutter,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -1422,7 +1460,7 @@
 "jEu" = (
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -1434,22 +1472,17 @@
 	},
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
-"jGx" = (
-/obj/effect/floor_decal/corner/paleblue/diagonal,
-/turf/simulated/floor/tiled/white,
-/area/ship/fsf_patrol_ship)
 "jHa" = (
 /obj/effect/floor_decal/corner/paleblue/diagonal,
 /obj/machinery/door/airlock/security{
 	name = "Messhall";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
 "jIq" = (
-/obj/structure/extinguisher_cabinet{
-	pixel_x = -25
-	},
+/obj/structure/extinguisher_cabinet/west,
 /obj/machinery/computer/ship/engines{
 	dir = 4
 	},
@@ -1483,8 +1516,8 @@
 	dir = 10
 	},
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -1521,7 +1554,9 @@
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
 "ktI" = (
-/obj/machinery/door/airlock/security,
+/obj/machinery/door/airlock/security{
+	dir = 4
+	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
 "ktN" = (
@@ -1531,10 +1566,10 @@
 /obj/machinery/conveyor{
 	name = "running machine"
 	},
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 8
 	},
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 4
 	},
 /turf/simulated/floor/tiled/dark,
@@ -1558,7 +1593,6 @@
 	name = "trashbin"
 	},
 /obj/item/clothing/gloves/black_leather{
-	layer = 2.98
 	},
 /turf/simulated/floor/tiled{
 	name = "cooled floor";
@@ -1579,7 +1613,7 @@
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
 "kMV" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
@@ -1618,16 +1652,16 @@
 "lcg" = (
 /obj/effect/floor_decal/corner/paleblue/diagonal,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
 "ldz" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 6
 	},
-/obj/effect/floor_decal/spline/plain/corner{
+/obj/effect/floor_decal/spline/plain/corner/black{
 	dir = 4
 	},
 /turf/simulated/floor/holofloor/tiled/ramp/bottom,
@@ -1663,8 +1697,8 @@
 /obj/structure/lattice/catwalk/indoor/grate,
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /obj/item/grenade/chem_grenade,
 /turf/simulated/floor,
@@ -1675,14 +1709,7 @@
 /area/ship/fsf_patrol_ship)
 "lwj" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/structure/table/rack,
-/obj/item/clothing/shoes/magboots,
-/obj/item/tank/jetpack/carbondioxide,
-/obj/item/clothing/suit/space/void/sol/fsf,
-/obj/item/clothing/head/helmet/space/void/sol/fsf,
-/obj/item/device/gps,
-/obj/item/clothing/glasses/safety/goggles/tactical,
-/obj/item/clothing/mask/gas/half,
+/obj/machinery/suit_cycler/offship/sol/fsf,
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
 "lBQ" = (
@@ -1725,7 +1752,7 @@
 "lOH" = (
 /obj/structure/table/wood,
 /obj/item/modular_computer/laptop/preset/civilian,
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "lOJ" = (
 /obj/structure/table/wood,
@@ -1752,15 +1779,15 @@
 /obj/structure/table/steel,
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
 "lUH" = (
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/wood,
 /area/ship/fsf_patrol_ship)
@@ -1768,7 +1795,8 @@
 /obj/machinery/door/airlock/external{
 	frequency = 1380;
 	icon_state = "door_locked";
-	id_tag = "sfa_shuttle_out"
+	id_tag = "sfa_shuttle_out";
+	dir = 4
 	},
 /obj/effect/landmark/entry_point/east{
 	name = "port, crew compartment"
@@ -1797,8 +1825,8 @@
 /obj/effect/floor_decal/sign/srg,
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -1827,8 +1855,8 @@
 /obj/structure/bed/padded,
 /obj/item/bedsheet/black,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /obj/effect/ghostspawpoint{
 	identifier = "fsf_navy_crewman";
@@ -1840,8 +1868,8 @@
 /obj/effect/floor_decal/corner/paleblue/diagonal,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -1869,13 +1897,13 @@
 /obj/machinery/optable,
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
 "mGs" = (
-/obj/effect/floor_decal/corner/blue{
+/obj/effect/floor_decal/corner/dark_blue{
 	dir = 9
 	},
 /obj/machinery/button/remote/blast_door{
@@ -1944,7 +1972,8 @@
 "nty" = (
 /obj/machinery/door/airlock/security{
 	name = "Head";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 4
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -1979,7 +2008,8 @@
 "nTM" = (
 /obj/machinery/door/airlock/security{
 	name = "EVA";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -1994,7 +2024,7 @@
 /area/ship/fsf_patrol_ship)
 "obG" = (
 /obj/machinery/hologram/holopad/long_range,
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
@@ -2005,7 +2035,7 @@
 /obj/effect/floor_decal/industrial/outline/yellow,
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/structure/closet,
 /obj/item/clothing/accessory/storage/white_vest,
@@ -2034,7 +2064,7 @@
 /obj/structure/bed/stool/chair/office/bridge/generic{
 	dir = 8
 	},
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "oqN" = (
 /obj/effect/floor_decal/industrial/warning{
@@ -2088,8 +2118,8 @@
 /obj/item/melee/baton/stunrod,
 /obj/item/melee/baton/stunrod,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /obj/item/storage/box/flashbangs,
 /obj/item/storage/box/smokebombs,
@@ -2100,7 +2130,8 @@
 "oSU" = (
 /obj/machinery/door/airlock/security{
 	name = "Crew Quarters";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2120,8 +2151,8 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2174,7 +2205,7 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/carpet/rubber,
 /area/ship/fsf_patrol_ship)
@@ -2201,8 +2232,8 @@
 /obj/structure/table/steel,
 /obj/item/storage/box/cups,
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2215,7 +2246,8 @@
 "qgw" = (
 /obj/machinery/door/airlock/security{
 	name = "Lieutenant's Quarters";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 4
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2310,7 +2342,8 @@
 /obj/machinery/door/airlock/external{
 	frequency = 1380;
 	icon_state = "door_locked";
-	id_tag = "sfa_patrol_ship_in"
+	id_tag = "sfa_patrol_ship_in";
+	dir = 4
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden{
 	dir = 1
@@ -2320,8 +2353,8 @@
 "rAo" = (
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2372,7 +2405,8 @@
 "srj" = (
 /obj/machinery/door/airlock/security{
 	name = "Bridge";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2394,7 +2428,8 @@
 "sKE" = (
 /obj/machinery/door/airlock/security{
 	name = "Briefing Room";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2436,7 +2471,8 @@
 /obj/machinery/door/airlock/external{
 	frequency = 1380;
 	icon_state = "door_locked";
-	id_tag = "sfa_patrol_ship_in"
+	id_tag = "sfa_patrol_ship_in";
+	dir = 4
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden{
 	dir = 5
@@ -2462,8 +2498,8 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -2484,8 +2520,8 @@
 	pixel_x = -28
 	},
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
@@ -2521,8 +2557,8 @@
 /area/ship/fsf_patrol_ship)
 "tKM" = (
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2545,7 +2581,7 @@
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
 "tYU" = (
-/obj/effect/floor_decal/spline/plain,
+/obj/effect/floor_decal/spline/plain/black,
 /obj/structure/noticeboard{
 	pixel_x = -32
 	},
@@ -2564,7 +2600,8 @@
 "udB" = (
 /obj/machinery/door/airlock/glass_security{
 	name = "Cell";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2592,12 +2629,13 @@
 	pixel_x = 5;
 	pixel_y = -4
 	},
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "uHi" = (
 /obj/machinery/door/airlock/security{
 	name = "Gym";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /obj/effect/floor_decal/corner_wide/green/diagonal,
 /turf/simulated/floor/tiled/dark,
@@ -2606,7 +2644,7 @@
 /obj/effect/floor_decal/carpet/blue{
 	dir = 4
 	},
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "uWQ" = (
 /obj/machinery/washing_machine,
@@ -2617,25 +2655,18 @@
 /turf/simulated/floor/tiled/white,
 /area/ship/fsf_patrol_ship)
 "vfY" = (
-/obj/effect/floor_decal/industrial/outline/yellow,
-/obj/structure/table/rack,
-/obj/item/clothing/shoes/magboots,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
-/obj/item/tank/jetpack/carbondioxide,
-/obj/item/clothing/suit/space/void/sol/fsf,
-/obj/item/clothing/head/helmet/space/void/sol/fsf,
-/obj/item/device/gps,
-/obj/item/clothing/glasses/safety/goggles/tactical,
-/obj/item/clothing/mask/gas/half,
+/obj/effect/floor_decal/industrial/outline/yellow,
+/obj/machinery/suit_cycler/offship/sol/fsf,
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
 "vgc" = (
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/machinery/computer/cryopod{
 	pixel_y = 32
@@ -2649,7 +2680,7 @@
 /turf/simulated/floor/airless,
 /area/ship/fsf_patrol_ship)
 "vmq" = (
-/obj/effect/floor_decal/spline/plain/corner{
+/obj/effect/floor_decal/spline/plain/corner/black{
 	dir = 1
 	},
 /obj/effect/decal/cleanable/dirt,
@@ -2659,19 +2690,19 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
 "vtl" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 4
 	},
 /obj/structure/railing/mapped{
 	dir = 4
 	},
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 8
 	},
 /obj/machinery/light/small/emergency{
@@ -2721,8 +2752,8 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/wood,
 /area/ship/fsf_patrol_ship)
@@ -2742,7 +2773,7 @@
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
 "vLp" = (
-/turf/simulated/floor/carpet/blue,
+/turf/simulated/floor/carpet/cyan,
 /area/ship/fsf_patrol_ship)
 "vMq" = (
 /obj/effect/decal/cleanable/dirt,
@@ -2783,12 +2814,13 @@
 "vTv" = (
 /obj/machinery/door/airlock/security{
 	name = "Engineering";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 4
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
 "waK" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 6
 	},
 /turf/simulated/floor/carpet/rubber,
@@ -2796,7 +2828,8 @@
 "wfy" = (
 /obj/machinery/door/airlock/security{
 	name = "Weapons Control";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2814,7 +2847,7 @@
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
 "woR" = (
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 1
 	},
 /turf/simulated/floor,
@@ -2852,7 +2885,7 @@
 /obj/structure/bed/stool{
 	pixel_y = -9
 	},
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 8
 	},
 /turf/simulated/floor/carpet/rubber,
@@ -2895,14 +2928,15 @@
 /obj/structure/sign/flag/sol{
 	pixel_x = 32
 	},
-/obj/effect/floor_decal/spline/plain,
+/obj/effect/floor_decal/spline/plain/black,
 /turf/simulated/floor/carpet/rubber,
 /area/ship/fsf_patrol_ship)
 "wZc" = (
 /obj/machinery/door/airlock/external{
 	frequency = 1380;
 	icon_state = "door_locked";
-	id_tag = "sfa_patrol_ship_out"
+	id_tag = "sfa_patrol_ship_out";
+	dir = 4
 	},
 /obj/effect/shuttle_landmark/fsf_patrol_ship/nav2,
 /turf/simulated/floor,
@@ -2930,8 +2964,8 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -2947,13 +2981,13 @@
 /obj/machinery/conveyor{
 	name = "running machine"
 	},
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 4
 	},
 /obj/structure/railing/mapped{
 	dir = 1
 	},
-/obj/effect/floor_decal/spline/plain{
+/obj/effect/floor_decal/spline/plain/black{
 	dir = 8
 	},
 /turf/simulated/floor/tiled/dark,
@@ -2998,8 +3032,8 @@
 /obj/machinery/portable_atmospherics/canister/carbon_dioxide,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor,
 /area/ship/fsf_patrol_ship)
@@ -3019,7 +3053,8 @@
 "xKJ" = (
 /obj/machinery/door/airlock/security{
 	name = "Brig";
-	req_access = list(203)
+	req_access = list(203);
+	dir = 1
 	},
 /turf/simulated/floor/tiled/dark,
 /area/ship/fsf_patrol_ship)
@@ -3073,8 +3108,8 @@
 	pixel_y = 11
 	},
 /obj/machinery/light{
-	icon_state = "tube1";
-	inserted_light = /obj/item/light/tube/colored/blue
+	inserted_light = /obj/item/light/tube/colored/blue;
+	icon_state = "tube_empty"
 	},
 /obj/item/reagent_containers/food/drinks/bottle/cognac{
 	pixel_x = 2;
@@ -32215,9 +32250,9 @@ yjk
 yjk
 mwV
 vOB
-jGx
-jGx
-jGx
+eYk
+eYk
+eYk
 lcg
 yjk
 yjk
@@ -32474,12 +32509,12 @@ eTH
 krH
 krH
 heP
-jGx
-jGx
+eYk
+eYk
 yjk
 vfY
 lwj
-sSs
+aad
 lwj
 eOW
 yjk
@@ -32731,8 +32766,8 @@ eYk
 vCD
 vCD
 lRe
-jGx
-jGx
+eYk
+eYk
 jHa
 sSs
 sSs
@@ -32984,11 +33019,11 @@ lNu
 xto
 dHE
 uHi
-jGx
+eYk
 krH
 krH
 heP
-jGx
+eYk
 aGW
 yjk
 uvX
@@ -33243,8 +33278,8 @@ xto
 yjk
 jdD
 gXx
-jGx
-jGx
+eYk
+eYk
 gXx
 nKS
 yjk
@@ -33500,13 +33535,13 @@ yjk
 yjk
 yjk
 yjk
-jHa
-jHa
+aae
+aae
 yjk
 yjk
 yjk
 yjk
-nTM
+aaf
 yjk
 yjk
 yjk
@@ -35553,7 +35588,7 @@ sSs
 mEc
 keV
 sSs
-vTv
+aah
 hBs
 sSs
 gqO
@@ -35810,7 +35845,7 @@ sSs
 mdc
 oie
 sSs
-vTv
+aah
 hBs
 sSs
 gxW
@@ -37108,7 +37143,7 @@ kYY
 kYY
 hVU
 kYY
-nty
+aai
 sSs
 hBs
 hBs
@@ -37358,7 +37393,7 @@ uYP
 uYP
 uYP
 uYP
-nty
+aai
 kYY
 kYY
 yjk
@@ -37874,7 +37909,7 @@ uYP
 jxF
 yjk
 yjk
-nTM
+aaf
 yjk
 yjk
 yjk

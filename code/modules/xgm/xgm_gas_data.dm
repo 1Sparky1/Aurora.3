@@ -36,7 +36,7 @@
 		var/singleton/xgm_gas/gas = new p //avoid initial() because of potential New() actions
 
 		if(gas.id in gas_data.gases)
-			log_error("Duplicate gas id `[gas.id]` in `[p]`")
+			log_world("ERROR: Duplicate gas id `[gas.id]` in `[p]`")
 
 		gas_data.gases += gas.id
 		gas_data.name[gas.id] = gas.name
@@ -60,7 +60,7 @@
 	desc = DESC_PARENT
 	icon = 'icons/effects/tile_effects.dmi'
 	icon_state = "generic"
-	layer = LIGHTING_LAYER - 1
+	layer = FIRE_LAYER
 	appearance_flags = RESET_COLOR
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 

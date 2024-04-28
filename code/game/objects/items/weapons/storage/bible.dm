@@ -37,19 +37,23 @@
 				A.reagents.del_reagent(/singleton/reagent/water)
 				A.reagents.add_reagent(/singleton/reagent/water/holywater, water2holy)
 
-/obj/item/storage/bible/attackby(obj/item/W as obj, mob/user as mob)
+/obj/item/storage/bible/attackby(obj/item/attacking_item, mob/user)
 	if(src.use_sound)
 		playsound(src.loc, src.use_sound, 50, 1, -5)
 	return ..()
 
-/obj/item/storage/bible/proc/Set_Religion(mob/user)
+/obj/item/storage/bible/verb/Set_Religion(mob/user)
+	set name = "Set Religion"
+	set desc = "Set your own religion."
+	set src in usr
+
 	if(use_check(user))
 		return
 	if(!ishuman(user))
 		return
 
 	var/religion_name = "Christianity"
-	var/new_religion = sanitize(input(user, "Would you like to change your religion? Default is Christianity, in SPACE.", "Name change", religion_name), MAX_NAME_LEN)
+	var/new_religion = sanitize(input(user, "Would you like to change your religion? Default is Christianity.", "Name change", religion_name), MAX_NAME_LEN)
 
 	if(!new_religion)
 		new_religion = religion_name
@@ -61,7 +65,7 @@
 	if(user.mind && (user.mind.assigned_role == "Chaplain"))
 		SSticker.Bible_name = book_name
 
-	var/new_book_style = input(user,"Which bible style would you like?") in list("Generic", "Bible", "White Bible", "Melted Bible", "Quran", "Torah", "Holy Light", "Tome", "Scroll", "Guru", "The King in Yellow", "Ithaqua", "Trinary", "Stars", "Scrapbook", "Atheist", "Necronomicon")
+	var/new_book_style = tgui_input_list(user, "Which holy book style would you like?", "Holy Book", list("Generic", "Bible", "White Bible", "Melted Bible", "Quran", "Torah", "Holy Light", "Tome", "Scroll", "Guru", "The King in Yellow", "Ithaqua", "Trinary", "Stars", "Scrapbook", "Atheist", "Necronomicon"))
 	switch(new_book_style)
 		if("Bible")
 			icon_state = "bible"
@@ -111,9 +115,6 @@
 		if("Necronomicon")
 			icon_state = "necronomicon"
 			item_state = "necronomicon"
-		if("Luceism")
-			icon_state = "luce2"
-			item_state = "luce2"
 		if("Skrell")
 			icon_state = "skrellbible"
 			item_state = "skrellbible"
@@ -129,4 +130,4 @@
 		SSticker.Bible_icon_state = icon_state
 		SSticker.Bible_item_state = item_state
 
-	verbs -= /obj/item/storage/bible/proc/Set_Religion
+	verbs -= /obj/item/storage/bible/verb/Set_Religion

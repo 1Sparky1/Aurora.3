@@ -34,7 +34,7 @@
 	var/q // recycled from tip of the day code. it just works!(TM)
 	q = pick(randomquip)
 
-	if(do_after(user, 25))
+	if(do_after(user, 2.5 SECONDS))
 		to_chat(user, "<span class='notice'>You notice a particular verse: [q]</span>")
 	reading = FALSE
 
@@ -82,6 +82,18 @@
 	. = ..()
 	randomquip = file2list("ingame_manuals/trinary.txt")
 
+/obj/item/device/versebook/templeist
+	name = "\improper The Voice of Temple (abdridged version)"
+	desc = "The holy text of the Lodge of Temple Architect, an order within the Trinary Perfection that seeks to attain its goals via technological advancement and scientific discovery."
+	desc_extended = "This book contains some of the words of Temple, a sacred AI within the Trinary Perfection and namesake of the Lodge of the Temple Architect. It also includes some teachings by leading members within the sect. Due to its recent establishment, this book is frequently changed and amended \
+	as new insights into their faith are realized."
+	icon_state = "templeistbook"
+	item_state = "trinary"
+
+/obj/item/device/versebook/templeist/Initialize()
+	. = ..()
+	randomquip = file2list("ingame_manuals/templeist.txt")
+
 /obj/item/device/versebook/siakh
 	name = "\improper Writings of Judizah Si'akh"
 	desc = "A collection of musings, commands and theological discussions, copied many times over from the alleged words of the controversial prophet Judizah Si'akh himself."
@@ -128,4 +140,23 @@
 /obj/item/device/versebook/thakh/Initialize()
 	. = ..()
 	randomquip = file2list("ingame_manuals/thakh.txt")
+
+/obj/item/device/versebook/assunzione
+	name = "\improper Luceian Book of Scripture"
+	desc = "A collection of historically-backed texts mixed with fables and stories detailing the reasonings, history, and beliefs of the Luceism religion of Assunzione. Translated into Basic by the Luceian Monastery on Biesel."
+	desc_extended = "Luceism's founding was unusually well-documented for a religion, and as a result this book features several photographs of cataclysmic events that happened during Assunzione's crisis \
+	that birthed this religion, as well as pictures of the religion's first ministers and the cataclysm that founded the religion to begin with."
+	icon_state = "luce"
+	item_state = "luce"
+
+/obj/item/device/versebook/assunzione/Initialize()
+	. = ..()
+	randomquip = file2list("ingame_manuals/assunzione.txt")
+
+/obj/item/device/versebook/assunzione/pocket
+	name = "pocket Luceian Book of Scripture"
+	desc = "A miniaturized edition of the Luceian Book of Scripture, a collection of historically-backed texts mixed with fables and stories detailing the reasonings, history, and \
+	beliefs of the Luceism religion of Assunzione. Translated into Basic by the Luceian Monastery on Biesel. This one fits nicely in a pocket or in a bag."
+	icon_state = "luce_pocket"
+	w_class = ITEMSIZE_TINY
 

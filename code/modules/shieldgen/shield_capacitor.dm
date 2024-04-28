@@ -1,22 +1,23 @@
-
-//---------- shield capacitor
-//pulls energy out of a power net and charges an adjacent generator
-
 /obj/machinery/shield_capacitor
 	name = "shield capacitor"
 	desc = "A machine which converts electrical power in Force Renwicks for use by a shield generator."
 	icon = 'icons/obj/machinery/shielding.dmi'
 	icon_state = "capacitor"
 	obj_flags = OBJ_FLAG_ROTATABLE
-	var/active = FALSE
 	density = TRUE
-	var/stored_charge = 0	//not to be confused with power cell charge, this is in Joules
+	/// Doesn't use APC power.
+	use_power = POWER_USE_OFF
+	req_one_access = list(ACCESS_CAPTAIN, ACCESS_SECURITY, ACCESS_ENGINE)
+
+	var/active = FALSE
+	/// Not to be confused with power cell charge, this is in Joules.
+	var/stored_charge = 0
 	var/last_stored_charge = 0
 	var/time_since_fail = 100
 	var/max_charge = 8e6	//8 MJ
 	var/max_charge_rate = 400000	//400 kW
 	var/locked = FALSE
-	use_power = POWER_USE_OFF //doesn't use APC power
+
 	var/charge_rate = 100000	//100 kW
 	var/obj/machinery/shield_matrix/owned_matrix
 	req_one_access = list(access_captain, access_security, access_engine)
@@ -41,7 +42,7 @@
 		to_chat(user, "Controls are now [locked ? "locked." : "unlocked."]")
 		. = TRUE
 		updateDialog()
-	spark(src, 5, alldirs)
+	spark(src, 5, GLOB.alldirs)
 
 /obj/machinery/shield_capacitor/update_icon()
 	if(active)
@@ -59,16 +60,16 @@
 	else
 		pixel_y = 0
 
-/obj/machinery/shield_capacitor/attackby(obj/item/W, mob/user)
+/obj/machinery/shield_capacitor/attackby(obj/item/attacking_item, mob/user)
 
-	if(istype(W, /obj/item/card/id))
+	if(istype(attacking_item, /obj/item/card/id))
 		if(allowed(user))
 			locked = !locked
 			to_chat(user, "Controls are now [locked ? "locked." : "unlocked."]")
 			updateDialog()
 		else
 			to_chat(user, SPAN_ALERT("Access denied."))
-	else if(W.iswrench())
+	else if(attacking_item.iswrench())
 		anchored = !anchored
 		visible_message(SPAN_NOTICE("\The [src] has been [anchored ? "bolted to the floor" : "unbolted from the floor"] by \the [user]."))
 
@@ -85,7 +86,8 @@
 /obj/machinery/shield_capacitor/attack_hand(mob/user)
 	if(stat & (BROKEN))
 		return
-	interact(user)
+	ui_interact(user)
+
 
 /obj/machinery/shield_capacitor/ui_data(mob/user)
 	var/list/data = list()

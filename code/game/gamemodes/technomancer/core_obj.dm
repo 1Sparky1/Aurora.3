@@ -172,23 +172,23 @@
 		update_held_icon()
 
 /obj/item/technomancer_core/emp_act()
+	. = ..()
+
 	set_appearance_to(type)
 
 // This is what is clicked on to place a spell in the user's hands.
 /obj/spellbutton
 	name = "generic spellbutton"
 	var/spellpath
-	var/obj/item/technomancer_core/core
 	var/ability_icon_state
 
-/obj/spellbutton/New(loc, var/path, var/new_name, var/new_icon_state)
+/obj/spellbutton/Initialize(mapload, var/path, var/new_name, var/new_icon_state)
+	. = ..()
 	if(!path || !ispath(path))
-		message_admins("ERROR: /obj/spellbutton/New() was not given a proper path!")
-		qdel(src)
+		message_admins("ERROR: /obj/spellbutton/Initialize() was not given a proper path!")
+		return INITIALIZE_HINT_QDEL
 	src.name = new_name
 	src.spellpath = path
-	src.loc = loc
-	src.core = loc
 	src.ability_icon_state = new_icon_state
 
 /obj/spellbutton/Click()
@@ -199,24 +199,20 @@
 /obj/spellbutton/DblClick()
 	return Click()
 
-/mob/living/carbon/human/get_status_tab_items()
-	. = ..()
+/obj/spellbutton/technomancer
+	var/obj/item/technomancer_core/core
 
-	var/obj/item/technomancer_core/core = get_technomancer_core()
-	if(core)
-		var/charge_status = "[core.energy]/[core.max_energy] ([round( (core.energy / core.max_energy) * 100)]%) \
-		([round(core.energy_delta)]/s)"
-		var/instability_delta = instability - last_instability
-		var/instability_status = "[src.instability] ([round(instability_delta, 0.1)]/s)"
-		. += "Core Charge: [charge_status]"
-		. += "User instability: [instability_status]"
+/obj/spellbutton/technomancer/Initialize(mapload, var/path, var/new_name, var/new_icon_state)
+	. = ..()
+	src.loc = loc
+	src.core = loc
 
 /obj/item/technomancer_core/proc/add_spell(var/path, var/new_name, var/ability_icon_state)
 	if(!path || !ispath(path))
 		message_admins("ERROR: /obj/item/technomancer_core/add_spell() was not given a proper path!  \
 		The path supplied was [path].")
 		return
-	var/obj/spellbutton/spell = new(src, path, new_name, ability_icon_state)
+	var/obj/spellbutton/technomancer/spell = new(src, path, new_name, ability_icon_state)
 	spells.Add(spell)
 	if(wearer)
 		wearer.ability_master.add_technomancer_ability(spell, ability_icon_state)

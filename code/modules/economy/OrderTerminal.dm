@@ -2,7 +2,7 @@
 	name = "Idris Ordering Terminal"
 	desc = "An ordering terminal designed by Idris for quicker expedition."
 	desc_info = "To edit the menu, select 'Toggle Lock' while wearing an ID with kitchen access. \nAll credits from the machine will automatically go to the civilian account."
-	icon = 'icons/obj/terminals.dmi'
+	icon = 'icons/obj/machinery/wall/terminals.dmi'
 	icon_state = "kitchenterminal"
 	anchored = 1
 	idle_power_usage = 10
@@ -22,7 +22,7 @@
 	var/ticket = ""
 	var/destinationact = "Service"
 	var/ticket_number = 1
-	req_one_access = list(access_bar, access_kitchen) // Access to change the menu
+	req_one_access = list(ACCESS_BAR, ACCESS_KITCHEN) // Access to change the menu
 
 /obj/machinery/orderterminal/Initialize()
 	. = ..()
@@ -39,7 +39,7 @@
 		set_light(FALSE)
 		return
 
-	var/mutable_appearance/screen_overlay = mutable_appearance(icon, "kitchenterminal-active", EFFECTS_ABOVE_LIGHTING_LAYER)
+	var/mutable_appearance/screen_overlay = mutable_appearance(icon, "kitchenterminal-active", plane = EFFECTS_ABOVE_LIGHTING_PLANE)
 	add_overlay(screen_overlay)
 	set_light(1.4, 1, COLOR_CYAN)
 
@@ -69,7 +69,6 @@
 	ticket_number++
 	T.set_content_unsafe(tickettname, ticket, sum)
 	stamp_receipt(T)
-	flick("kitchenterminal-receipt",src)
 
 /obj/machinery/orderterminal/proc/stamp_receipt(obj/item/paper/R) // Stamps the papers, made into a proc to avoid copy pasting too much
 	var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
@@ -80,11 +79,11 @@
 	R.add_overlay(stampoverlay)
 	R.stamps += "<HR><i>This paper has been stamped by the Idris Ordering Terminal.</i>"
 
-/obj/machinery/orderterminal/attackby(obj/O, mob/user)
-	var/obj/item/card/id/I = O.GetID()
+/obj/machinery/orderterminal/attackby(obj/item/attacking_item, mob/user)
+	var/obj/item/card/id/I = attacking_item.GetID()
 	if (!I)
 		return
-	if (!istype(O))
+	if (!istype(attacking_item))
 		return
 
 	else if (confirmorder)

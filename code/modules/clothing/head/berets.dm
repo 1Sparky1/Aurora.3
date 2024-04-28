@@ -4,7 +4,7 @@
 	icon = 'icons/obj/clothing/hats/berets.dmi'
 	icon_state = "beret"
 	item_state = "beret"
-	item_flags = SHOWFLAVORTEXT
+	item_flags = ITEM_FLAG_SHOW_FLAVOR_TEXT
 	contained_sprite = TRUE
 	siemens_coefficient = 0.9
 
@@ -13,6 +13,16 @@
 	item_state = "beret_colorable"
 
 /obj/item/clothing/head/beret/colorable/random/Initialize()
+	. = ..()
+	color = get_random_colour(TRUE)
+
+/obj/item/clothing/head/beret/peaked/colourable
+	name = "peaked beret"
+	desc = "A peaked beret."
+	icon_state = "beret_peaked_colourable"
+	item_state = "beret_peaked_colourable"
+
+/obj/item/clothing/head/beret/peaked/colourable/random/Initialize()
 	. = ..()
 	color = get_random_colour(TRUE)
 
@@ -172,10 +182,10 @@
 	icon_state = "orion"
 	item_state = "orion"
 
-// TCFL
+// TCAF
 
 /obj/item/clothing/head/beret/legion
-	name = "TCFL dress beret"
+	name = "\improper TCFL dress beret"
 	desc = "A pale blue dress beret with a rubber insignia of a torch, surrounded by red stars and the letters \"TCFL\". A common good luck charm among former legionaires."
 	icon_state = "tcfl_dress"
 	item_state = "tcfl_dress"
@@ -191,6 +201,20 @@
 	desc = "A hardy, stark purple sentinel beret with a rubber insignia of a torch, surrounded by red stars and the letters \"TCFL\"."
 	icon_state = "tcfl_sentinel"
 	item_state = "tcfl_sentinel"
+
+/obj/item/clothing/head/beret/legion/tcaf
+	name = "\improper TCAF dress beret"
+	desc = "A blue dress beret bearing the flag of the Republic of Biesel. Often only seen worn by in-service members of the Tau Ceti Armed Forces."
+	icon = 'icons/clothing/under/uniforms/tcaf_uniform.dmi'
+	contained_sprite = TRUE
+	icon_state = "tcaf_dress_beret"
+	item_state = "tcaf_dress_beret"
+
+/obj/item/clothing/head/beret/legion/tcaf/tcaf_field
+	name = "\improper TCAF field beret"
+	desc = "A red beret bearing a golden torch in semblance of the Republic of Biesel. Often only seen worn by in-service members of the Tau Ceti Armed Forces."
+	icon_state = "tcaf_field_beret"
+	item_state = "tcaf_field_beret"
 
 //centcom
 

@@ -1,14 +1,14 @@
 /obj/structure/plasticflaps //HOW DO YOU CALL THOSE THINGS ANYWAY
 	name = "\improper plastic flaps"
 	desc = "Completely impassable - or are they?"
-	icon = 'icons/obj/stationobjs.dmi' //Change this.
-	icon_state = "plasticflaps"
+	icon = 'icons/obj/structure/plasticflaps.dmi'
+	icon_state = "plasticflaps_preview"
 	density = 0
 	anchored = 1
-	layer = 4
+	layer = ABOVE_HUMAN_LAYER
 	explosion_resistance = 5
 	build_amt = 4
-
+	color = COLOR_GRAY20 // ideally this would get_step() the material color from nearby walls but this works for now.
 	atmos_canpass = CANPASS_PROC
 
 	var/manipulating = FALSE //Prevents queueing up a ton of deconstructs
@@ -23,8 +23,18 @@
 /obj/structure/plasticflaps/Initialize()
 	. = ..()
 	material = SSmaterials.get_material_by_name(MATERIAL_PLASTIC)
+	update_icon()
+
+/obj/structure/plasticflaps/update_icon()
+	. = ..()
+	icon_state = "plasticflaps"
+	var/image/plasticflaps_overlay = overlay_image(icon, "plasticflaps_overlay", null, RESET_COLOR)
+	if(dir == WEST || dir == EAST)
+		plasticflaps_overlay.pixel_y = -13
+	add_overlay(plasticflaps_overlay)
 
 /obj/structure/plasticflaps/Destroy()
+	cut_overlays()
 	if(airtight)
 		clear_airtight()
 	. = ..()
@@ -57,6 +67,10 @@
 	if(istype(A, /obj/vehicle))	//no vehicles
 		return 0
 
+	//Bots can always pass
+	if(isbot(A))
+		return TRUE
+
 	var/mob/living/M = A
 	if(istype(M))
 		if(M.lying)
@@ -79,13 +93,13 @@
 			if (prob(5))
 				qdel(src)
 
-/obj/structure/plasticflaps/attackby(obj/item/W, mob/user)
+/obj/structure/plasticflaps/attackby(obj/item/attacking_item, mob/user)
 	if(manipulating)	return
-	if(W.iswirecutter() || W.sharp && !W.noslice)
+	if(attacking_item.iswirecutter() || attacking_item.sharp && !attacking_item.noslice)
 		manipulating = TRUE
 		visible_message(SPAN_NOTICE("[user] begins cutting down \the [src]."),
 					SPAN_NOTICE("You begin cutting down \the [src]."))
-		if(!W.use_tool(src, user, 30, volume = 50))
+		if(!attacking_item.use_tool(src, user, 30, volume = 50))
 			manipulating = FALSE
 			return
 		visible_message(SPAN_NOTICE("[user] cuts down \the [src]."), SPAN_NOTICE("You cut down \the [src]."))
@@ -104,7 +118,6 @@
 /obj/structure/plasticflaps/airtight
 	name = "airtight plastic flaps"
 	desc = "Heavy duty, airtight, plastic flaps."
-	layer = 3
 	airtight = TRUE
 
 /obj/structure/plasticflaps/airtight/Initialize()

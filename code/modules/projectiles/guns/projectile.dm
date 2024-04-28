@@ -27,6 +27,11 @@
 	var/unjam_cooldown = 0      //Gives the unjammer some time after spamming unjam to not eject their mag
 	var/jam_chance = 0          //Chance it jams on fire
 
+	///Pixel offset for the suppressor overlay on the x axis.
+	var/suppressor_x_offset
+	///Pixel offset for the suppressor overlay on the y axis.
+	var/suppressor_y_offset
+
 	//TODO generalize ammo icon states for guns
 	//var/magazine_states = 0
 	//var/list/icon_keys = list()		//keys
@@ -42,6 +47,22 @@
 	if(ispath(magazine_type) && (load_method & MAGAZINE))
 		ammo_magazine = new magazine_type(src)
 	update_icon()
+
+/obj/item/gun/projectile/Destroy()
+	chambered = null
+	QDEL_NULL(ammo_magazine)
+	QDEL_LIST(loaded)
+	. = ..()
+
+/obj/item/gun/projectile/update_icon()
+	..()
+	if(suppressed)
+		var/mutable_appearance/MA = mutable_appearance('icons/obj/guns/suppressor.dmi', "suppressor")
+		if(suppressor_x_offset)
+			MA.pixel_x = suppressor_x_offset
+		if(suppressor_y_offset)
+			MA.pixel_y = suppressor_y_offset
+		underlays += MA
 
 /obj/item/gun/projectile/consume_next_projectile()
 	if(jam_num)
@@ -134,7 +155,7 @@
 				AM.forceMove(src)
 				ammo_magazine = AM
 				user.visible_message("[user] inserts [AM] into [src].", "<span class='notice'>You insert [AM] into [src].</span>")
-				playsound(src.loc, AM.insert_sound, 50, FALSE)
+				playsound(src.loc, AM.insert_sound, 50, extrarange = SHORT_RANGE_SOUND_EXTRARANGE)
 			if(SPEEDLOADER)
 				if(loaded.len >= max_shells)
 					to_chat(user,"<span class='warning'>[src] is full!</span>")
@@ -150,7 +171,7 @@
 						count++
 				if(count)
 					user.visible_message("[user] reloads [src].", "<span class='notice'>You load [count] round\s into [src] using \the [AM].</span>")
-					playsound(src.loc, AM.insert_sound, 50, FALSE)
+					playsound(src.loc, AM.insert_sound, 50, extrarange = SHORT_RANGE_SOUND_EXTRARANGE)
 		AM.update_icon()
 	else if(istype(A, /obj/item/ammo_casing))
 		var/obj/item/ammo_casing/C = A
@@ -168,7 +189,7 @@
 		C.forceMove(src)
 		loaded.Insert(1, C) //add to the head of the list
 		user.visible_message("[user] inserts \a [C] into [src].", "<span class='notice'>You insert \a [C] into [src].</span>")
-		playsound(src.loc, C.reload_sound, 50, FALSE)
+		playsound(src.loc, C.reload_sound, 50, extrarange = SILENCED_SOUND_EXTRARANGE) //Casings, aka single bullets, are extremely quiet
 	update_maptext()
 	update_icon()
 
@@ -180,7 +201,7 @@
 		else
 			user.put_in_hands(ammo_magazine)
 		user.visible_message("[user] removes [ammo_magazine] from [src].", "<span class='notice'>You remove [ammo_magazine] from [src].</span>")
-		playsound(src.loc, ammo_magazine.eject_sound, 50, FALSE)
+		playsound(src.loc, ammo_magazine.eject_sound, 50, extrarange = SHORT_RANGE_SOUND_EXTRARANGE, falloff_exponent = (SOUND_FALLOFF_EXPONENT+2))
 		ammo_magazine.update_icon()
 		ammo_magazine = null
 	else if(loaded.len)
@@ -191,7 +212,7 @@
 			if(T)
 				for(var/obj/item/ammo_casing/C in loaded)
 					C.forceMove(T)
-					playsound(C, /singleton/sound_category/casing_drop_sound, 50, FALSE)
+					playsound(C, /singleton/sound_category/casing_drop_sound, 50, extrarange = SILENCED_SOUND_EXTRARANGE, falloff_exponent = (SOUND_FALLOFF_EXPONENT+2))
 					count++
 				loaded.Cut()
 			if(count)
@@ -206,9 +227,29 @@
 	update_maptext()
 	update_icon()
 
-/obj/item/gun/projectile/attackby(obj/item/A, mob/user)
+/obj/item/gun/projectile/attackby(obj/item/attacking_item, mob/user)
 	. = ..()
-	load_ammo(A, user)
+	if(.)
+		return
+	load_ammo(attacking_item, user)
+	if(istype(attacking_item, /obj/item/suppressor))
+		var/obj/item/suppressor/S = attacking_item
+		if(!can_suppress)
+			balloon_alert(user, "\the [S.name] doesn't fit")
+			return
+
+		if(suppressed)
+			balloon_alert(user, "already has a suppressor")
+			return
+
+		if(user.l_hand != S && user.r_hand != S)
+			balloon_alert(user, "not in hand")
+			return
+
+		user.drop_from_inventory(suppressor, src)
+		balloon_alert(user, "[S.name] attached")
+		install_suppressor(S)
+		return
 
 /obj/item/gun/projectile/toggle_firing_mode(mob/user)
 	if(jam_num)
@@ -247,15 +288,17 @@
 		ammo_magazine = null
 		update_icon() //make sure to do this after unsetting ammo_magazine
 
-/obj/item/gun/projectile/examine(mob/user)
-	..(user)
-	if(get_dist(src, user) > 1)
+/obj/item/gun/projectile/get_examine_text(mob/user, distance, is_adjacent, infix, suffix)
+	. = ..()
+	if(distance > 1)
 		return
 	if(jam_num)
-		to_chat(user, "<span class='warning'>It looks jammed.</span>")
+		. += "<span class='warning'>It looks jammed.</span>"
 	if(ammo_magazine)
-		to_chat(user, "It has \a [ammo_magazine] loaded.")
-	to_chat(user, "Has [get_ammo()] round\s remaining.")
+		. += "It has \a [ammo_magazine] loaded."
+	if(suppressed)
+		. += "It has a suppressor attached."
+	. += "Has [get_ammo()] round\s remaining."
 	return
 
 /obj/item/gun/projectile/get_ammo()
@@ -290,3 +333,26 @@
 		else
 			. += "No magazine inserted.<br>"
 	. += ..(FALSE)
+
+///Installs a new suppressor, assumes that the suppressor is already in the contents of src
+/obj/item/gun/projectile/proc/install_suppressor(obj/item/suppressor/S)
+	suppressed = TRUE
+	w_class += S.w_class //Add our weight class to the item's weight class
+	suppressor = S
+	update_icon()
+
+/obj/item/gun/projectile/clear_suppressor()
+	if(!can_unsuppress)
+		return
+	if(istype(suppressor))
+		w_class -= suppressor.w_class
+	return ..()
+
+/obj/item/gun/projectile/AltClick(mob/user)
+	if(use_check_and_message(user))
+		return
+	if(suppressed && can_unsuppress)
+		balloon_alert(user, "[suppressor.name] removed")
+		user.put_in_hands(suppressor)
+		clear_suppressor()
+	return ..()

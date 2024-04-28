@@ -10,6 +10,7 @@
 	age_min = 50
 	age_max = 500
 	default_genders = list(PLURAL)
+	selectable_pronouns = null
 	economic_modifier = 12
 	icobase = 'icons/mob/human_races/skrell/r_skrell.dmi'
 	deform = 'icons/mob/human_races/skrell/r_def_skrell.dmi'
@@ -33,6 +34,7 @@
 	num_alternate_languages = 3
 	language = LANGUAGE_SKRELLIAN
 	name_language = LANGUAGE_SKRELLIAN
+	secondary_langs = list(LANGUAGE_SOL_COMMON)
 	rarity_value = 3
 
 	grab_mod = 2
@@ -59,13 +61,13 @@
 		)
 
 	has_organ = list(
+		BP_BRAIN =    /obj/item/organ/internal/brain/skrell,
+		BP_EYES =     /obj/item/organ/internal/eyes/skrell,
 		BP_HEART =    /obj/item/organ/internal/heart/skrell,
 		BP_LUNGS =    /obj/item/organ/internal/lungs/skrell,
 		BP_LIVER =    /obj/item/organ/internal/liver/skrell,
 		BP_KIDNEYS =  /obj/item/organ/internal/kidneys/skrell,
-		BP_BRAIN =    /obj/item/organ/internal/brain/skrell,
-		BP_STOMACH =  /obj/item/organ/internal/stomach,
-		BP_EYES =     /obj/item/organ/internal/eyes/skrell
+		BP_STOMACH =  /obj/item/organ/internal/stomach
 		)
 
 	pain_messages = list("I can't feel my headtails", "You really need some painkillers", "Stars above, the pain")
@@ -107,6 +109,9 @@
 
 	alterable_internal_organs = list(BP_HEART, BP_EYES, BP_LUNGS, BP_LIVER, BP_KIDNEYS, BP_STOMACH)
 
+	has_psionics = PSI_RANK_SENSITIVE
+	character_creation_psi_points = 2
+
 /datum/species/skrell/handle_trail(var/mob/living/carbon/human/H, var/turf/T)
 	var/list/trail_info = ..()
 	if(!length(trail_info) && !H.shoes)
@@ -117,10 +122,6 @@
 
 	return trail_info
 
-/datum/species/skrell/handle_post_spawn(mob/living/carbon/human/H)
-	..()
-	H.set_psi_rank(PSI_COERCION, PSI_RANK_OPERANT)
-
 /datum/species/skrell/handle_strip(var/mob/user, var/mob/living/carbon/human/H, var/action)
 	switch(action)
 		if("headtail")
@@ -128,7 +129,7 @@
 				to_chat(user, SPAN_WARNING("\The [H] doesn't have a head!"))
 				return
 			user.visible_message(SPAN_WARNING("\The [user] is trying to remove something from \the [H]'s headtails!"))
-			if(do_after(user, HUMAN_STRIP_DELAY, act_target = H))
+			if(do_after(user, HUMAN_STRIP_DELAY, do_flags = DO_EQUIP))
 				var/obj/item/storage/internal/skrell/S = locate() in H.organs_by_name[BP_HEAD]
 				var/obj/item/I = locate() in S
 				if(!I)
@@ -141,7 +142,4 @@
 	return "<BR><A href='?src=[reference];species=headtail'>Empty Headtail Storage</A>"
 
 /datum/species/skrell/can_breathe_water()
-	return TRUE
-
-/datum/species/skrell/can_commune()
 	return TRUE

@@ -1,4 +1,11 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"aaa" = (
+/obj/machinery/door/airlock/glass{
+	name = "Hangar A";
+	dir = 1
+	},
+/turf/simulated/floor/plating,
+/area/racers)
 "aaI" = (
 /obj/structure/curtain/open/bed,
 /obj/structure/bed/padded,
@@ -8,7 +15,7 @@
 "aaM" = (
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/structure/disposalpipe/segment,
 /obj/structure/bed/stool/bar/padded/red,
@@ -29,7 +36,7 @@
 	},
 /mob/living/simple_animal/hostile/carp,
 /obj/machinery/atmospherics/binary/pump/high_power,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "abW" = (
 /obj/item/rig/eva,
@@ -43,12 +50,9 @@
 /turf/simulated/floor/plating,
 /area/racers)
 "acY" = (
-/obj/structure/lattice/catwalk/indoor/grate,
-/obj/structure/bed/stool/chair/plastic{
-	dir = 1
-	},
-/turf/simulated/floor/shuttle/red,
-/area/racers)
+/obj/effect/map_effect/window_spawner/full/shuttle,
+/turf/simulated/floor/plating,
+/area/shuttle/racers_red)
 "ade" = (
 /obj/effect/decal/cleanable/ash,
 /obj/effect/decal/remains/human,
@@ -58,7 +62,7 @@
 /area/racers)
 "afE" = (
 /obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "aho" = (
 /obj/machinery/light_switch{
@@ -71,7 +75,7 @@
 	dir = 10
 	},
 /obj/machinery/space_heater,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "aik" = (
 /obj/effect/floor_decal/sign/a,
@@ -88,9 +92,9 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "amd" = (
 /obj/structure/disposalpipe/segment{
@@ -127,7 +131,7 @@
 /obj/machinery/computer/security/telescreen/entertainment{
 	pixel_y = 17
 	},
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "aou" = (
 /obj/structure/table/stone/marble,
@@ -144,7 +148,7 @@
 /obj/machinery/light/colored/red{
 	dir = 4
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "apD" = (
 /obj/item/reagent_containers/glass/beaker/vial/random/toxin,
@@ -155,7 +159,7 @@
 	dir = 5
 	},
 /obj/machinery/space_heater,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "ari" = (
 /obj/structure/table/stone/marble,
@@ -164,8 +168,12 @@
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
 "arm" = (
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
+"arT" = (
+/obj/effect/shuttle_landmark/red_racer_transit,
+/turf/space/transit,
+/area/space)
 "arY" = (
 /turf/simulated/floor/airless,
 /area/racers)
@@ -181,7 +189,8 @@
 /area/racers)
 "asO" = (
 /obj/machinery/door/airlock/glass{
-	name = "Hangar D"
+	name = "Hangar D";
+	dir = 1
 	},
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
@@ -200,7 +209,7 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 4
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "awY" = (
 /obj/structure/lattice/catwalk/indoor/grate/damaged,
@@ -208,34 +217,34 @@
 /area/racers)
 "axm" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/machinery/door/airlock/silver,
-/turf/simulated/floor/tiled/steel,
+/obj/machinery/door/airlock/silver{
+	dir = 1
+	},
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "aAE" = (
 /obj/machinery/computer/ship/engines{
 	dir = 4
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/machinery/door/window{
-	dir = 8
-	},
 /obj/item/tank/jetpack/void,
-/obj/machinery/light/colored/blue{
-	dir = 8
+/obj/machinery/atmospherics/pipe/simple/visible{
+	dir = 6
 	},
 /turf/simulated/floor/shuttle/dark_blue,
-/area/racers)
+/area/shuttle/racers_blue)
 "aDe" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 9
 	},
 /obj/structure/blocker,
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "aDG" = (
 /obj/machinery/door/airlock/glass{
-	name = "Bar"
+	name = "Bar";
+	dir = 4
 	},
 /turf/simulated/floor/plating,
 /area/racers)
@@ -262,9 +271,9 @@
 	},
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "aHs" = (
 /obj/machinery/stargazer,
@@ -274,7 +283,8 @@
 "aHt" = (
 /obj/machinery/door/airlock/silver{
 	bolt_cut_state = 1;
-	name = "Toilet"
+	name = "Toilet";
+	dir = 1
 	},
 /obj/machinery/atmospherics/pipe/simple/visible,
 /obj/item/tape/engineering,
@@ -292,22 +302,21 @@
 	dir = 1
 	},
 /obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "aIw" = (
 /obj/item/material/shard/wood,
 /turf/simulated/floor/wood,
 /area/racers)
 "aJd" = (
-/obj/machinery/newscaster{
-	pixel_x = 30
-	},
+/obj/machinery/newscaster/east,
 /obj/item/stack/material/wood,
 /turf/simulated/floor/wood,
 /area/racers)
 "aJp" = (
 /obj/machinery/door/airlock/maintenance_hatch{
-	name = "Fueling Station"
+	name = "Fueling Station";
+	dir = 4
 	},
 /obj/structure/sign/christmas/wreath,
 /turf/simulated/floor/plating,
@@ -340,7 +349,7 @@
 /area/racers)
 "aXb" = (
 /obj/effect/decal/cleanable/blood/gibs/body,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "aYq" = (
 /obj/effect/floor_decal/industrial/warning{
@@ -348,9 +357,9 @@
 	},
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "aYB" = (
 /obj/machinery/atmospherics/pipe/manifold/visible{
@@ -369,7 +378,7 @@
 /area/racers)
 "bdk" = (
 /obj/structure/foamedmetal,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "bds" = (
 /obj/effect/floor_decal/spline/fancy/wood/cee{
@@ -402,7 +411,7 @@
 "bhz" = (
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/effect/floor_decal/corner_wide/beige{
 	dir = 5
@@ -420,10 +429,10 @@
 	},
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/effect/spider/stickyweb,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "ble" = (
 /obj/structure/lattice,
@@ -436,7 +445,7 @@
 "bmN" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/item/storage/toolbox/mechanical,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "bnS" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -446,11 +455,9 @@
 	pixel_y = 9
 	},
 /obj/item/material/knife{
-	layer = 2.99;
 	pixel_x = -9
 	},
 /obj/item/storage/box/produce{
-	layer = 2.99;
 	pixel_x = 3
 	},
 /turf/simulated/floor/tiled/white,
@@ -468,14 +475,14 @@
 "bqv" = (
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/structure/foamedmetal,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "bsl" = (
 /obj/item/trash/ramen,
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "bwf" = (
 /obj/structure/closet/walllocker/medical{
@@ -492,13 +499,12 @@
 /area/racers)
 "bwR" = (
 /obj/structure/closet/walllocker/emerglocker/north,
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "bzZ" = (
-/obj/machinery/door/airlock/glass{
-	name = "Hangar A"
+/turf/unsimulated/wall/fakepdoor{
+	dir = 4
 	},
-/turf/simulated/floor/plating,
 /area/racers)
 "bBD" = (
 /obj/item/pipe{
@@ -509,14 +515,16 @@
 /obj/item/storage/box/fancy/cigarettes/dpra{
 	pixel_y = 9
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "bDs" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
 /obj/machinery/light/small/emergency,
-/obj/machinery/atmospherics/pipe/manifold4w/visible,
+/obj/machinery/atmospherics/pipe/simple/visible{
+	dir = 8
+	},
 /turf/simulated/floor/shuttle/white,
-/area/racers)
+/area/shuttle/racers_blue)
 "bEp" = (
 /obj/structure/lattice/catwalk/indoor/grate,
 /turf/simulated/floor/plating,
@@ -524,7 +532,8 @@
 "bEs" = (
 /obj/item/tape/engineering,
 /obj/machinery/door/airlock/glass{
-	name = "Hangar C"
+	name = "Hangar C";
+	dir = 1
 	},
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
@@ -579,13 +588,13 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 8
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "bXJ" = (
 /obj/item/device/radio/beacon{
 	name = "hangar B beacon"
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "bZe" = (
 /obj/machinery/computer/ship/sensors,
@@ -605,21 +614,21 @@
 /obj/effect/decal/remains/robot,
 /obj/effect/decal/cleanable/blood/oil,
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "ckS" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/floor_decal/industrial/warning{
 	dir = 8
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "clM" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 4
 	},
 /mob/living/simple_animal/hostile/gnat,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "cqj" = (
 /obj/structure/table/wood/gamblingtable,
@@ -634,7 +643,7 @@
 /turf/simulated/floor/carpet/art,
 /area/racers)
 "ctn" = (
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "cuQ" = (
 /obj/structure/bed/stool/bar/padded/red,
@@ -657,7 +666,7 @@
 "cBN" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/floodlight,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "cDC" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -688,13 +697,13 @@
 "cLu" = (
 /obj/effect/decal/cleanable/dirt,
 /mob/living/simple_animal/hostile/carp,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "cLC" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "cPh" = (
 /obj/item/stack/material/plasteel{
@@ -709,7 +718,7 @@
 /obj/machinery/light/colored/red{
 	dir = 4
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "cUh" = (
 /obj/structure/largecrate/hoverpod,
@@ -733,23 +742,27 @@
 /turf/simulated/floor/tiled/white/airless,
 /area/racers)
 "cZT" = (
-/obj/structure/window/reinforced{
-	dir = 1
-	},
-/obj/machinery/atmospherics/binary/pump/high_power{
-	dir = 1
-	},
 /obj/effect/floor_decal/industrial/warning{
 	dir = 4
 	},
 /obj/effect/floor_decal/industrial/warning{
 	dir = 8
 	},
+/obj/structure/window/reinforced{
+	dir = 8
+	},
+/obj/structure/window/reinforced{
+	dir = 4
+	},
+/obj/machinery/door/window/southleft,
+/obj/effect/landmark/entry_point/fore{
+	name = "aft"
+	},
 /turf/simulated/floor,
-/area/racers)
+/area/shuttle/racers_blue)
 "dbs" = (
 /obj/item/trash/cigbutt,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "dcL" = (
 /obj/structure/closet/crate/trashcart,
@@ -769,12 +782,12 @@
 	dir = 4
 	},
 /obj/machinery/space_heater,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "dkB" = (
 /obj/machinery/vending/zora,
 /obj/machinery/light{
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/effect/floor_decal/corner_wide/beige{
 	dir = 10
@@ -846,7 +859,8 @@
 "dId" = (
 /obj/item/tape/engineering,
 /obj/machinery/door/airlock/glass{
-	name = "Hangar C"
+	name = "Hangar C";
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/racers)
@@ -872,7 +886,7 @@
 /obj/machinery/atmospherics/portables_connector{
 	dir = 1
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "ecl" = (
 /obj/structure/lattice/catwalk/indoor/grate,
@@ -898,10 +912,16 @@
 /turf/simulated/floor/plating,
 /area/racers)
 "eoH" = (
-/obj/structure/grille,
-/obj/structure/shuttle/window,
+/obj/effect/map_effect/window_spawner/full/shuttle,
 /turf/simulated/floor/plating,
-/area/racers)
+/area/shuttle/racers_blue)
+"epG" = (
+/obj/effect/floor_decal/industrial/warning{
+	dir = 5
+	},
+/obj/machinery/iff_beacon/name_change,
+/turf/simulated/floor,
+/area/shuttle/racers_blue)
 "esD" = (
 /obj/effect/map_effect/window_spawner/full/reinforced,
 /obj/effect/map_effect/airlock/w_to_e,
@@ -917,7 +937,9 @@
 /turf/simulated/floor/tiled/white,
 /area/racers)
 "euI" = (
-/obj/machinery/door/airlock/glass,
+/obj/machinery/door/airlock/glass{
+	dir = 1
+	},
 /obj/machinery/door/blast/regular{
 	id = "pet"
 	},
@@ -941,11 +963,8 @@
 /obj/machinery/atmospherics/pipe/simple/visible{
 	dir = 10
 	},
-/obj/machinery/light/colored/red{
-	dir = 4
-	},
-/turf/simulated/wall/shuttle/space_ship/cardinal,
-/area/racers)
+/turf/simulated/wall/shuttle/space_ship,
+/area/shuttle/racers_red)
 "eBa" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
 /obj/effect/spider/cocoon,
@@ -954,7 +973,7 @@
 "eBX" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/structure/closet/crate/critter,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "eCV" = (
 /obj/item/material/stool/bar,
@@ -988,7 +1007,7 @@
 	pixel_x = 4;
 	pixel_y = 5
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "eNp" = (
 /obj/structure/shuttle/engine/propulsion{
@@ -1002,11 +1021,11 @@
 /area/racers)
 "eQo" = (
 /obj/machinery/vending/engivend,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "eRG" = (
 /obj/item/clothing/head/beret/cargo,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "eSy" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -1017,20 +1036,20 @@
 "eSF" = (
 /mob/living/simple_animal/hostile/gnat,
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "eSJ" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
 	},
 /obj/structure/foamedmetal,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "eTi" = (
 /obj/machinery/floodlight{
 	dir = 1
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "eTk" = (
 /obj/machinery/portable_atmospherics/canister/oxygen,
@@ -1049,11 +1068,11 @@
 "eUA" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/girder/displaced,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "eXt" = (
 /obj/effect/decal/cleanable/blood/oil,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "eYu" = (
 /obj/structure/closet/wardrobe/orange,
@@ -1084,13 +1103,14 @@
 /area/racers)
 "fgX" = (
 /obj/machinery/door/airlock/glass{
-	name = "Bar"
+	name = "Bar";
+	dir = 4
 	},
 /turf/simulated/floor/tiled,
 /area/racers)
 "fic" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
-/obj/item/book/manual/tcfl_pamphlet,
+/obj/item/book/manual/tcaf_pamphlet,
 /turf/simulated/floor/tiled/white,
 /area/racers)
 "fjZ" = (
@@ -1109,23 +1129,23 @@
 	dir = 2
 	},
 /obj/item/trash/ramen,
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "fpS" = (
 /obj/machinery/light{
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/template_noop,
 /area/space)
 "frf" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
-/obj/structure/closet/secure_closet/freezer/fridge,
+/obj/structure/closet/secure_closet/refrigerator/standard,
 /obj/item/storage/box/fancy/egg_box,
 /obj/item/storage/box/fancy/egg_box,
-/obj/item/reagent_containers/food/drinks/soymilk,
-/obj/item/reagent_containers/food/drinks/soymilk,
-/obj/item/reagent_containers/food/drinks/milk,
-/obj/item/reagent_containers/food/drinks/milk,
+/obj/item/reagent_containers/food/drinks/carton/soymilk,
+/obj/item/reagent_containers/food/drinks/carton/soymilk,
+/obj/item/reagent_containers/food/drinks/carton/milk,
+/obj/item/reagent_containers/food/drinks/carton/milk,
 /obj/machinery/light/colored/red{
 	dir = 1
 	},
@@ -1135,7 +1155,7 @@
 /obj/machinery/smartfridge/drinks{
 	opacity = 1
 	},
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "fsx" = (
 /obj/effect/floor_decal/industrial/warning,
@@ -1143,7 +1163,7 @@
 /area/racers)
 "fts" = (
 /obj/item/storage/toolbox/mechanical,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "fwz" = (
 /obj/structure/sign/directions/medical{
@@ -1156,7 +1176,9 @@
 /turf/simulated/wall/rusty,
 /area/racers)
 "fxe" = (
-/obj/machinery/door/airlock/glass,
+/obj/machinery/door/airlock/glass{
+	dir = 1
+	},
 /turf/simulated/floor/plating,
 /area/racers)
 "fzS" = (
@@ -1166,7 +1188,7 @@
 /area/racers)
 "fAo" = (
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "fBB" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -1175,7 +1197,7 @@
 /area/racers)
 "fCF" = (
 /obj/machinery/suit_cycler,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "fCL" = (
 /obj/structure/sign/securearea,
@@ -1221,15 +1243,15 @@
 "fSX" = (
 /obj/structure/disposalpipe/segment,
 /obj/item/trash/ramen,
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "fVz" = (
-/obj/machinery/atmospherics/pipe/simple/visible{
-	dir = 6
-	},
 /obj/effect/floor_decal/industrial/outline/yellow,
+/obj/machinery/atmospherics/binary/pump/high_power{
+	dir = 8
+	},
 /turf/simulated/floor/shuttle/white,
-/area/racers)
+/area/shuttle/racers_red)
 "fWy" = (
 /obj/effect/decal/cleanable/liquid_fuel,
 /obj/effect/floor_decal/industrial/hatch/red,
@@ -1241,7 +1263,9 @@
 /turf/simulated/floor/plating,
 /area/racers)
 "fZJ" = (
-/obj/machinery/door/airlock/sac,
+/obj/machinery/door/airlock/external{
+	dir = 4
+	},
 /turf/simulated/floor/plating,
 /area/racers)
 "gaA" = (
@@ -1253,18 +1277,11 @@
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
 "gbn" = (
-/obj/machinery/computer/shuttle_control/explore/tcfl_shuttle{
+/obj/machinery/computer/shuttle_control/explore/blue_racer{
 	dir = 4
 	},
-/obj/machinery/door/window{
-	dir = 8
-	},
-/obj/item/tank/jetpack/rig,
-/obj/machinery/light/colored/blue{
-	dir = 8
-	},
 /turf/simulated/floor/shuttle/dark_blue,
-/area/racers)
+/area/shuttle/racers_blue)
 "gbX" = (
 /turf/unsimulated/wall/fakepdoor,
 /area/racers)
@@ -1291,7 +1308,7 @@
 "gfX" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/structure/closet/crate/loot,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "ggZ" = (
 /obj/machinery/space_heater,
@@ -1305,16 +1322,16 @@
 "ghl" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/vending/engivend,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "gjh" = (
 /obj/machinery/vending/cigarette/hacked,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "gki" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/effect/shuttle_landmark/automatic,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "gkj" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -1325,7 +1342,7 @@
 "glr" = (
 /obj/structure/closet/lasertag/blue,
 /obj/item/holo/esword,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "gmi" = (
 /obj/machinery/atm{
@@ -1348,13 +1365,13 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/lattice/catwalk,
 /obj/effect/floor_decal/industrial/loading/yellow,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "gxE" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 10
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "gxW" = (
 /obj/structure/bed/stool/chair/office/bridge/pilot{
@@ -1405,7 +1422,7 @@
 "gTv" = (
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/wood,
 /area/racers)
@@ -1437,6 +1454,13 @@
 /obj/machinery/door/blast/regular/open,
 /turf/simulated/floor/airless,
 /area/racers)
+"heO" = (
+/obj/effect/floor_decal/industrial/warning{
+	dir = 9
+	},
+/obj/machinery/shipsensors/weak,
+/turf/simulated/floor,
+/area/shuttle/racers_red)
 "hgd" = (
 /obj/structure/bed/stool/chair/wood/wings{
 	dir = 4
@@ -1478,7 +1502,7 @@
 "hmL" = (
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/machinery/atm{
 	pixel_x = 29
@@ -1488,7 +1512,7 @@
 "hnS" = (
 /obj/structure/shuttle/window,
 /obj/structure/grille,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "hoF" = (
 /obj/item/storage/bag/inflatable/emergency,
@@ -1497,7 +1521,7 @@
 "hqD" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/structure/reagent_dispensers/fueltank,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "hus" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -1527,7 +1551,7 @@
 	dir = 10
 	},
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "hyW" = (
 /obj/structure/disposalpipe/segment,
@@ -1537,32 +1561,33 @@
 "hzI" = (
 /obj/structure/table,
 /obj/item/storage/toolbox/mechanical,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "hAq" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/floodlight,
 /obj/effect/shuttle_landmark/automatic,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "hAS" = (
-/obj/structure/window/reinforced{
-	dir = 1
-	},
-/obj/machinery/portable_atmospherics/canister/carbon_dioxide,
-/obj/machinery/atmospherics/portables_connector{
-	dir = 1;
-	layer = 2.8
-	},
-/obj/structure/lattice/catwalk/indoor/grate,
 /obj/effect/floor_decal/industrial/warning{
 	dir = 8
 	},
 /obj/effect/floor_decal/industrial/warning{
 	dir = 4
 	},
+/obj/structure/window/reinforced{
+	dir = 8
+	},
+/obj/structure/window/reinforced{
+	dir = 4
+	},
+/obj/machinery/door/window/southleft,
+/obj/effect/landmark/entry_point/fore{
+	name = "aft"
+	},
 /turf/simulated/floor,
-/area/racers)
+/area/shuttle/racers_red)
 "hBd" = (
 /obj/structure/disposalpipe/segment{
 	dir = 4;
@@ -1573,9 +1598,15 @@
 "hEY" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
 /obj/machinery/meter,
-/obj/machinery/atmospherics/pipe/manifold4w/visible,
+/obj/machinery/atmospherics/pipe/manifold/visible{
+	dir = 1
+	},
+/obj/structure/fuel_port/phoron{
+	pixel_x = 27;
+	pixel_y = 4
+	},
 /turf/simulated/floor/shuttle/red,
-/area/racers)
+/area/shuttle/racers_red)
 "hFr" = (
 /obj/effect/floor_decal/corner_wide/beige{
 	dir = 9
@@ -1611,7 +1642,7 @@
 /obj/item/clothing/suit/storage/toggle/varsity/purple,
 /obj/item/clothing/suit/storage/toggle/leather_jacket/designer/red,
 /obj/machinery/light{
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
@@ -1664,11 +1695,11 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 4
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "imr" = (
 /obj/effect/decal/remains/robot,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "ink" = (
 /obj/structure/shuttle/engine/propulsion,
@@ -1690,7 +1721,7 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/table,
 /obj/item/spacecash/c10,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "iux" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
@@ -1698,17 +1729,11 @@
 /obj/machinery/atmospherics/pipe/simple/visible{
 	dir = 10
 	},
-/obj/machinery/door/window{
-	dir = 4
-	},
-/obj/machinery/light/colored/blue{
-	dir = 4
-	},
 /turf/simulated/floor/shuttle/dark_blue,
-/area/racers)
+/area/shuttle/racers_blue)
 "iwj" = (
 /obj/vehicle/train/cargo/engine/pussywagon,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "iwl" = (
 /mob/living/simple_animal/hostile/rogue_drone,
@@ -1736,20 +1761,21 @@
 "iGt" = (
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/machinery/portable_atmospherics/powered/pump/filled,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "iGv" = (
 /obj/effect/decal/cleanable/liquid_fuel,
 /obj/item/storage/bag/inflatable,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "iHR" = (
 /obj/machinery/door/airlock/maintenance{
 	name = "Kitchen";
-	req_access = list(202)
+	req_access = list(202);
+	dir = 4
 	},
 /obj/effect/spider/stickyweb,
 /obj/item/tape/medical,
@@ -1763,7 +1789,7 @@
 /obj/item/device/gps,
 /obj/machinery/camera/network/thunder,
 /turf/simulated/floor/shuttle/dark_blue,
-/area/racers)
+/area/shuttle/racers_blue)
 "iKO" = (
 /obj/structure/blocker,
 /turf/simulated/floor/plating,
@@ -1786,7 +1812,7 @@
 /turf/simulated/floor/plating,
 /area/racers)
 "iSh" = (
-/obj/structure/flora/pottedplant/random,
+/obj/random/pottedplant,
 /turf/simulated/floor/wood,
 /area/racers)
 "iVB" = (
@@ -1824,9 +1850,9 @@
 "jaL" = (
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "jcl" = (
 /obj/effect/decal/cleanable/dirt,
@@ -1864,14 +1890,14 @@
 	},
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/racers)
 "jff" = (
 /obj/effect/decal/remains/robot/burned,
 /obj/effect/decal/cleanable/blood/oil,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "jfg" = (
 /obj/structure/inflatable/wall,
@@ -1884,7 +1910,7 @@
 /obj/random/colored_jumpsuit,
 /obj/random/colored_jumpsuit,
 /obj/random/colored_jumpsuit,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "jgx" = (
 /obj/effect/decal/cleanable/blood/drip,
@@ -1895,7 +1921,7 @@
 /obj/machinery/light/colored/red{
 	dir = 1
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "jiL" = (
 /obj/structure/table/steel,
@@ -1909,16 +1935,16 @@
 /area/racers)
 "jjQ" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/machinery/atmospherics/portables_connector{
-	layer = 2.8
+/obj/machinery/atmospherics/binary/pump/high_power{
+	dir = 8
 	},
 /turf/simulated/floor/shuttle/white,
-/area/racers)
+/area/shuttle/racers_blue)
 "jko" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "jmo" = (
 /obj/structure/disposalpipe/segment{
@@ -1926,7 +1952,7 @@
 	icon_state = "pipe-c"
 	},
 /obj/item/trash/ramen,
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "jnH" = (
 /obj/structure/largecrate/hoverpod,
@@ -1937,7 +1963,7 @@
 /area/racers)
 "jnP" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
-/obj/structure/closet/secure_closet/freezer/kitchen{
+/obj/structure/closet/secure_closet/kitchen_cabinet/standard{
 	req_access = list(202)
 	},
 /obj/item/reagent_containers/food/condiment/flour,
@@ -1969,7 +1995,7 @@
 "jtP" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/item/screwdriver,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "jwk" = (
 /obj/structure/bed/stool/bar/padded/red,
@@ -2014,7 +2040,7 @@
 "jBw" = (
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/racers)
@@ -2059,7 +2085,7 @@
 "jIJ" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/item/device/suit_cooling_unit,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "jIR" = (
 /turf/simulated/floor/holofloor/tiled,
@@ -2074,7 +2100,7 @@
 /turf/simulated/floor/plating,
 /area/racers)
 "jMP" = (
-/obj/structure/bed/stool/chair/sofa/corner/red{
+/obj/structure/bed/stool/chair/sofa/corner/concave/red{
 	dir = 8
 	},
 /turf/simulated/floor/carpet,
@@ -2097,7 +2123,7 @@
 "jYM" = (
 /obj/item/trash/ramen,
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "jYS" = (
 /obj/machinery/atmospherics/binary/pump/high_power{
@@ -2107,7 +2133,8 @@
 /area/racers)
 "jZV" = (
 /obj/machinery/door/airlock/maintenance_hatch{
-	name = "Backroom"
+	name = "Backroom";
+	dir = 1
 	},
 /obj/structure/curtain/open/privacy,
 /turf/simulated/floor/plating,
@@ -2123,7 +2150,7 @@
 "kcD" = (
 /obj/structure/flora/rock/pile,
 /obj/effect/decal/cleanable/ash,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "kcN" = (
 /obj/item/stack/cable_coil/cyan,
@@ -2136,16 +2163,16 @@
 /obj/item/device/radio/beacon{
 	name = "hangar D beacon"
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "knU" = (
 /obj/effect/decal/cleanable/ash,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "kpR" = (
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/plating,
 /area/racers)
@@ -2154,7 +2181,7 @@
 	dir = 1
 	},
 /mob/living/simple_animal/hostile/gnat,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "kve" = (
 /mob/living/simple_animal/hostile/carp/shark,
@@ -2170,7 +2197,7 @@
 "kzC" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "kBp" = (
 /obj/item/storage/firstaid/fire,
@@ -2199,12 +2226,11 @@
 /area/racers)
 "kFu" = (
 /obj/item/device/suit_cooling_unit,
-/obj/effect/shuttle_landmark/automatic,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "kFN" = (
 /obj/item/trash/chips,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "kGq" = (
 /obj/structure/largecrate/hoverpod,
@@ -2213,8 +2239,8 @@
 /turf/simulated/floor/plating,
 /area/racers)
 "kHl" = (
-/turf/unsimulated/floor/plating,
-/area/racers)
+/turf/simulated/wall/shuttle/space_ship,
+/area/shuttle/racers_blue)
 "kHp" = (
 /obj/machinery/atmospherics/pipe/simple/visible{
 	dir = 6
@@ -2242,7 +2268,7 @@
 	req_access = list(202)
 	},
 /obj/structure/disposalpipe/segment,
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "kML" = (
 /obj/structure/closet/crate/hydroponics,
@@ -2261,12 +2287,12 @@
 	dir = 4
 	},
 /obj/structure/largecrate/animal/pig,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "kOW" = (
 /obj/vehicle/train/cargo/engine,
 /obj/effect/decal/cleanable/blood/drip,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "kQK" = (
 /obj/machinery/door/airlock/multi_tile/glass,
@@ -2275,22 +2301,18 @@
 "kUw" = (
 /obj/effect/decal/cleanable/dirt,
 /mob/living/simple_animal/hostile/carp/shark,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "kWr" = (
-/obj/structure/grille,
-/obj/structure/shuttle/window,
-/obj/machinery/light/colored/blue{
-	dir = 8
-	},
-/turf/simulated/floor/plating,
-/area/racers)
+/obj/effect/step_trigger/teleporter,
+/turf/space/transit,
+/area/space)
 "lbT" = (
 /mob/living/simple_animal/hostile/rogue_drone,
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
 "lev" = (
-/obj/structure/bed/stool/chair/sofa/corner/red{
+/obj/structure/bed/stool/chair/sofa/corner/concave/red{
 	dir = 1
 	},
 /turf/simulated/floor/carpet,
@@ -2304,7 +2326,7 @@
 "liU" = (
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/template_noop,
 /area/space)
@@ -2333,7 +2355,7 @@
 /obj/item/device/suit_cooling_unit,
 /obj/item/device/suit_cooling_unit,
 /obj/item/device/suit_cooling_unit,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "lsj" = (
 /obj/structure/table/steel,
@@ -2367,10 +2389,10 @@
 	dir = 1
 	},
 /turf/simulated/floor,
-/area/racers)
+/area/shuttle/racers_red)
 "lvc" = (
 /obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "lwM" = (
 /obj/item/trash/liquidfood,
@@ -2378,10 +2400,17 @@
 /obj/effect/floor_decal/industrial/hatch/yellow,
 /turf/simulated/floor/plating,
 /area/racers)
+"lye" = (
+/obj/effect/floor_decal/industrial/warning{
+	dir = 5
+	},
+/obj/machinery/iff_beacon/name_change,
+/turf/simulated/floor,
+/area/shuttle/racers_red)
 "lyI" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/porta_turret_construct,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "lyU" = (
 /obj/item/screwdriver,
@@ -2397,7 +2426,7 @@
 /area/racers)
 "lCh" = (
 /obj/item/trash/cigbutt/sausagebutt,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "lEO" = (
 /obj/machinery/atm{
@@ -2411,7 +2440,7 @@
 /obj/machinery/light/colored/red{
 	dir = 1
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "lIg" = (
 /obj/structure/bed/stool/chair/wood{
@@ -2425,8 +2454,11 @@
 /area/racers)
 "lLP" = (
 /obj/effect/decal/cleanable/blood/drip,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
+"lMF" = (
+/turf/simulated/wall/shuttle/space_ship,
+/area/shuttle/racers_red)
 "lNR" = (
 /obj/item/spacecash/c1{
 	pixel_x = 6;
@@ -2435,24 +2467,17 @@
 /turf/simulated/floor/plating,
 /area/racers)
 "lNT" = (
-/obj/machinery/door/window{
-	dir = 8
-	},
-/obj/item/tank/jetpack/rig,
-/obj/structure/window/reinforced{
-	dir = 1
-	},
-/obj/machinery/light/colored/red{
-	dir = 8
+/obj/machinery/computer/shuttle_control/explore/red_racer{
+	dir = 4
 	},
 /turf/simulated/floor/shuttle/red,
-/area/racers)
+/area/shuttle/racers_red)
 "lQd" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
 	},
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "lQO" = (
 /obj/structure/largecrate/hoverpod,
@@ -2461,7 +2486,7 @@
 "lRT" = (
 /obj/machinery/light{
 	dir = 4;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/structure/table/glass,
 /obj/machinery/computer/security/telescreen/entertainment{
@@ -2476,6 +2501,10 @@
 /mob/living/simple_animal/hostile/rogue_drone,
 /turf/simulated/floor/carpet,
 /area/racers)
+"lUd" = (
+/obj/effect/map_effect/window_spawner/full/shuttle,
+/turf/simulated/floor,
+/area/shuttle/racers_red)
 "lVZ" = (
 /obj/structure/girder,
 /obj/machinery/computer/security/telescreen/entertainment,
@@ -2509,7 +2538,7 @@
 /obj/machinery/reagentgrinder{
 	pixel_y = 6
 	},
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "mkM" = (
 /obj/item/material/lock_construct,
@@ -2522,7 +2551,7 @@
 /area/racers)
 "moJ" = (
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "mrH" = (
 /obj/effect/decal/remains/human,
@@ -2549,7 +2578,7 @@
 /area/racers)
 "muu" = (
 /obj/structure/bookcase,
-/obj/item/reagent_containers/food/drinks/golden_cup,
+/obj/item/reagent_containers/food/drinks/trophy/gold_cup,
 /obj/item/gun/energy/stunrevolver{
 	pixel_x = -2;
 	pixel_y = -3
@@ -2557,17 +2586,18 @@
 /turf/simulated/floor/wood,
 /area/racers)
 "mxk" = (
-/obj/machinery/atmospherics/portables_connector{
-	dir = 1;
-	layer = 2.8
+/obj/effect/floor_decal/industrial/warning{
+	dir = 8
 	},
-/obj/machinery/portable_atmospherics/canister/carbon_dioxide,
-/obj/structure/lattice/catwalk/indoor/grate,
+/obj/effect/floor_decal/industrial/warning{
+	dir = 4
+	},
+/obj/effect/shuttle_landmark/blue_racer_hangar,
 /turf/simulated/floor,
 /area/racers)
 "mxz" = (
 /obj/structure/inflatable/wall,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "mxN" = (
 /obj/effect/decal/cleanable/dirt,
@@ -2585,7 +2615,7 @@
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/light/colored/red,
 /obj/structure/closet/crate/loot,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "mCN" = (
 /obj/machinery/atmospherics/portables_connector{
@@ -2629,14 +2659,15 @@
 	dir = 10
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/machinery/door/window{
-	dir = 4
-	},
 /obj/machinery/light/colored/red{
 	dir = 4
 	},
+/obj/machinery/portable_atmospherics/canister/carbon_dioxide,
+/obj/machinery/atmospherics/portables_connector{
+	dir = 8
+	},
 /turf/simulated/floor/shuttle/red,
-/area/racers)
+/area/shuttle/racers_red)
 "mNn" = (
 /obj/item/material/shard,
 /turf/simulated/floor/plating,
@@ -2659,7 +2690,7 @@
 /obj/effect/decal/cleanable/blood/oil,
 /obj/effect/decal/cleanable/liquid_fuel,
 /obj/item/mecha_equipment/catapult,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "mVZ" = (
 /obj/effect/decal/cleanable/liquid_fuel,
@@ -2733,7 +2764,13 @@
 "nrP" = (
 /obj/structure/girder/displaced,
 /obj/item/reagent_containers/food/drinks/bottle/small/beer,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
+/area/racers)
+"nsE" = (
+/obj/effect/shuttle_landmark/automatic{
+	dir = 1
+	},
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "ntt" = (
 /obj/effect/floor_decal/corner_wide/beige{
@@ -2745,16 +2782,23 @@
 /area/racers)
 "nuj" = (
 /obj/structure/reagent_dispensers/fueltank,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "nup" = (
 /turf/simulated/wall/shuttle/space_ship,
 /area/racers)
+"nuH" = (
+/obj/effect/map_effect/window_spawner/full/shuttle,
+/obj/effect/landmark/entry_point/aft{
+	name = "fore"
+	},
+/turf/simulated/floor/plating,
+/area/shuttle/racers_blue)
 "nxI" = (
 /obj/item/card/mining_point_card{
 	points = 12309
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "nxJ" = (
 /obj/structure/bed,
@@ -2765,7 +2809,8 @@
 "nyr" = (
 /obj/effect/spider/stickyweb,
 /obj/machinery/door/airlock/glass{
-	name = "Hangar D"
+	name = "Hangar D";
+	dir = 1
 	},
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
@@ -2783,18 +2828,15 @@
 /area/racers)
 "nEc" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/machinery/door/window{
-	dir = 4
-	},
 /obj/machinery/portable_atmospherics/canister/carbon_dioxide,
-/obj/machinery/light/colored/blue{
-	dir = 4
+/obj/machinery/atmospherics/portables_connector{
+	dir = 8
 	},
 /turf/simulated/floor/shuttle/dark_blue,
-/area/racers)
+/area/shuttle/racers_blue)
 "nEX" = (
 /mob/living/heavy_vehicle/premade/miner,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "nGj" = (
 /obj/structure/sink{
@@ -2811,14 +2853,11 @@
 /obj/machinery/atmospherics/pipe/simple/visible{
 	dir = 6
 	},
-/obj/machinery/light/colored/red{
-	dir = 8
-	},
-/turf/simulated/wall/shuttle/space_ship/cardinal,
-/area/racers)
+/turf/simulated/wall/shuttle/space_ship,
+/area/shuttle/racers_red)
 "nOM" = (
 /obj/effect/spider/stickyweb,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "nPl" = (
 /obj/item/storage/secure/briefcase/money{
@@ -2838,7 +2877,7 @@
 /area/racers)
 "nUG" = (
 /obj/structure/closet/secure_closet/miner,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "nVi" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -2857,7 +2896,7 @@
 	dir = 6
 	},
 /mob/living/simple_animal/hostile/carp,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "nXu" = (
 /obj/structure/disposalpipe/segment{
@@ -2867,7 +2906,7 @@
 /area/racers)
 "nYm" = (
 /obj/item/trash/cigbutt/roll,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "nYM" = (
 /obj/machinery/cryopod{
@@ -2895,9 +2934,9 @@
 "odf" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/light{
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "odX" = (
 /obj/machinery/shipsensors/weak,
@@ -2912,6 +2951,16 @@
 /obj/machinery/vending/dinnerware,
 /turf/simulated/floor/tiled/white,
 /area/racers)
+"ogu" = (
+/obj/machinery/light{
+	dir = 1;
+	icon_state = "tube_empty"
+	},
+/obj/effect/shuttle_landmark/automatic{
+	dir = 1
+	},
+/turf/simulated/floor/tiled/rust,
+/area/racers)
 "ohm" = (
 /obj/effect/floor_decal/spline/fancy/wood/corner{
 	dir = 4
@@ -2925,7 +2974,7 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/remains/robot,
 /obj/effect/decal/cleanable/blood/oil,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "okR" = (
 /obj/item/pipe{
@@ -2933,12 +2982,12 @@
 	pixel_y = 6
 	},
 /obj/effect/decal/cleanable/blood/oil,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "okW" = (
 /obj/item/reagent_containers/food/snacks/pizzacrunchslice,
 /obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "olo" = (
 /obj/structure/dispenser/oxygen,
@@ -2959,11 +3008,15 @@
 /turf/simulated/floor/plating,
 /area/racers)
 "opS" = (
-/obj/machinery/newscaster{
-	pixel_x = 30
-	},
+/obj/machinery/newscaster/east,
 /turf/simulated/floor/wood,
 /area/racers)
+"oqv" = (
+/obj/effect/landmark/entry_point/starboard{
+	name = "port"
+	},
+/turf/simulated/wall/shuttle/space_ship,
+/area/shuttle/racers_red)
 "oqx" = (
 /obj/item/trash/liquidfood,
 /turf/simulated/floor/plating,
@@ -2974,7 +3027,7 @@
 /obj/item/device/radio,
 /obj/item/device/radio,
 /obj/structure/table/rack,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "owK" = (
 /obj/machinery/atmospherics/pipe/tank/carbon_dioxide,
@@ -2993,7 +3046,7 @@
 /obj/machinery/cell_charger{
 	pixel_y = -8
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "oxz" = (
 /obj/structure/sign/fire{
@@ -3012,7 +3065,7 @@
 "oDe" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/light/colored/red,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "oFS" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -3045,7 +3098,9 @@
 /turf/simulated/floor/wood,
 /area/racers)
 "oTQ" = (
-/obj/machinery/door/airlock/maintenance_hatch,
+/obj/machinery/door/airlock/maintenance_hatch{
+	dir = 1
+	},
 /turf/simulated/floor/tiled/white/airless,
 /area/racers)
 "oUe" = (
@@ -3073,12 +3128,12 @@
 /area/racers)
 "pbt" = (
 /obj/machinery/portable_atmospherics/canister/phoron,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "pdE" = (
 /obj/effect/decal/cleanable/blood/gibs/core,
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "phk" = (
 /obj/structure/lattice,
@@ -3090,14 +3145,14 @@
 /obj/item/reagent_containers/food/drinks/drinkingglass,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /obj/item/pizzabox/pineapple,
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
 "piL" = (
 /obj/machinery/portable_atmospherics/powered/pump/filled,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "piW" = (
 /turf/simulated/floor/carpet,
@@ -3122,7 +3177,8 @@
 /area/racers)
 "plz" = (
 /obj/machinery/door/airlock/glass{
-	name = "Hangar B"
+	name = "Hangar B";
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/racers)
@@ -3152,7 +3208,7 @@
 "puW" = (
 /obj/structure/table/wood/gamblingtable,
 /obj/item/storage/pill_bottle/dice/gaming,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "pvh" = (
 /obj/structure/table/steel,
@@ -3167,14 +3223,16 @@
 /obj/machinery/chemical_dispenser/bar_alc/full{
 	pixel_y = 5
 	},
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "pyN" = (
 /mob/living/simple_animal/hostile/carp,
 /turf/simulated/floor/tiled/white/airless,
 /area/racers)
 "pCU" = (
-/obj/machinery/door/airlock/maintenance_hatch,
+/obj/machinery/door/airlock/maintenance_hatch{
+	dir = 4
+	},
 /obj/machinery/atmospherics/pipe/simple/hidden{
 	dir = 4
 	},
@@ -3190,14 +3248,14 @@
 /turf/simulated/floor/carpet/rubber,
 /area/racers)
 "pDX" = (
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "pEO" = (
 /turf/simulated/mineral,
 /area/space)
 "pJZ" = (
 /obj/effect/floor_decal/industrial/warning,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "pMW" = (
 /obj/machinery/light/colored/red{
@@ -3223,7 +3281,7 @@
 /area/racers)
 "pPd" = (
 /obj/machinery/atmospherics/pipe/tank/phoron,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "pPW" = (
 /obj/item/material/hatchet/unathiknife,
@@ -3253,7 +3311,7 @@
 /area/racers)
 "pSO" = (
 /obj/effect/floor_decal/industrial/warning,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "pSY" = (
 /obj/structure/railing/mapped,
@@ -3262,7 +3320,7 @@
 /area/racers)
 "pTt" = (
 /obj/item/storage/toolbox/mechanical,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "qbg" = (
 /obj/item/spacecash/c1,
@@ -3284,7 +3342,7 @@
 /obj/item/device/radio,
 /obj/item/device/radio,
 /obj/structure/table/rack,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "qgM" = (
 /obj/machinery/atmospherics/binary/pump/high_power{
@@ -3297,28 +3355,28 @@
 /turf/simulated/floor/plating,
 /area/racers)
 "qje" = (
-/obj/structure/flora/pottedplant/random,
+/obj/random/pottedplant,
 /obj/structure/disposalpipe/segment{
 	dir = 1;
 	icon_state = "pipe-c"
 	},
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "qjE" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/structure/fuel_port,
-/obj/machinery/atmospherics/pipe/simple/visible{
-	dir = 6
-	},
-/obj/machinery/door/window{
-	dir = 8
-	},
-/obj/machinery/light/colored/blue{
-	dir = 8
-	},
 /obj/item/reagent_containers/hypospray/autoinjector/emergency,
+/obj/machinery/atmospherics/pipe/manifold/visible{
+	dir = 8
+	},
+/obj/structure/table/reinforced/steel,
+/obj/item/tank/jetpack/rig,
+/obj/item/clothing/head/helmet/pilot,
+/obj/structure/fuel_port/phoron{
+	pixel_x = -27;
+	pixel_y = 4
+	},
 /turf/simulated/floor/shuttle/dark_blue,
-/area/racers)
+/area/shuttle/racers_blue)
 "qjP" = (
 /obj/structure/table/wood,
 /obj/item/reagent_containers/food/drinks/drinkingglass/newglass/cocktail,
@@ -3340,11 +3398,11 @@
 /area/racers)
 "qrY" = (
 /obj/machinery/floodlight,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "qse" = (
 /obj/machinery/portable_atmospherics/canister/phoron_scarce,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "qsu" = (
 /obj/structure/closet/wardrobe/mixed,
@@ -3388,7 +3446,8 @@
 /area/racers)
 "qBS" = (
 /obj/machinery/door/airlock/glass{
-	name = "Hangar A"
+	name = "Hangar A";
+	dir = 1
 	},
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
@@ -3398,7 +3457,7 @@
 /area/racers)
 "qGO" = (
 /obj/vehicle/train/cargo/trolley,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "qHu" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -3410,20 +3469,20 @@
 	pixel_y = 13
 	},
 /obj/machinery/light{
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/racers)
 "qHA" = (
 /obj/item/storage/bag/inflatable,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "qHQ" = (
 /mob/living/simple_animal/hostile/carp,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "qII" = (
-/obj/structure/bed/stool/chair/sofa/corner/red{
+/obj/structure/bed/stool/chair/sofa/corner/concave/red{
 	dir = 4
 	},
 /turf/simulated/floor/carpet,
@@ -3440,7 +3499,7 @@
 	dir = 1
 	},
 /turf/unsimulated/floor/plating,
-/area/racers)
+/area/shuttle/racers_blue)
 "qMN" = (
 /obj/structure/curtain/open/medical{
 	pixel_y = 28
@@ -3457,9 +3516,16 @@
 /area/racers)
 "qRM" = (
 /obj/machinery/door/airlock/glass{
-	name = "Hangar B"
+	name = "Hangar B";
+	dir = 1
 	},
 /turf/simulated/floor/holofloor/tiled,
+/area/racers)
+"qSb" = (
+/obj/effect/shuttle_landmark/automatic/intrepid{
+	dir = 1
+	},
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "qST" = (
 /obj/structure/table,
@@ -3471,7 +3537,7 @@
 /obj/item/cell/high,
 /obj/item/cell/high,
 /obj/item/cell/high,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "qTL" = (
 /obj/item/clothing/accessory/tajaran/charm/bone{
@@ -3494,7 +3560,7 @@
 /area/racers)
 "qWv" = (
 /obj/item/pipewrench,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "qWG" = (
 /obj/machinery/atmospherics/pipe/tank/oxygen,
@@ -3511,11 +3577,11 @@
 	},
 /obj/structure/inflatable/door,
 /mob/living/simple_animal/hostile/carp,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "rdH" = (
 /obj/machinery/portable_atmospherics/powered/pump/filled,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "rdW" = (
 /obj/item/tank/phoron/shuttle,
@@ -3534,14 +3600,14 @@
 "riz" = (
 /obj/machinery/pipedispenser,
 /obj/item/reagent_containers/food/drinks/bottle/small/beer,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "riA" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/floor_decal/industrial/warning{
 	dir = 8
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "rmA" = (
 /obj/structure/largecrate/animal/dog/amaskan,
@@ -3549,7 +3615,7 @@
 /area/racers)
 "rna" = (
 /mob/living/simple_animal/hostile/gnat,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "rnH" = (
 /obj/item/spacecash/c1{
@@ -3560,7 +3626,7 @@
 "rpP" = (
 /obj/structure/bed/stool/bar/padded/blue,
 /obj/item/trash/cigbutt,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "rrk" = (
 /obj/item/clothing/head/tajaran/matake{
@@ -3627,7 +3693,7 @@
 "rDo" = (
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/template_noop,
 /area/space)
@@ -3643,7 +3709,7 @@
 /area/racers)
 "rLp" = (
 /obj/structure/bed/stool/bar/padded,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "rNC" = (
 /obj/effect/floor_decal/industrial/warning{
@@ -3652,11 +3718,11 @@
 /obj/machinery/light/colored/red{
 	dir = 8
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "rQw" = (
 /obj/effect/shuttle_landmark/automatic,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "rSi" = (
 /obj/machinery/portable_atmospherics/canister/phoron,
@@ -3672,7 +3738,7 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 8
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "rUI" = (
 /obj/structure/sign/flag/blank,
@@ -3687,7 +3753,7 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 9
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "rYT" = (
 /obj/structure/disposalpipe/segment{
@@ -3723,7 +3789,7 @@
 "scQ" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/light{
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor,
 /area/racers)
@@ -3746,20 +3812,12 @@
 /obj/machinery/computer/ship/sensors{
 	dir = 8
 	},
-/obj/machinery/door/window{
-	dir = 4
-	},
-/obj/machinery/light/colored/blue{
-	dir = 4
-	},
 /turf/simulated/floor/shuttle/dark_blue,
-/area/racers)
+/area/shuttle/racers_blue)
 "sjQ" = (
-/obj/effect/floor_decal/industrial/outline/yellow,
-/obj/machinery/atmospherics/pipe/manifold/visible{
-	dir = 1
-	},
-/obj/structure/fuel_port,
+/obj/item/tank/jetpack/rig,
+/obj/structure/table/reinforced/steel,
+/obj/item/clothing/head/helmet/pilot,
 /obj/machinery/vending/wallmed1{
 	name = "Medical Supplies";
 	pixel_x = -26;
@@ -3767,18 +3825,14 @@
 	req_access = null
 	},
 /turf/simulated/floor/shuttle/red,
-/area/racers)
+/area/shuttle/racers_red)
 "skl" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
 /obj/machinery/atmospherics/pipe/simple/visible{
 	dir = 8
 	},
-/obj/machinery/atmospherics/binary/pump/high_power{
-	dir = 1
-	},
-/obj/machinery/light/small/emergency,
 /turf/simulated/floor/shuttle/white,
-/area/racers)
+/area/shuttle/racers_red)
 "skw" = (
 /obj/machinery/media/jukebox,
 /turf/simulated/floor/wood,
@@ -3789,7 +3843,7 @@
 /area/racers)
 "soI" = (
 /obj/vehicle/train/cargo/trolley/pussywagon,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "sqL" = (
 /obj/structure/closet/wardrobe/xenos,
@@ -3811,7 +3865,9 @@
 /area/racers)
 "svn" = (
 /obj/structure/disposalpipe/segment,
-/obj/machinery/door/airlock,
+/obj/machinery/door/airlock{
+	dir = 1
+	},
 /turf/simulated/floor/tiled,
 /area/racers)
 "swi" = (
@@ -3857,11 +3913,11 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 10
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "sFt" = (
 /obj/structure/closet/crate/freezer/rations,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "sFQ" = (
 /obj/machinery/atmospherics/binary/pump/high_power,
@@ -3881,6 +3937,10 @@
 /obj/effect/map_effect/window_spawner/full/borosilicate/reinforced,
 /turf/simulated/floor/plating,
 /area/racers)
+"sOQ" = (
+/obj/effect/shuttle_landmark/blue_racer_transit,
+/turf/space/transit,
+/area/space)
 "sRo" = (
 /obj/machinery/mech_recharger,
 /turf/simulated/floor/tiled/white/airless,
@@ -3908,7 +3968,7 @@
 	dir = 6
 	},
 /obj/machinery/space_heater,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "sZx" = (
 /obj/machinery/light/colored/blue,
@@ -3946,15 +4006,15 @@
 /area/racers)
 "thx" = (
 /obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "thI" = (
-/obj/structure/bed/stool/chair/sofa/corner/red,
+/obj/structure/bed/stool/chair/sofa/corner/concave/red,
 /turf/simulated/floor/carpet,
 /area/racers)
 "tjm" = (
 /obj/machinery/vending/engivend,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "tlw" = (
 /obj/effect/decal/cleanable/dirt,
@@ -3974,14 +4034,15 @@
 "tnT" = (
 /obj/machinery/door/airlock/maintenance{
 	name = "Staff Room";
-	req_access = list(202)
+	req_access = list(202);
+	dir = 1
 	},
 /obj/structure/curtain/black,
 /turf/simulated/floor/holofloor/tiled,
 /area/racers)
 "tpD" = (
 /mob/living/simple_animal/hostile/rogue_drone,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "trq" = (
 /obj/structure/window/reinforced/tinted/frosted{
@@ -3997,12 +4058,12 @@
 /area/racers)
 "twp" = (
 /obj/machinery/vending/tool,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "tzz" = (
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/carpet/art,
 /area/racers)
@@ -4026,7 +4087,7 @@
 /obj/machinery/light/colored/red{
 	dir = 1
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "tIy" = (
 /obj/structure/bed/stool/chair/padded/black{
@@ -4043,33 +4104,32 @@
 /turf/simulated/wall/r_wall,
 /area/racers)
 "tMd" = (
-/obj/machinery/shipsensors/weak,
-/obj/structure/railing/mapped{
-	dir = 4
-	},
-/obj/structure/railing/mapped{
-	dir = 8
-	},
-/obj/structure/railing/mapped{
-	dir = 1
-	},
-/turf/simulated/floor,
-/area/racers)
+/turf/space/transit,
+/area/space)
 "tMk" = (
 /obj/effect/floor_decal/sign/d,
 /turf/simulated/wall/r_wall,
 /area/racers)
 "tNa" = (
 /obj/structure/girder/displaced,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "tNM" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 4
 	},
 /mob/living/simple_animal/hostile/carp,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
+"tOk" = (
+/obj/machinery/atmospherics/unary/engine{
+	dir = 1
+	},
+/obj/structure/window/reinforced{
+	dir = 1
+	},
+/turf/unsimulated/floor/plating,
+/area/shuttle/racers_red)
 "tQj" = (
 /obj/structure/sign/securearea,
 /turf/simulated/wall/rusty,
@@ -4086,7 +4146,7 @@
 /area/racers)
 "tUL" = (
 /obj/item/trash/can,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "tXP" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
@@ -4095,13 +4155,9 @@
 /turf/simulated/floor/tiled/white,
 /area/racers)
 "tYI" = (
-/obj/structure/grille,
-/obj/structure/shuttle/window,
-/obj/machinery/light/colored/blue{
-	dir = 4
-	},
-/turf/simulated/floor/plating,
-/area/racers)
+/obj/effect/map_effect/window_spawner/full/shuttle,
+/turf/simulated/floor,
+/area/shuttle/racers_blue)
 "tYW" = (
 /obj/item/material/shard,
 /turf/template_noop,
@@ -4124,7 +4180,7 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 6
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "uaN" = (
 /obj/effect/decal/cleanable/dirt,
@@ -4135,7 +4191,7 @@
 /obj/structure/table,
 /obj/item/spacecash/c10,
 /obj/item/device/laser_pointer/red,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "ueb" = (
 /obj/effect/decal/cleanable/spiderling_remains,
@@ -4164,6 +4220,13 @@
 /obj/item/tape_roll,
 /turf/simulated/floor/plating,
 /area/racers)
+"umD" = (
+/obj/effect/floor_decal/industrial/warning{
+	dir = 9
+	},
+/obj/machinery/shipsensors/weak,
+/turf/simulated/floor,
+/area/shuttle/racers_blue)
 "unj" = (
 /obj/structure/table/steel,
 /obj/item/spacecash/ewallet/lotto,
@@ -4172,7 +4235,7 @@
 "uoh" = (
 /obj/effect/decal/cleanable/liquid_fuel,
 /obj/item/broken_bottle,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "uoH" = (
 /obj/structure/inflatable/wall,
@@ -4182,29 +4245,21 @@
 "upu" = (
 /turf/simulated/floor/wood,
 /area/racers)
+"uqe" = (
+/obj/effect/map_effect/window_spawner/full/shuttle,
+/obj/effect/landmark/entry_point/aft{
+	name = "fore"
+	},
+/turf/simulated/floor/plating,
+/area/shuttle/racers_red)
 "urT" = (
 /obj/machinery/computer/ship/helm{
 	req_access = list(204)
 	},
-/obj/structure/window/reinforced{
-	dir = 4
-	},
-/obj/structure/window/reinforced{
-	dir = 8
-	},
-/obj/structure/window/reinforced{
-	dir = 1
-	},
-/obj/machinery/light/colored/red{
-	dir = 8
-	},
-/obj/machinery/light/colored/red{
-	dir = 4
-	},
 /obj/item/device/gps,
 /obj/machinery/camera/network/thunder,
 /turf/simulated/floor/shuttle/red,
-/area/racers)
+/area/shuttle/racers_red)
 "uuC" = (
 /obj/effect/decal/cleanable/blood/oil,
 /turf/simulated/floor/plating,
@@ -4225,7 +4280,7 @@
 /obj/item/reagent_containers/food/drinks/shaker{
 	pixel_x = -5
 	},
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "uAm" = (
 /obj/machinery/suit_cycler/mining,
@@ -4242,10 +4297,12 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 5
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "uDI" = (
-/obj/machinery/door/airlock/maintenance_hatch,
+/obj/machinery/door/airlock/maintenance_hatch{
+	dir = 4
+	},
 /turf/simulated/floor/plating,
 /area/racers)
 "uEr" = (
@@ -4263,7 +4320,7 @@
 /area/racers)
 "uGZ" = (
 /obj/machinery/computer/ship/navigation,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "uKR" = (
 /obj/structure/lattice/catwalk/indoor/grate,
@@ -4284,17 +4341,26 @@
 /obj/machinery/vending/dinnerware,
 /obj/machinery/light{
 	dir = 1;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
+"uOa" = (
+/obj/machinery/hologram/holopad/long_range,
+/obj/structure/bed/stool/chair/office/bridge/pilot{
+	dir = 4
+	},
+/obj/item/rig/eva,
+/obj/effect/overmap/visitable/ship/landable/racers_blue,
+/turf/simulated/floor/shuttle/white,
+/area/shuttle/racers_blue)
 "uOx" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 8
 	},
 /mob/living/simple_animal/hostile/carp,
 /obj/structure/flora/rock/pile,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "uRY" = (
 /obj/structure/railing/mapped,
@@ -4313,9 +4379,7 @@
 /turf/simulated/floor,
 /area/racers)
 "vbz" = (
-/obj/machinery/newscaster{
-	pixel_y = 30
-	},
+/obj/machinery/newscaster/north,
 /obj/effect/floor_decal/corner_wide/beige{
 	dir = 5
 	},
@@ -4333,12 +4397,13 @@
 /area/racers)
 "vcF" = (
 /obj/item/trash/cookiesnack,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "vdz" = (
 /obj/machinery/door/airlock/hatch{
 	name = "Telecomms";
-	req_access = list(202)
+	req_access = list(202);
+	dir = 1
 	},
 /obj/structure/plasticflaps/airtight,
 /turf/simulated/floor,
@@ -4350,6 +4415,12 @@
 /obj/item/storage/toolbox/drill,
 /turf/simulated/floor/tiled/white/airless,
 /area/racers)
+"veF" = (
+/obj/effect/landmark/entry_point/port{
+	name = "starboard"
+	},
+/turf/simulated/wall/shuttle/space_ship,
+/area/shuttle/racers_red)
 "vgN" = (
 /obj/item/material/hatchet/unathiknife,
 /turf/simulated/floor/plating,
@@ -4366,8 +4437,14 @@
 "vkx" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/structure/reagent_dispensers/watertank,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
+"vlm" = (
+/obj/effect/landmark/entry_point/port{
+	name = "starboard"
+	},
+/turf/simulated/wall/shuttle/space_ship,
+/area/shuttle/racers_blue)
 "vps" = (
 /turf/simulated/floor/tiled/white/airless,
 /area/racers)
@@ -4377,12 +4454,13 @@
 	dir = 4
 	},
 /obj/item/rig/eva,
+/obj/effect/overmap/visitable/ship/landable/racers_red,
 /turf/simulated/floor/shuttle/white,
-/area/racers)
+/area/shuttle/racers_red)
 "vrZ" = (
 /obj/structure/closet/lasertag,
 /obj/item/holo/esword/red,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "vsA" = (
 /obj/effect/floor_decal/industrial/warning{
@@ -4391,7 +4469,7 @@
 /obj/machinery/light/colored/red{
 	dir = 8
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "vth" = (
 /obj/structure/table/stone/marble,
@@ -4442,7 +4520,7 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 9
 	},
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "vxN" = (
 /obj/machinery/light/small,
@@ -4468,7 +4546,7 @@
 	opacity = 1;
 	req_access = list(202)
 	},
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "vDp" = (
 /obj/machinery/atm{
@@ -4484,12 +4562,12 @@
 /area/racers)
 "vDS" = (
 /obj/structure/reagent_dispensers/watertank,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "vFV" = (
 /obj/effect/decal/cleanable/blood/drip,
 /obj/item/clothing/mask/breath,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "vIW" = (
 /obj/structure/punching_bag,
@@ -4500,15 +4578,15 @@
 	dir = 4
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/machinery/door/window{
-	dir = 8
-	},
 /obj/item/tank/jetpack/void,
 /obj/machinery/light/colored/red{
 	dir = 8
 	},
+/obj/machinery/atmospherics/pipe/simple/visible{
+	dir = 6
+	},
 /turf/simulated/floor/shuttle/red,
-/area/racers)
+/area/shuttle/racers_red)
 "vJz" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
 /obj/machinery/appliance/cooker/fryer,
@@ -4518,12 +4596,12 @@
 "vJV" = (
 /obj/structure/bed/stool/bar/padded,
 /obj/item/trash/cigbutt/roll,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "vLp" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "vLM" = (
 /obj/structure/lattice/catwalk/indoor/grate,
@@ -4546,7 +4624,7 @@
 /obj/item/pickaxe/drill{
 	pixel_y = 6
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "vWJ" = (
 /obj/structure/lattice,
@@ -4571,7 +4649,7 @@
 "wcO" = (
 /obj/machinery/vending/engivend,
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "wfU" = (
 /turf/simulated/floor/tiled{
@@ -4586,7 +4664,7 @@
 "who" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/portable_atmospherics/powered/pump/filled,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "wiz" = (
 /obj/structure/lattice/catwalk/indoor/grate,
@@ -4597,7 +4675,7 @@
 "wji" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/shuttle_landmark/automatic,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "wkV" = (
 /turf/simulated/wall/shuttle/space_ship,
@@ -4628,24 +4706,24 @@
 /area/racers)
 "wGR" = (
 /mob/living/simple_animal/hostile/carp/bloater,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "wHQ" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
 	},
 /obj/structure/inflatable/wall,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "wJk" = (
 /obj/item/reagent_containers/food/snacks/meatpizzaslice,
 /obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/lino/grey,
+/turf/simulated/floor/lino/diamond,
 /area/racers)
 "wKE" = (
 /obj/structure/blocker,
 /obj/effect/decal/cleanable/liquid_fuel,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "wLs" = (
 /obj/structure/disposalpipe/junction/yjunction{
@@ -4655,7 +4733,8 @@
 /area/racers)
 "wLw" = (
 /obj/machinery/door/airlock/maintenance_hatch{
-	name = "Augment Station"
+	name = "Augment Station";
+	dir = 1
 	},
 /obj/structure/curtain/open/medical,
 /obj/machinery/atmospherics/pipe/simple/hidden,
@@ -4684,7 +4763,7 @@
 /area/racers)
 "wNg" = (
 /mob/living/simple_animal/hostile/carp/shark,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "wNk" = (
 /turf/simulated/floor/carpet/art,
@@ -4714,7 +4793,7 @@
 /obj/effect/floor_decal/corner/grey/diagonal,
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1"
+	icon_state = "tube_empty"
 	},
 /turf/simulated/floor/tiled/white,
 /area/racers)
@@ -4731,7 +4810,7 @@
 /area/racers)
 "wVH" = (
 /obj/structure/reagent_dispensers/watertank,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "wXQ" = (
 /obj/item/trash/cigbutt,
@@ -4752,7 +4831,7 @@
 	dir = 8
 	},
 /mob/living/simple_animal/hostile/carp,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "xdP" = (
 /obj/machinery/atmospherics/pipe/manifold/visible{
@@ -4791,7 +4870,7 @@
 /area/racers)
 "xnb" = (
 /obj/machinery/space_heater,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "xpK" = (
 /obj/effect/floor_decal/industrial/warning{
@@ -4809,7 +4888,7 @@
 	dir = 5
 	},
 /obj/machinery/space_heater,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "xvb" = (
 /obj/structure/bed/stool/bar/padded/blue,
@@ -4840,13 +4919,13 @@
 /turf/simulated/floor/wood,
 /area/racers)
 "xAp" = (
-/obj/structure/lattice/catwalk/indoor/grate,
 /obj/effect/floor_decal/industrial/warning{
 	dir = 8
 	},
 /obj/effect/floor_decal/industrial/warning{
 	dir = 4
 	},
+/obj/effect/shuttle_landmark/red_racer_hangar,
 /turf/simulated/floor,
 /area/racers)
 "xEy" = (
@@ -4858,7 +4937,7 @@
 /area/racers)
 "xFs" = (
 /obj/machinery/light/small,
-/obj/structure/closet/secure_closet/freezer/fridge,
+/obj/structure/closet/secure_closet/refrigerator/standard,
 /obj/item/reagent_containers/food/snacks/meatball,
 /obj/item/reagent_containers/food/snacks/meatball,
 /obj/item/reagent_containers/food/snacks/meatball,
@@ -4902,11 +4981,11 @@
 /area/racers)
 "xJg" = (
 /obj/structure/bed/stool/bar/padded/blue,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "xLt" = (
 /obj/machinery/portable_atmospherics/canister/oxygen/prechilled,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "xLR" = (
 /obj/random/junk,
@@ -4917,30 +4996,21 @@
 	dir = 1
 	},
 /obj/structure/inflatable/door,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "xNM" = (
 /obj/machinery/light/colored/red{
 	dir = 1
 	},
 /obj/machinery/portable_atmospherics/powered/pump/filled,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "xOK" = (
 /obj/machinery/computer/ship/sensors{
 	dir = 8
 	},
-/obj/machinery/door/window{
-	dir = 4
-	},
-/obj/structure/window/reinforced{
-	dir = 1
-	},
-/obj/machinery/light/colored/red{
-	dir = 4
-	},
 /turf/simulated/floor/shuttle/red,
-/area/racers)
+/area/shuttle/racers_red)
 "xPN" = (
 /obj/structure/closet/lawcloset,
 /obj/item/clothing/suit/storage/toggle/leather_jacket/flight,
@@ -4988,7 +5058,7 @@
 	pixel_x = 9;
 	pixel_y = 5
 	},
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "xUY" = (
 /obj/structure/table/steel,
@@ -5008,7 +5078,7 @@
 /area/racers)
 "xXR" = (
 /obj/machinery/floodlight,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "xYc" = (
 /obj/effect/decal/cleanable/dirt,
@@ -5050,20 +5120,21 @@
 /obj/item/clothing/head/helmet/space/emergency,
 /obj/item/clothing/suit/space/emergency,
 /obj/item/clothing/suit/space/emergency,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "ycf" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/closet/crate/internals,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
 "ycX" = (
 /obj/machinery/mineral/equipment_vendor,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 "yfC" = (
 /obj/machinery/door/airlock/glass_atmos{
-	name = "Fuel Storage"
+	name = "Fuel Storage";
+	dir = 4
 	},
 /turf/simulated/floor/plating,
 /area/racers)
@@ -5076,11 +5147,18 @@
 "yjc" = (
 /obj/effect/decal/cleanable/dirt,
 /mob/living/simple_animal/hostile/rogue_drone,
-/turf/simulated/floor/tiled/steel,
+/turf/simulated/floor/tiled/rust,
 /area/racers)
+"ykN" = (
+/obj/item/trash/cigbutt,
+/obj/effect/landmark/entry_point/starboard{
+	name = "port"
+	},
+/turf/simulated/wall/shuttle/space_ship,
+/area/shuttle/racers_blue)
 "yle" = (
 /obj/item/clothing/mask/gas/old,
-/turf/simulated/floor/tiled/steel/airless,
+/turf/simulated/floor/tiled/rust/airless,
 /area/racers)
 
 (1,1,1) = {"
@@ -5322,23 +5400,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (2,1,1) = {"
 xRX
@@ -5579,23 +5657,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (3,1,1) = {"
 xRX
@@ -5836,23 +5914,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (4,1,1) = {"
 xRX
@@ -6093,23 +6171,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (5,1,1) = {"
 xRX
@@ -6350,23 +6428,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (6,1,1) = {"
 xRX
@@ -6607,23 +6685,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (7,1,1) = {"
 xRX
@@ -6864,23 +6942,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+arT
+tMd
+tMd
+tMd
+tMd
 "}
 (8,1,1) = {"
 xRX
@@ -7121,23 +7199,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (9,1,1) = {"
 xRX
@@ -7378,23 +7456,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (10,1,1) = {"
 xRX
@@ -7635,23 +7713,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (11,1,1) = {"
 xRX
@@ -7892,23 +7970,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (12,1,1) = {"
 xRX
@@ -8149,23 +8227,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
 "}
 (13,1,1) = {"
 xRX
@@ -8406,23 +8484,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (14,1,1) = {"
 xRX
@@ -8663,23 +8741,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (15,1,1) = {"
 xRX
@@ -8920,23 +8998,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (16,1,1) = {"
 xRX
@@ -9177,23 +9255,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (17,1,1) = {"
 xRX
@@ -9434,23 +9512,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+sOQ
+tMd
+tMd
+tMd
+tMd
 "}
 (18,1,1) = {"
 xRX
@@ -9691,23 +9769,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (19,1,1) = {"
 xRX
@@ -9948,23 +10026,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (20,1,1) = {"
 xRX
@@ -10205,23 +10283,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (21,1,1) = {"
 xRX
@@ -10462,23 +10540,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (22,1,1) = {"
 xRX
@@ -10719,23 +10797,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (23,1,1) = {"
 xRX
@@ -10976,23 +11054,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (24,1,1) = {"
 xRX
@@ -11233,23 +11311,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
+tMd
 "}
 (25,1,1) = {"
 xRX
@@ -11490,23 +11568,23 @@ xRX
 xRX
 xRX
 xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
-xRX
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
+kWr
 "}
 (26,1,1) = {"
 xRX
@@ -23411,7 +23489,7 @@ ctn
 ctn
 ctn
 lvc
-ctn
+rQw
 ctn
 lvc
 lvc
@@ -23422,7 +23500,7 @@ ctn
 ctn
 ctn
 ctn
-pJZ
+gki
 huE
 nfm
 tMk
@@ -23654,7 +23732,7 @@ xRX
 xRX
 xRX
 gbX
-jaL
+ogu
 cLC
 ctn
 ctn
@@ -25710,7 +25788,7 @@ xRX
 xRX
 xRX
 gbX
-rQw
+ctn
 cLC
 ctn
 ctn
@@ -25967,7 +26045,7 @@ xRX
 xRX
 xRX
 gbX
-ctn
+nsE
 cLC
 ctn
 ctn
@@ -28294,7 +28372,7 @@ lvc
 lvc
 lvc
 lvc
-ctn
+rQw
 ctn
 ctn
 ctn
@@ -29882,11 +29960,11 @@ huE
 huE
 huE
 huE
-xRX
-xRX
-xRX
-xRX
-xRX
+huE
+huE
+huE
+huE
+huE
 xRX
 xRX
 xRX
@@ -30137,13 +30215,13 @@ bVS
 vsA
 bVS
 bVS
+bVS
+bVS
+bVS
+bVS
+bVS
 gxE
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -30394,13 +30472,13 @@ ctn
 ctn
 rna
 ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -30651,13 +30729,13 @@ ctn
 ctn
 ctn
 ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -30856,19 +30934,19 @@ cLC
 ctn
 ctn
 ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
+ryv
+seT
+seT
+seT
+seT
+seT
+seT
+seT
+seT
+seT
+seT
+seT
+oQI
 ctn
 ctn
 ctn
@@ -30908,13 +30986,13 @@ ctn
 ctn
 ctn
 ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 oDe
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -31113,19 +31191,19 @@ cLC
 ctn
 ctn
 ctn
-ryv
-seT
-seT
-seT
-seT
-seT
-seT
-seT
-seT
-seT
-seT
-seT
-oQI
+jDR
+mWo
+mWo
+mWo
+mWo
+mWo
+lMF
+lMF
+mWo
+mWo
+mWo
+mWo
+fsx
 ctn
 ctn
 ctn
@@ -31165,13 +31243,13 @@ ctn
 ctn
 ctn
 ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -31372,12 +31450,12 @@ ctn
 ctn
 jDR
 mWo
-mWo
-mWo
-mWo
-mWo
+heO
+lMF
+oqv
+lMF
 nLQ
-qLt
+tOk
 mWo
 mWo
 mWo
@@ -31405,7 +31483,6 @@ ctn
 ctn
 ctn
 ctn
-lvc
 ctn
 ctn
 ctn
@@ -31414,21 +31491,22 @@ ctn
 ctn
 ctn
 ctn
-lvc
-lvc
 ctn
-lvc
-lvc
 ctn
-tpD
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -31629,12 +31707,12 @@ ctn
 ctn
 jDR
 mWo
-xjB
-xjB
+acY
+lUd
 lNT
 vJn
 sjQ
-qLt
+tOk
 mWo
 mWo
 mWo
@@ -31660,7 +31738,6 @@ cLC
 ctn
 ctn
 ctn
-lvc
 ctn
 ctn
 ctn
@@ -31674,18 +31751,19 @@ ctn
 ctn
 ctn
 ctn
-lvc
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -31885,8 +31963,8 @@ ctn
 ctn
 ctn
 jDR
-tMd
-acY
+mWo
+uqe
 urT
 vqD
 fVz
@@ -31912,21 +31990,11 @@ xjB
 nfm
 xRX
 huE
-rQw
+ctn
 cLC
 ctn
 ctn
 ctn
-lvc
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-rQw
 ctn
 ctn
 ctn
@@ -31936,13 +32004,23 @@ ctn
 ctn
 ctn
 ctn
-gki
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+pJZ
+bzZ
 xRX
 xRX
 xRX
@@ -32143,12 +32221,12 @@ ctn
 ctn
 jDR
 mWo
-xjB
-xjB
+acY
+lUd
 xOK
 mME
 hEY
-qLt
+tOk
 mWo
 dpu
 jAg
@@ -32179,9 +32257,14 @@ ctn
 ctn
 ctn
 ctn
-lvc
-lvc
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 ctn
 ctn
@@ -32194,12 +32277,7 @@ ctn
 ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -32400,10 +32478,10 @@ ctn
 ctn
 jDR
 mWo
-mWo
-mWo
-mWo
-mWo
+lye
+lMF
+veF
+lMF
 eAn
 lux
 mWo
@@ -32436,27 +32514,27 @@ ctn
 ctn
 ctn
 ctn
-lvc
-lvc
-lvc
 ctn
 ctn
 ctn
-lvc
-lvc
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 ctn
 ctn
 ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -32655,19 +32733,19 @@ cLC
 ctn
 ctn
 ctn
-xpK
-fdk
-fdk
-fdk
-fdk
-fdk
-fdk
-fdk
-fdk
-fdk
-fdk
-fdk
-eEQ
+jDR
+mWo
+mWo
+mWo
+mWo
+mWo
+lMF
+lMF
+mWo
+mWo
+mWo
+mWo
+fsx
 lvc
 ctn
 ctn
@@ -32688,32 +32766,32 @@ cLC
 ctn
 ctn
 ctn
-lvc
-ctn
-lvc
-lvc
-ctn
-lvc
-lvc
-lvc
-ctn
-ctn
-ctn
-lvc
-lvc
-lvc
 ctn
 ctn
 ctn
 ctn
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -32912,19 +32990,19 @@ cLC
 lvc
 lvc
 ctn
-ctn
-lvc
-vLp
-lvc
-ctn
-ctn
-qWv
-ctn
-ctn
-ctn
-ctn
-lvc
-jtP
+xpK
+fdk
+fdk
+fdk
+fdk
+fdk
+fdk
+fdk
+fdk
+fdk
+fdk
+fdk
+eEQ
 lvc
 tUL
 ctn
@@ -32943,12 +33021,6 @@ huE
 iGt
 cLC
 lvc
-lvc
-ctn
-ctn
-lvc
-vLp
-lvc
 ctn
 ctn
 ctn
@@ -32956,21 +33028,27 @@ ctn
 ctn
 ctn
 ctn
-lvc
-lvc
-lvc
 ctn
 ctn
 ctn
 ctn
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -33175,13 +33253,13 @@ ctn
 ubW
 riz
 ctn
-ctn
+qWv
 ctn
 vrZ
 ctn
 ctn
 ctn
-ctn
+jtP
 ctn
 ctn
 ctn
@@ -33202,7 +33280,6 @@ cLC
 ctn
 ctn
 ctn
-lvc
 ctn
 ctn
 ctn
@@ -33221,13 +33298,14 @@ ctn
 ctn
 ctn
 ctn
-oDe
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+pJZ
+bzZ
 xRX
 xRX
 xRX
@@ -33456,11 +33534,7 @@ xRX
 huE
 qrY
 cLC
-ctn
-ctn
-ctn
-lvc
-ctn
+qSb
 ctn
 ctn
 ctn
@@ -33468,7 +33542,16 @@ ctn
 ctn
 ctn
 ctn
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 ctn
 ctn
@@ -33479,12 +33562,7 @@ ctn
 ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -33734,14 +33812,14 @@ ctn
 ctn
 ctn
 ctn
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -33975,7 +34053,6 @@ ctn
 ctn
 ctn
 ctn
-tpD
 ctn
 ctn
 ctn
@@ -33988,17 +34065,18 @@ ctn
 ctn
 ctn
 ctn
-lvc
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -34228,20 +34306,25 @@ huE
 soI
 cLC
 lvc
-lvc
-ctn
-lvc
-lvc
-lvc
-lvc
-ctn
-lvc
-lvc
-lvc
 ctn
 ctn
 ctn
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 ctn
 ctn
@@ -34250,12 +34333,7 @@ ctn
 ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -34485,16 +34563,6 @@ huE
 iwj
 cLC
 lvc
-lvc
-ctn
-lvc
-ctn
-ctn
-ctn
-ctn
-lvc
-lvc
-lvc
 ctn
 ctn
 ctn
@@ -34503,16 +34571,26 @@ ctn
 ctn
 ctn
 ctn
-tpD
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -34742,16 +34820,6 @@ huE
 jaL
 cLC
 lvc
-lvc
-ctn
-ctn
-ctn
-ctn
-ctn
-ctn
-lvc
-lvc
-lvc
 ctn
 ctn
 ctn
@@ -34761,15 +34829,25 @@ ctn
 ctn
 ctn
 ctn
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -34970,11 +35048,11 @@ ctn
 ctn
 jDR
 mWo
-mWo
-mWo
-dpu
-mWo
-mWo
+umD
+kHl
+ykN
+kHl
+kHl
 kHl
 mWo
 jAg
@@ -35010,7 +35088,6 @@ ctn
 ctn
 ctn
 ctn
-rQw
 ctn
 ctn
 ctn
@@ -35018,15 +35095,16 @@ ctn
 ctn
 ctn
 ctn
-lvc
 ctn
-gki
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+pJZ
+bzZ
 xRX
 xRX
 xRX
@@ -35227,8 +35305,8 @@ ctn
 ctn
 jDR
 mWo
-kWr
-kWr
+tYI
+tYI
 gbn
 aAE
 qjE
@@ -35273,17 +35351,17 @@ ctn
 ctn
 ctn
 ctn
-lvc
 ctn
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -35483,10 +35561,10 @@ ctn
 ctn
 ctn
 jDR
-tMd
-eoH
+xjB
+nuH
 iJa
-vqD
+uOa
 jjQ
 bDs
 cZT
@@ -35504,7 +35582,7 @@ ctn
 ghl
 nfm
 mNn
-bzZ
+aaa
 rse
 xjB
 nfm
@@ -35516,8 +35594,6 @@ ctn
 ctn
 ctn
 ctn
-lvc
-lvc
 ctn
 ctn
 ctn
@@ -35531,16 +35607,18 @@ ctn
 ctn
 ctn
 ctn
-lvc
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 ctn
 ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -35741,7 +35819,7 @@ ctn
 ctn
 jDR
 mWo
-tYI
+eoH
 tYI
 sja
 nEc
@@ -35759,7 +35837,7 @@ ctn
 ctn
 ctn
 pJZ
-bzZ
+aaa
 xjB
 aik
 xjB
@@ -35791,13 +35869,13 @@ ctn
 ctn
 ctn
 ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -35998,12 +36076,12 @@ ctn
 ctn
 jDR
 mWo
-mWo
-mWo
-mWo
-mWo
-mWo
-mWo
+epG
+kHl
+vlm
+kHl
+kHl
+kHl
 mWo
 mWo
 mWo
@@ -36018,7 +36096,7 @@ ctn
 pJZ
 qBS
 xjB
-bzZ
+aaa
 xjB
 xjB
 qJq
@@ -36048,13 +36126,13 @@ ctn
 ctn
 ctn
 ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -36305,13 +36383,13 @@ ctn
 ctn
 ctn
 ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 oDe
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -36562,13 +36640,13 @@ ctn
 ctn
 ctn
 ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -36819,13 +36897,13 @@ ctn
 ctn
 ctn
 ctn
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -37076,13 +37154,13 @@ ctn
 ctn
 ctn
 rna
+ctn
+ctn
+ctn
+ctn
+ctn
 pJZ
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -37333,13 +37411,13 @@ awG
 aow
 awG
 awG
+awG
+awG
+awG
+awG
+awG
 uaE
-gbX
-xRX
-xRX
-xRX
-xRX
-xRX
+bzZ
 xRX
 xRX
 xRX
@@ -37592,11 +37670,11 @@ huE
 huE
 huE
 huE
-xRX
-xRX
-xRX
-xRX
-xRX
+huE
+huE
+huE
+huE
+huE
 xRX
 xRX
 xRX
