@@ -13,11 +13,11 @@
 	var/stored_charge = 0
 	var/last_stored_charge = 0
 	var/time_since_fail = 100
-	var/max_charge = 8e6	//8 MJ
-	var/max_charge_rate = 400000	//400 kW
+	var/max_charge = 6e6	//6 MJ
+	var/max_charge_rate = 15e5	//1.5 MW
 	var/locked = FALSE
 
-	var/charge_rate = 100000	//100 kW
+	var/charge_rate = 1e5	//100 kW
 	var/obj/machinery/shield_matrix/owned_matrix
 
 /obj/machinery/shield_capacitor/Initialize()
@@ -84,7 +84,7 @@
 /obj/machinery/shield_capacitor/attack_hand(mob/user)
 	if(stat & (BROKEN))
 		return
-	ui_interact(user)
+	interact(user)
 
 
 /obj/machinery/shield_capacitor/ui_data(mob/user)
@@ -139,6 +139,10 @@
 
 		if("toggle")
 			active = !active
+			if(active)
+				START_PROCESSING_MACHINE(src, MACHINERY_PROCESS_SELF)
+			else
+				STOP_PROCESSING_MACHINE(src, MACHINERY_PROCESS_SELF)
 			update_icon()
 
 /obj/machinery/shield_capacitor/process()
@@ -177,6 +181,3 @@
 		icon_state = "broke"
 	else
 		..()
-
-/obj/machinery/shield_capacitor/multiz
-	max_charge_rate = 1250000	//1250 kW

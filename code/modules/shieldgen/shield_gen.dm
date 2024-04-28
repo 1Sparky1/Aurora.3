@@ -59,11 +59,16 @@
 		LAZYCLEARLIST(field)
 		return
 
-	if(field.len)
+	if(field && field.len)
 		for(var/obj/effect/energy_field/E as anything in field)
 			if(!E)
 				LAZYREMOVE(field, E)
 				continue
+
+			var/amount_to_dissipate = max(E.strength * SHIELD_DISCHARGE_RATE, SHIELD_DISCHARGE_MINIMUM)
+			E.Stress(amount_to_dissipate, FALSE) // No need to recover from passive dissipation
+			if(E.ticks_recovering)
+				E.ticks_recovering -= 1
 
 /obj/machinery/shield_gen/proc/generate_field(var/s_renwicks, var/c_renwicks, var/m_renwicks)
 	if(!(s_renwicks || c_renwicks))
@@ -82,7 +87,7 @@
 			LAZYADD(field, F)
 	covered_turfs = null
 
-	if(!field.len)
+	if(!field || !field.len)
 		return
 
 	strength = min(s_renwicks / LAZYLEN(field), shield_max)
@@ -103,10 +108,19 @@
 			M.use_excess(modulation / LAZYLEN(greedy_modules))
 
 /obj/machinery/shield_gen/update_icon()
+	cut_overlays()
 	if (parent_matrix && parent_matrix.active)
 		icon_state = "[initial(icon_state)]_on"
+		if(field)
+			var/image/I = overlay_image(icon, "[initial(icon_state)]_ring")
+			I.color = parent_matrix.get_mode_color()
+			add_overlay(I)
 	else
 		icon_state = initial(icon_state)
+
+	if(field)
+		for(var/obj/O in field)
+			O.update_icon()
 
 /obj/machinery/shield_gen/proc/handle_shield_damage(var/damage, var/damage_flags, var/severity)
 	var/mode
@@ -154,7 +168,7 @@
 		for (var/tt in RANGE_TURFS(parent_matrix.field_radius, z))
 			T = tt
 			// If we are directional, ignore turfs in the wrong direction
-			if(directional && !(get_cardinal_dir(parent_matrix, T) == dir))
+			if(directional && !(get_compass_dir(parent_matrix, T) & dir))
 				continue
 			if(parent_matrix.has_modulator(MODEFLAG_HULL))
 				// Ignore station areas if on hull mode.
@@ -173,6 +187,11 @@
 			if(get_dist(parent_matrix, T) == parent_matrix.field_radius)
 				LAZYADD(out, T)
 				continue
+
+	for(var/obj/E in field)
+		if(!(get_turf(E) in out))
+			LAZYREMOVE(field, E)
+			qdel(E)
 
 	return out
 

@@ -62,7 +62,7 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 	for(var/obj/machinery/shield_capacitor/possible_cap in range(1, src))
 		if(!possible_cap.anchored)
 			continue
-		if((get_cardinal_dir(possible_cap, src) == possible_cap.dir) && (get_cardinal_dir(src, possible_cap) == dir))
+		if((get_compass_dir(possible_cap, src) & possible_cap.dir) && (get_compass_dir(src, possible_cap) & dir))
 			owned_capacitor = possible_cap
 			possible_cap.owned_matrix = src
 			break
@@ -71,7 +71,7 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 	for(var/obj/machinery/shield_gen/possible_projector in range(2, src))
 		if(!possible_projector.anchored)
 			continue
-		if(!possible_projector.directional || (get_cardinal_dir(possible_projector, src) == reverse_direction(possible_projector.dir)))
+		if(!possible_projector.directional || (get_compass_dir(possible_projector, src) & reverse_direction(possible_projector.dir)))
 			var/proj_dir = PROJ_DIR_ALL
 			if(possible_projector.directional)
 				switch(possible_projector.dir)
@@ -175,12 +175,12 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 	if(!owned_capacitor)
 		return
 
-	var/renwicks = owned_capacitor.stored_charge RENWICKS
+	var/renwicks = JOULES2RENWICKS(owned_capacitor.stored_charge)
 
 	if(!renwicks)
 		return
 
-	owned_capacitor.stored_charge -= renwicks JOULES
+	owned_capacitor.stored_charge -= RENWICKS2JOULES(renwicks)
 
 	if((strength_ratio + charge_ratio + modulator_ratio) != 1)
 		strength_ratio = min(1, strength_ratio)
@@ -236,13 +236,21 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 	return FALSE
 
 /obj/machinery/shield_matrix/update_icon()
-	if (active)
-		icon_state = "matrix_on"
-	else
-		icon_state = "matrix"
 	cut_overlays()
+	if (active)
+		var/image/I = overlay_image(icon, "matrix_ring")
+		I.color = get_mode_color()
+		add_overlay(I)
 	if(maint)
 		add_overlay(overlay_image(icon, "matrix_panel"))
+
+/obj/machinery/shield_matrix/proc/get_mode_color()
+	. = DEFAULT_SHIELD_COLOR
+	var/datum/shield_mode/expensive_mode
+	for(var/datum/shield_mode/M in modulators)
+		if(!expensive_mode || M.renwicks > expensive_mode.renwicks)
+			expensive_mode = M
+			. = M.color
 
 /obj/machinery/shield_matrix/rotate()
 	. = ..()
@@ -334,6 +342,8 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 					projector_power[D] += 1 - total_pwr
 		if("multiz")
 			multi_z = !multi_z
+
+	update_icon()
 
 /obj/machinery/shield_matrix/proc/has_modulator(var/flag)
 	if(!(flag && LAZYLEN(modulators)))

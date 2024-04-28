@@ -5,14 +5,14 @@
 	name = "energy shield"
 	desc = "A strong field of energy, capable of blocking anything as long as it's active and programmed correctly."
 	icon = 'icons/obj/machinery/shielding.dmi'
-	icon_state = "shield_normal"
+	icon_state = "shield_base"
 	alpha = 0
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	anchored = 1
 	layer = ABOVE_HUMAN_LAYER
 	density = 0
 	var/strength = 0
-	var/ticks_recovering = 10
+	var/ticks_recovering = 0
 	var/diffused_for = 0
 	var/diffused = FALSE
 
@@ -24,22 +24,21 @@
 /obj/effect/energy_field/Initialize()
 	. = ..()
 	update_nearby_tiles()
-	START_PROCESSING(SSprocessing, src)
 
 /obj/effect/energy_field/Destroy()
 	update_nearby_tiles()
 	return ..()
 
 /obj/effect/energy_field/update_icon()
-	if(parent_gen && parent_gen.parent_matrix.has_modulator(MODEFLAG_PHOTONIC) && density)
-		set_opacity(1)
-	else
-		set_opacity(0)
+	if(parent_gen && parent_gen.parent_matrix)
+		color = parent_gen.parent_matrix.get_mode_color()
 
-	if(parent_gen && parent_gen.parent_matrix.has_modulator(MODEFLAG_OVERCHARGE))
-		icon_state = "shield_overcharged"
+		if(parent_gen.parent_matrix.has_modulator(MODEFLAG_PHOTONIC) && density)
+			set_opacity(1)
+		else
+			set_opacity(0)
 	else
-		icon_state = "shield_normal"
+		qdel(src)
 
 /obj/effect/energy_field/proc/diffuse(var/duration)
 	diffused_for = max(duration, 0)
@@ -116,16 +115,15 @@
 			return
 		Stress(result)
 
-/obj/effect/energy_field/proc/Stress(var/severity)
+/obj/effect/energy_field/proc/Stress(var/severity = 0, var/recover = TRUE)
 	strength -= severity
 
-	//if we take too much damage, drop out - the generator will bring us back up if we have enough power
-	ticks_recovering = min(ticks_recovering + 2, 10)
+	if(recover) // Used to prevent really strong shields being unbreakable
+		ticks_recovering = min(ticks_recovering + 2, 10)
 	if(strength < 1 && is_strong)
 		density_check(FALSE)
 		is_strong = FALSE
 		ticks_recovering = 10
-		strength = 0
 	else if(strength >= 1 && !is_strong)
 		density_check(TRUE)
 		is_strong = TRUE
@@ -158,9 +156,10 @@
 		qdel(src)
 		return
 
+	if(ticks_recovering)
+		return
+
 	strength = min(strength + severity, parent_gen.strength)
-	if (strength < 0)
-		strength = 0
 
 	//if we take too much damage, drop out - the generator will bring us back up if we have enough power
 	var/old_density = density
@@ -177,7 +176,7 @@
 	diffuse_check()
 
 /obj/effect/energy_field/CanPass(atom/movable/mover, turf/target, height=1.5, air_group = 0)
-	if(!parent_gen)
+	if(!parent_gen || !parent_gen.parent_matrix)
 		qdel(src)
 		. = TRUE
 
@@ -223,14 +222,3 @@
 	if(. && istype(mover))
 		mover.forceMove(get_turf(src))
 
-/obj/effect/energy_field/process()
-	var/amount_to_dissipate = max(strength * SHIELD_DISCHARGE_RATE, SHIELD_DISCHARGE_MINIMUM)
-	Stress(amount_to_dissipate)
-	update_icon()
-
-	if(strength >= 1 && !is_strong)
-		is_strong = TRUE
-		density_check(TRUE)
-	else if(strength < 1 && is_strong)
-		is_strong = FALSE
-		density_check(FALSE)

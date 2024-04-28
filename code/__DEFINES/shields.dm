@@ -1,5 +1,5 @@
-#define RENWICKS / 20 //Much lower than the old conversion rate, but shields are MUCH more renwick hungry now
-#define JOULES * 20
+#define JOULES2RENWICKS(X) X / 75 //Much lower than the old conversion rate, but shields are MUCH more renwick hungry now
+#define RENWICKS2JOULES(X) X * 75
 
 #define SHIELD_DISCHARGE_RATE 0.1
 #define SHIELD_DISCHARGE_MINIMUM 0.1
@@ -30,3 +30,5 @@
 #define PROJ_DIR_EAST "Port"
 #define PROJ_DIR_SOUTH "Fore"
 #define PROJ_DIR_WEST "Starboard"
+
+#define DEFAULT_SHIELD_COLOR "#28cfd5"

@@ -7,6 +7,7 @@
 	var/mode_flag			// Mode bitflag. See defines file.
 	var/renwicks			// How many renwicks this mode uses passively. Most modes 0.2 - 0.5. High tier 1-2
 	var/greedy = TRUE
+	var/color = DEFAULT_SHIELD_COLOR
 
 /datum/shield_mode/proc/use_excess(var/renwicks)
 	return
@@ -56,6 +57,7 @@
 	mode_desc = "This mode blocks majority of light. This includes beam weaponry and most of the visible light spectrum."
 	mode_flag = MODEFLAG_PHOTONIC
 	renwicks = 0.5
+	color = "#26c900"
 
 /datum/shield_mode/photonic/use_excess(renwicks)
 	var/datum/component/armor/A = GetComponent(/datum/component/armor)
@@ -93,6 +95,7 @@
 	mode_desc = "This mode blocks various humanoid lifeforms. Does not affect fully synthetic humanoids."
 	mode_flag = MODEFLAG_HUMANOIDS
 	renwicks = 1
+	color = "#ff283f"
 	var/delay = 0
 
 /datum/shield_mode/humanoids/use_excess(renwicks)
@@ -104,6 +107,7 @@
 	mode_desc = "This mode blocks various silicon based lifeforms."
 	mode_flag = MODEFLAG_INORGANIC
 	renwicks = 1
+	color = "#fffb45"
 	var/delay = 0
 
 /datum/shield_mode/silicon/use_excess(renwicks)
@@ -114,6 +118,7 @@
 	mode_desc = "This mode blocks various other non-humanoid and non-silicon lifeforms. Typical uses include blocking carps."
 	mode_flag = MODEFLAG_NONHUMANS
 	renwicks = 0.5
+	color = "#ff45ce"
 	var/delay = 0
 
 /datum/shield_mode/mobs/use_excess(renwicks)
@@ -124,6 +129,7 @@
 	mode_desc = "This mode blocks air flow and acts as atmosphere containment."
 	mode_flag = MODEFLAG_ATMOSPHERIC
 	renwicks = 2
+	color = "#3a43ff"
 	greedy = FALSE
 
 /datum/shield_mode/hull
@@ -138,6 +144,7 @@
 	mode_desc = "This mode modulates the shield harmonic frequencies, allowing the field to adapt to various damage types."
 	mode_flag = MODEFLAG_MODULATE
 	renwicks = 2
+	color = "#b454ff"
 	var/resonance = 0 //The higher the resonance, the better the armour we get from adapting
 	var/adaption = ADAPTION_NEUTRAL
 
@@ -224,6 +231,7 @@
 	mode_desc = "This mode polarises the field, causing damage on contact."
 	mode_flag = MODEFLAG_OVERCHARGE
 	renwicks = 3
+	color = "#ffa141"
 	var/charge = 1
 
 /datum/shield_mode/overcharge/use_excess(renwicks)
