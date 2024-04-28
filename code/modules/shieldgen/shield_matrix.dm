@@ -12,7 +12,7 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 	icon_state = "matrix"
 	density = TRUE
 	use_power = POWER_USE_OFF //doesn't use APC power
-	req_one_access = list(access_captain, access_security, access_engine)
+	req_one_access = list(ACCESS_CAPTAIN, ACCESS_SECURITY, ACCESS_ENGINE)
 	obj_flags = OBJ_FLAG_ROTATABLE
 	var/active = FALSE
 	var/strength_ratio = 0.34
@@ -39,6 +39,7 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 	var/maint = FALSE
 
 /obj/machinery/shield_matrix/Initialize()
+	. = ..()
 	update_shield_parts()
 	for(var/M in default_shield_boards)
 		var/obj/item/modulator_board/MB = new M(src)
@@ -61,7 +62,7 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 	for(var/obj/machinery/shield_capacitor/possible_cap in range(1, src))
 		if(!possible_cap.anchored)
 			continue
-		if(get_cardinal_dir(possible_cap, src) == possible_cap.dir)
+		if((get_cardinal_dir(possible_cap, src) == possible_cap.dir) && (get_cardinal_dir(src, possible_cap) == dir))
 			owned_capacitor = possible_cap
 			possible_cap.owned_matrix = src
 			break
@@ -101,7 +102,7 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 		. = TRUE
 		updateDialog()
 
-	spark(src, 5, alldirs)
+	spark(src, 5, GLOB.alldirs)
 
 /obj/machinery/shield_matrix/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/card/id))
@@ -164,12 +165,13 @@ var/global/list/default_shield_boards = list(/obj/item/modulator_board/hyperkine
 	return ui_interact(user)
 
 /obj/machinery/shield_matrix/process()
-	if(active)
-		if(!anchored)
-			toggle()
-		if(stat & BROKEN)
-			toggle()
-			return PROCESS_KILL
+	if(!active)
+		return PROCESS_KILL
+	if(!anchored)
+		toggle()
+	if(stat & BROKEN)
+		toggle()
+		return PROCESS_KILL
 	if(!owned_capacitor)
 		return
 

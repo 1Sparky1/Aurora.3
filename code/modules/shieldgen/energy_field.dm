@@ -24,6 +24,7 @@
 /obj/effect/energy_field/Initialize()
 	. = ..()
 	update_nearby_tiles()
+	START_PROCESSING(SSprocessing, src)
 
 /obj/effect/energy_field/Destroy()
 	update_nearby_tiles()
@@ -105,6 +106,7 @@
 /obj/effect/energy_field/emp_act(var/severity)
 	if(density)
 		Stress(rand(30,60) / severity)
+	. = ..()
 
 /obj/effect/energy_field/fire_act()
 	if(density)
@@ -220,3 +222,15 @@
 
 	if(. && istype(mover))
 		mover.forceMove(get_turf(src))
+
+/obj/effect/energy_field/process()
+	var/amount_to_dissipate = max(strength * SHIELD_DISCHARGE_RATE, SHIELD_DISCHARGE_MINIMUM)
+	Stress(amount_to_dissipate)
+	update_icon()
+
+	if(strength >= 1 && !is_strong)
+		is_strong = TRUE
+		density_check(TRUE)
+	else if(strength < 1 && is_strong)
+		is_strong = FALSE
+		density_check(FALSE)

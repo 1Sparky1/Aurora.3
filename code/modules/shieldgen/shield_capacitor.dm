@@ -10,7 +10,6 @@
 	req_one_access = list(ACCESS_CAPTAIN, ACCESS_SECURITY, ACCESS_ENGINE)
 
 	var/active = FALSE
-	/// Not to be confused with power cell charge, this is in Joules.
 	var/stored_charge = 0
 	var/last_stored_charge = 0
 	var/time_since_fail = 100
@@ -20,7 +19,6 @@
 
 	var/charge_rate = 100000	//100 kW
 	var/obj/machinery/shield_matrix/owned_matrix
-	req_one_access = list(access_captain, access_security, access_engine)
 
 /obj/machinery/shield_capacitor/Initialize()
 	..()
@@ -146,6 +144,8 @@
 /obj/machinery/shield_capacitor/process()
 	if (!anchored)
 		active = FALSE
+	if(!active)
+		return
 
 	//see if we can connect to a power net.
 	var/datum/powernet/PN

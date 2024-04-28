@@ -1,8 +1,8 @@
 #define RENWICKS / 20 //Much lower than the old conversion rate, but shields are MUCH more renwick hungry now
 #define JOULES * 20
 
-#define SHIELD_DISCHARGE_RATE 0.03
-#define SHIELD_DISCHARGE_MINIMUM 0.01
+#define SHIELD_DISCHARGE_RATE 0.1
+#define SHIELD_DISCHARGE_MINIMUM 0.1
 #define SHIELD_STRENGTH_MAX 80
 
 #define MODEFLAG_HYPERKINETIC BITFLAG(1)

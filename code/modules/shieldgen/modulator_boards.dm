@@ -5,7 +5,6 @@
 	icon_state = "modulator"
 	w_class = ITEMSIZE_SMALL
 	w_class = ITEMSIZE_SMALL
-	flags = CONDUCT
 	force = 5
 	throwforce = 5
 	throw_speed = 3

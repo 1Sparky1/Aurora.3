@@ -58,15 +58,12 @@
 			qdel(E)
 		LAZYCLEARLIST(field)
 		return
+
 	if(field.len)
 		for(var/obj/effect/energy_field/E as anything in field)
 			if(!E)
 				LAZYREMOVE(field, E)
 				continue
-			var/amount_to_dissipate = max(E.strength * SHIELD_DISCHARGE_RATE, SHIELD_DISCHARGE_MINIMUM)
-
-			E.Stress(amount_to_dissipate)
-			E.update_icon()
 
 /obj/machinery/shield_gen/proc/generate_field(var/s_renwicks, var/c_renwicks, var/m_renwicks)
 	if(!(s_renwicks || c_renwicks))
@@ -161,7 +158,7 @@
 				continue
 			if(parent_matrix.has_modulator(MODEFLAG_HULL))
 				// Ignore station areas if on hull mode.
-				if ((the_station_areas[T.loc] || is_shuttle_area(T.loc)))
+				if ((GLOB.the_station_areas[T.loc] || is_shuttle_area(T.loc)))
 					continue
 				if (istype(T, /turf/space) || istype(T, /turf/unsimulated/floor/asteroid) || isopenturf(T) || istype(T, /turf/simulated/floor/reinforced))
 					for (var/uu in RANGE_TURFS(1, T))
@@ -169,7 +166,7 @@
 						if (T == U)
 							continue
 
-						if (the_station_areas[U.loc] || istype(U, /turf/simulated/mineral/surface))
+						if (GLOB.the_station_areas[U.loc] || istype(U, /turf/simulated/mineral/surface))
 							LAZYADD(out, T)
 							break
 				continue
